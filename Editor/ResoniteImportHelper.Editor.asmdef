@@ -1,0 +1,35 @@
+{
+    "name": "ResoniteImportHelper.Editor",
+    "rootNamespace": "global::ResoniteImportHelper.Editor",
+    "references": [
+        "GUID:62ced99b048af7f4d8dfe4bed8373d76",
+        "GUID:8d76e605759c3f64a957d63ef96ada7c"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "nadena.dev.ndmf",
+            "define": "RIH_HAS_NDMF",
+            "expression": ""
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "3.5.0",
+            "define": "RIH_HAS_VRCSDK3A"
+        },
+        {
+            "name": "com.vrmc.gltf",
+            "expression": "0.125.0",
+            "define": "RIH_HAS_UNI_GLTF"
+        }
+    ],
+    "noEngineReferences": false
+}
