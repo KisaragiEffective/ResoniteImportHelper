@@ -13,15 +13,15 @@ Following tools are optional. This tool can invoke their hooks.
 
 ## What this does and does not
 ### Does
-* The [`<NoIK>`](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Ignoring_Bones) flagging
-* Renaming bones to be [Rig-detector friendly](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Bone_Requirements)
+* Flag non-Rig bone as [`<NoIK>`](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Ignoring_Bones)
+* Rename bones to be [Rig-detector friendly](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Bone_Requirements)
 * Serialize processed avatar as gLTF format
-* Calls VRChat Avatar Build hooks
-* Calls NDMF plugins
+* Call VRChat Avatar Build hooks
+* Call NDMF plugins
 
 ### Does not
-* Material conversion: Always exported as Standard Shader. This is technical limitation on UniGLTF. You may import them as XiexeToonShader (or any suitable built-in Shader).
-* Animation conversion: Always ignored. You may want to reconstruct them by Protoflux after importing.
+* Convert Material: Always exported as Standard Shader. This is technical limitation on UniGLTF. You may import them as XiexeToonShader (or any suitable built-in Shader).
+* Convert Animation: Always ignored. You may want to reconstruct them by Protoflux after importing.
 
 ## How to use and import
 1. Install UniGLTF.
