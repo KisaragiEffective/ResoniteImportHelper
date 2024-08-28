@@ -18,7 +18,11 @@ namespace ResoniteImportHelper.Editor {
 
         private void CreateGUI()
         {
-            var rootObject = new ObjectField("処理する対象のアバター") { objectType = typeof(GameObject) };
+            var rootObject = new ObjectField("Target avatar root")
+            {
+                objectType = typeof(GameObject),
+                tooltip = "Specify avatar root. This is usually prefab root, or GameObject where VRCAvatarDescriptor is attached."
+            };
             rootVisualElement.Add(rootObject);
             // ReSharper disable once InconsistentNaming
             var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox(rootObject);
@@ -26,7 +30,11 @@ namespace ResoniteImportHelper.Editor {
             // ReSharper disable once InconsistentNaming
             var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors);
             rootVisualElement.Add(doNDMFManualBake);
-            var destination = new ObjectField("処理したアバター") { objectType = typeof(GameObject) };
+            var destination = new ObjectField("Processed avatar")
+            {
+                objectType = typeof(GameObject),
+                tooltip = "Processed avatar. Readonly."
+            };
             destination.RegisterValueChangedCallback(ev =>
             {
                 destination.SetValueWithoutNotify(ev.previousValue);
@@ -40,8 +48,11 @@ namespace ResoniteImportHelper.Editor {
                         doNDMFManualBake.value
                     )
                 );
-            });
-            run.Add(new Label("処理を開始"));
+            })
+            {
+                tooltip = "Start"
+            };
+            run.Add(new Label("Start"));
             run.SetEnabled(false);
 #if RIH_HAS_UNI_GLTF
             rootObject.RegisterValueChangedCallback(ev =>
@@ -69,7 +80,7 @@ namespace ResoniteImportHelper.Editor {
 
         private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField)
         {
-            var ret = new Toggle("VRChat SDKのプリプロセッサを走らせる") { value = HasVRCSDK3A };
+            var ret = new Toggle("Invoke VRChat SDK Preprocessor") { value = HasVRCSDK3A, tooltip = "Do you want NDMF or VRCFury to run?" };
             ret.SetEnabled(HasVRCSDK3A);
 #if RIH_HAS_VRCSDK3A
             rootObjectField.RegisterValueChangedCallback(ev =>
@@ -91,7 +102,7 @@ namespace ResoniteImportHelper.Editor {
         // ReSharper disable once InconsistentNaming
         private static Toggle CreateNDMFManualBakeCheckbox(Toggle v)
         {
-            var ret = new Toggle("NDMF Manual Bake") { value = HasNDMF };
+            var ret = new Toggle("NDMF Manual Bake") { value = HasNDMF, tooltip = "Do you want NDMF to run?" };
             ret.SetEnabled(Toggleable());
             v.RegisterValueChangedCallback(ev =>
             {
