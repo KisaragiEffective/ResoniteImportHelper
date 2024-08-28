@@ -43,12 +43,27 @@ namespace ResoniteImportHelper.Editor {
             });
             run.Add(new Label("処理を開始"));
             run.SetEnabled(false);
+#if RIH_HAS_UNI_GLTF
             rootObject.RegisterValueChangedCallback(ev =>
             {
                 run.SetEnabled(ev.newValue != null);
             });
+#endif
             rootVisualElement.Add(run);
             rootVisualElement.Add(CreateHorizontalLine());
+#if !RIH_HAS_UNI_GLTF
+            {
+                rootVisualElement.Add(
+                    new HelpBox("UniGLTFがプロジェクトにインストールされていません。続行するにはプロジェクトへインストールして下さい。", HelpBoxMessageType.Error)
+                );
+                var button = new Button(() =>
+                {
+                    Application.OpenURL("https://github.com/vrm-c/UniVRM/releases");
+                });
+                button.Add(new Label("UniGLTFのインストールページを開く"));
+                rootVisualElement.Add(button);
+            }
+#endif
             rootVisualElement.Add(destination);
         }
 
