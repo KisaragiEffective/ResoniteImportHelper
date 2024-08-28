@@ -25,7 +25,8 @@ Following tools are optional. This tool can invoke their hooks.
 ## How to use and import
 1. Install this package.
 2. Install UniGLTF.
-3. Go to `Tools > Resonite Import Helper`: ![UI visual](./Doc~/r1.png)
+3. Go to `Tools > Resonite Import Helper`: \
+    ![UI visual](./Doc~/r1.png)
 4. Set processing avatar.
 5. Depending on your installation, following checkbox may change their state:
     * Invoke VRChat SDK preprocessor: Calls VRChat SDK preprocessor. \
@@ -36,6 +37,7 @@ Following tools are optional. This tool can invoke their hooks.
       This is useful when you are importing non-VRChat avatar.
 6. Press "Start".
 7. It will be processed. Usually this will take a few seconds.
-8. The processed avatar appears on its field:![img_1.png](./Doc~/r2.png)
-9. Press "Open in filesystem".
+8. The processed avatar appears on its field:\
+    ![UI visual](./Doc~/r2.png)
+9. Press "Open in file system".
 10. Drag and drop the outcome onto Resonite.
