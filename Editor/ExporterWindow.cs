@@ -35,18 +35,15 @@ namespace ResoniteImportHelper.Editor {
                 objectType = typeof(GameObject),
                 tooltip = "Processed avatar. Readonly."
             };
-            destination.RegisterValueChangedCallback(ev =>
-            {
-                destination.SetValueWithoutNotify(ev.previousValue);
-            });
+            destination.RegisterCallback<DragUpdatedEvent>(ev => ev.PreventDefault());
+            destination.RegisterCallback<DragPerformEvent>(ev => ev.PreventDefault());
 
             var run = new Button(() =>
             {
-                destination.SetValueWithoutNotify(BusinessLogic.PerformConversion(
-                        rootObject.value as GameObject,
-                        doRunVRCSDK3APreprocessors.value,
-                        doNDMFManualBake.value
-                    )
+                destination.value = BusinessLogic.PerformConversion(
+                    rootObject.value as GameObject,
+                    doRunVRCSDK3APreprocessors.value,
+                    doNDMFManualBake.value
                 );
             })
             {
