@@ -76,6 +76,20 @@ namespace ResoniteImportHelper.Editor {
             }
 #endif
             rootVisualElement.Add(destination);
+            {
+                var button = new Button(() =>
+                {
+                    EditorUtility.RevealInFinder(AssetDatabase.GetAssetPath(destination.value));
+                });
+                destination.RegisterValueChangedCallback(ev =>
+                {
+                    button.SetEnabled(ev.newValue != null);
+                });
+                
+                button.Add(new Label("Open in file system"));
+                button.SetEnabled(false);
+                rootVisualElement.Add(button);
+            }
         }
 
         private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField)
