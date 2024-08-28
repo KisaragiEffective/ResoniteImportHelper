@@ -2,6 +2,9 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+#if RIH_HAS_VRCSDK3A
+using VRC.SDK3.Avatars.Components;
+#endif
 using static ResoniteImportHelper.Editor.ExternalServiceStatus;
 
 namespace ResoniteImportHelper.Editor {
@@ -18,7 +21,7 @@ namespace ResoniteImportHelper.Editor {
             var rootObject = new ObjectField("処理する対象のアバター") { objectType = typeof(GameObject) };
             rootVisualElement.Add(rootObject);
             // ReSharper disable once InconsistentNaming
-            var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox();
+            var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox(rootObject);
             rootVisualElement.Add(doRunVRCSDK3APreprocessors);
             // ReSharper disable once InconsistentNaming
             var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors);
@@ -49,10 +52,24 @@ namespace ResoniteImportHelper.Editor {
             rootVisualElement.Add(destination);
         }
 
-        private static Toggle CreatePreprocessorToggleCheckbox()
+        private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField)
         {
             var ret = new Toggle("VRChat SDKのプリプロセッサを走らせる") { value = HasVRCSDK3A };
             ret.SetEnabled(HasVRCSDK3A);
+#if RIH_HAS_VRCSDK3A
+            rootObjectField.RegisterValueChangedCallback(ev =>
+            {
+                var v = ev.newValue as GameObject;
+                if (v == null)
+                {
+                    return;
+                }
+
+                var hasAvatarDescriptor = v.TryGetComponent(out VRCAvatarDescriptor _);
+                ret.value = hasAvatarDescriptor;
+                ret.SetEnabled(hasAvatarDescriptor);
+            });
+#endif
             return ret;
         }
 
