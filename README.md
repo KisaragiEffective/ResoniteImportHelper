@@ -2,7 +2,8 @@
 Bake and Import.
 
 ## Requirement and recommended tools
-UniGLTF is required ([Download](https://github.com/vrm-c/UniVRM/releases))
+* UniGLTF is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases).
+* Git is required to install. Download it from [gitforwindows.org](https://gitforwindows.org/).
 
 Following tools are optional. This tool can invoke their hooks.
 * VRChat Avatar SDK ([Download](https://creators.vrchat.com/sdk/))
@@ -23,8 +24,12 @@ Following tools are optional. This tool can invoke their hooks.
 * Animation conversion: Always ignored. You may want to reconstruct them by Protoflux after importing.
 
 ## How to use and import
-1. Install this package.
-2. Install UniGLTF.
+1. Install UniGLTF.
+2. Install this package via Package Manager.
+    1. Go to `Window > Package Manager`
+    2. Click `[+▼]`
+    3. Select "Add package from Git URL"
+    4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.0`
 3. Go to `Tools > Resonite Import Helper`: \
     ![UI visual](./Doc~/r1.png)
 4. Set processing avatar.
