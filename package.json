@@ -1,0 +1,20 @@
+{
+  "name": "io.github.kisaragieffective.resonite-import-helper",
+  "version": "0.1.0",
+  "description": "Helper around importing to Resonite",
+  "displayName": "Resonite Import Helper",
+  "unity": "2022.3",
+  "author": {
+    "name": "Kisaragi Marine",
+    "email": "kisaragi.marine@gmail.com",
+    "url": "https://github.com/kisaragieffective"
+  },
+  "repository": {
+    "url": "https://github.com/KisaragiEffective/ResoniteImportHelper"
+  },
+  "dependencies": {
+    "com.vrmc.gltf": "0.125.0"
+  },
+  "keywords": ["resonite", "Resonite"],
+  "license": "MIT"
+}
