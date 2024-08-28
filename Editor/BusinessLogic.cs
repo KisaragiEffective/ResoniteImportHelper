@@ -105,6 +105,7 @@ namespace ResoniteImportHelper.Editor
         /// <returns>Serialized object.</returns>
         private static GameObject WriteGltfToAssetFolder(GameObject target)
         {
+#if RIH_HAS_UNI_GLTF
             //*
             var data = new ExportingGltfData();
             {
@@ -157,6 +158,9 @@ namespace ResoniteImportHelper.Editor
 
                 return AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
             }
+#else
+            throw new Exception("assertion error: UniGLTF is not installed on the project.");
+#endif
         }
 
         [CanBeNull]
