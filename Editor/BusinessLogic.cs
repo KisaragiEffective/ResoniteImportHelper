@@ -121,8 +121,18 @@ namespace ResoniteImportHelper.Editor
             }
 
             {
+                const string destinationFolder = "ZZZ_TemporalAsset";
+                {
+                    // ReSharper disable once InconsistentNaming
+                    var maybeNewGUID = AssetDatabase.CreateFolder("Assets", destinationFolder);
+                    if (maybeNewGUID != "")
+                    {
+                        Debug.Log($"Temporal asset folder was created. GUID: {maybeNewGUID}");
+                    }
+                }
+                
                 var rel =
-                    $"ZZZ_TemporalAsset/Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}.gltf";
+                    $"{destinationFolder}/Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}.gltf";
                 Debug.Log("dp: " + Application.dataPath);
                 // dataPathはAssetsで終わることに注意！！
                 var path = $"{Application.dataPath}/{rel}";
