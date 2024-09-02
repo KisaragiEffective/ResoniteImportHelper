@@ -39,14 +39,23 @@ namespace ResoniteImportHelper.Editor {
             };
             destination.RegisterCallback<DragUpdatedEvent>(ev => ev.PreventDefault());
             destination.RegisterCallback<DragPerformEvent>(ev => ev.PreventDefault());
-
+            var modelContainsVertexColorNote =
+                new HelpBox("Model contains Vertex Color. Import it on Resonite if you want to use.",
+                    HelpBoxMessageType.Info)
+                {
+                    style = { display = DisplayStyle.None }
+                };
+            
             var run = new Button(() =>
             {
-                destination.value = BusinessLogic.PerformConversion(
+                var result = BusinessLogic.PerformConversion(
                     rootObject.value as GameObject,
                     doRunVRCSDK3APreprocessors.value,
                     doNDMFManualBake.value
                 );
+                destination.value = result.SerializedObject;
+                modelContainsVertexColorNote.style.display =
+                    result.HasVertexColor ? DisplayStyle.Flex : DisplayStyle.None;
             })
             {
                 tooltip = "Start"
@@ -89,6 +98,8 @@ namespace ResoniteImportHelper.Editor {
                 button.SetEnabled(false);
                 rootVisualElement.Add(button);
             }
+            
+            rootVisualElement.Add(modelContainsVertexColorNote);
         }
 
         private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField)
