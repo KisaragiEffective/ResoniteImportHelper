@@ -24,12 +24,14 @@ namespace ResoniteImportHelper.Editor {
                 tooltip = "Specify avatar root. This is usually prefab root, or GameObject where VRCAvatarDescriptor is attached."
             };
             rootVisualElement.Add(rootObject);
+            var exportSettingFoldout = new Foldout { text = "Export settings" };
+            rootVisualElement.Add(exportSettingFoldout);
             // ReSharper disable once InconsistentNaming
             var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox(rootObject);
-            rootVisualElement.Add(doRunVRCSDK3APreprocessors);
+            exportSettingFoldout.Add(doRunVRCSDK3APreprocessors);
             // ReSharper disable once InconsistentNaming
             var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors);
-            rootVisualElement.Add(doNDMFManualBake);
+            exportSettingFoldout.Add(doNDMFManualBake);
             var destination = new ObjectField("Processed avatar")
             {
                 objectType = typeof(GameObject),
