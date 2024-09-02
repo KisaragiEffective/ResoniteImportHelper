@@ -33,7 +33,8 @@ Following tools are optional. This tool can invoke their hooks.
 3. Go to `Tools > Resonite Import Helper`: \
     ![UI visual](./Doc~/r1.png)
 4. Set processing avatar.
-5. Depending on your installation, following checkbox may change their state:
+5. Configure "Export settings" if necessary. \
+    Depending on your installation, following checkbox may change their state:
     * Invoke VRChat SDK preprocessor: Calls VRChat SDK preprocessor. \
       Implies "NDMF Manual Bake".
       This typically includes NDMF-based tools, VRCFury, etc. \
