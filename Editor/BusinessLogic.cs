@@ -72,7 +72,7 @@ namespace ResoniteImportHelper.Editor
             return target;
         }
 
-        internal static GameObject PerformConversion(
+        internal static ExportInformation PerformConversion(
             GameObject _root,
             // ReSharper disable once InconsistentNaming
             bool runVRCSDKPipeline,
@@ -103,16 +103,19 @@ namespace ResoniteImportHelper.Editor
         /// </summary>
         /// <param name="target"></param>
         /// <returns>Serialized object.</returns>
-        private static GameObject WriteGltfToAssetFolder(GameObject target)
+        private static ExportInformation WriteGltfToAssetFolder(GameObject target)
         {
 #if RIH_HAS_UNI_GLTF
+            var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
+            
             //*
             var data = new ExportingGltfData();
             {
                 var exportSettings = new GltfExportSettings
                 {
                     // ???
-                    DivideVertexBuffer = true
+                    DivideVertexBuffer = true,
+                    ExportVertexColor = containsVertexColors
                 };
 
                 using var exporter = new gltfExporter(data, exportSettings);
@@ -166,7 +169,9 @@ namespace ResoniteImportHelper.Editor
                     AssetDatabase.Refresh();
                 }
 
-                return AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
+                var serialized = AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
+
+                return new ExportInformation(serialized, containsVertexColors);
             }
 #else
             throw new Exception("assertion error: UniGLTF is not installed on the project.");
@@ -298,25 +303,11 @@ namespace ResoniteImportHelper.Editor
                 armatureRoot = candidate == root.transform ? hips.gameObject : candidate.gameObject;
             }
             Debug.Log($"anim root: {root}");
-            foreach (var remainedBone in GetChildrenRecursive(armatureRoot)
+            foreach (var remainedBone in GameObjectRecurseUtility.GetChildrenRecursive(armatureRoot)
                          .Where(o => !touchedBone.Contains(o)))
             {
                 // TODO: more smart NoIK flag
                 remainedBone.name = $"<NoIK> {remainedBone.name}";
-            }
-        }
-
-        private static IEnumerable<GameObject> GetChildrenRecursive(GameObject obj)
-        {
-            yield return obj;
-            var c = obj.transform.childCount;
-            for (var i = 0; i < c; i++)
-            {
-                foreach (var a in GetChildrenRecursive(obj.transform.GetChild(i).gameObject))
-                {
-                    // Debug.Log($"yielding {a}");
-                    yield return a;
-                }
             }
         }
     }
