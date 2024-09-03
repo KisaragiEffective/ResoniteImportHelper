@@ -125,7 +125,8 @@ namespace ResoniteImportHelper.Editor
 
             {
                 const string destinationFolder = "ZZZ_TemporalAsset";
-                {
+                // System.GuidではなくUnityEditor.GUIDであることに注意
+                if (AssetDatabase.GUIDFromAssetPath("Assets/ZZZ_TemporalAsset").Empty()) {
                     // ReSharper disable once InconsistentNaming
                     var maybeNewGUID = AssetDatabase.CreateFolder("Assets", destinationFolder);
                     if (maybeNewGUID != "")
