@@ -28,6 +28,21 @@ namespace ResoniteImportHelper.Editor
 
             return data;
         }
+        private const string DestinationFolder = "ZZZ_TemporalAsset";
+        
+        private static void InitializeTemporalAssetDataDirectory()
+        {
+            // System.GuidではなくUnityEditor.GUIDであることに注意
+            if (!AssetDatabase.GUIDFromAssetPath($"Assets/{DestinationFolder}").Empty()) return;
+            
+            // ReSharper disable once InconsistentNaming
+            var maybeNewGUID = AssetDatabase.CreateFolder("Assets", DestinationFolder);
+            if (maybeNewGUID != "")
+            {
+                Debug.Log($"Temporal asset folder was created. GUID: {maybeNewGUID}");
+            }
+        }
+        
         /// <summary>
         /// 
         /// </summary>
@@ -38,21 +53,10 @@ namespace ResoniteImportHelper.Editor
 #if RIH_HAS_UNI_GLTF
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
-
-            const string destinationFolder = "ZZZ_TemporalAsset";
-            // System.GuidではなくUnityEditor.GUIDであることに注意
-            if (AssetDatabase.GUIDFromAssetPath($"Assets/{destinationFolder}").Empty())
-            {
-                // ReSharper disable once InconsistentNaming
-                var maybeNewGUID = AssetDatabase.CreateFolder("Assets", destinationFolder);
-                if (maybeNewGUID != "")
-                {
-                    Debug.Log($"Temporal asset folder was created. GUID: {maybeNewGUID}");
-                }
-            }
+            InitializeTemporalAssetDataDirectory();
 
             var rel =
-                $"{destinationFolder}/Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}.gltf";
+                $"{DestinationFolder}/Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}.gltf";
             Debug.Log("dp: " + Application.dataPath);
             // dataPathはAssetsで終わることに注意！！
             var path = $"{Application.dataPath}/{rel}";
