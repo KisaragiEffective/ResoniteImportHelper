@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UniGLTF;
 using UnityEditor;
 using UnityEngine;
@@ -30,16 +31,39 @@ namespace ResoniteImportHelper.Editor
         }
         private const string DestinationFolder = "ZZZ_TemporalAsset";
         
-        private static void InitializeTemporalAssetDataDirectory()
+        private static void InitializeTemporalAssetDataDirectory(string secondaryDirectoryName)
         {
-            // System.GuidではなくUnityEditor.GUIDであることに注意
-            if (!AssetDatabase.GUIDFromAssetPath($"Assets/{DestinationFolder}").Empty()) return;
-            
-            // ReSharper disable once InconsistentNaming
-            var maybeNewGUID = AssetDatabase.CreateFolder("Assets", DestinationFolder);
-            if (maybeNewGUID != "")
+            #region sanity check
             {
-                Debug.Log($"Temporal asset folder was created. GUID: {maybeNewGUID}");
+                if (!new Regex("^[^*:\\/]+$").IsMatch(secondaryDirectoryName))
+                {
+                    throw new ArgumentException("shall not be empty nor contains special character",
+                        nameof(secondaryDirectoryName));
+                }
+            }
+            #endregion
+            // System.GuidではなくUnityEditor.GUIDであることに注意
+            if (AssetDatabase.GUIDFromAssetPath($"Assets/{DestinationFolder}").Empty())
+            {
+                // ReSharper disable once InconsistentNaming
+                var maybeNewGUID = AssetDatabase.CreateFolder("Assets", DestinationFolder);
+                if (maybeNewGUID != "")
+                {
+                    Debug.Log($"Temporal asset folder was created. GUID: {maybeNewGUID}");
+                }
+            }
+
+            // ReSharper disable once InconsistentNaming
+            var secondaryDirectoryGUID = AssetDatabase.CreateFolder($"Assets/{DestinationFolder}", secondaryDirectoryName);
+
+            if (secondaryDirectoryGUID != "")
+            {
+                Debug.Log($"Output directory's GUID: {secondaryDirectoryGUID}");
+            }
+            else
+            {
+                Debug.LogError("Output directory could not be created");
+                throw new Exception("invalid state");
             }
         }
         
@@ -53,13 +77,14 @@ namespace ResoniteImportHelper.Editor
 #if RIH_HAS_UNI_GLTF
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
-            InitializeTemporalAssetDataDirectory();
+            var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
+            InitializeTemporalAssetDataDirectory(runIdentifier);
 
-            var rel =
-                $"{DestinationFolder}/Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}.gltf";
-            Debug.Log("dp: " + Application.dataPath);
+            var gltfAssetRelativePath =
+                $"{DestinationFolder}/{runIdentifier}/model.gltf";
+            Debug.Log("Absolute path to the Asset: " + Application.dataPath);
             // dataPathはAssetsで終わることに注意！！
-            var path = $"{Application.dataPath}/{rel}";
+            var gltfFilePath = $"{Application.dataPath}/{gltfAssetRelativePath}";
 
             var data = WriteGltf(target, containsVertexColors);
 
@@ -70,23 +95,23 @@ namespace ResoniteImportHelper.Editor
             // SPFX-SnippetCopyrightText: Copyright (c) 2020 VRM Consortium
             // SPFX-SnippetCopyrightText: Copyright (c) 2018 Masataka SUMI for MToon
 
-            var (json, buffer0) = data.ToGltf(path);
+            var (json, buffer0) = data.ToGltf(gltfFilePath);
             {
                 // write JSON without BOM
                 var encoding = new System.Text.UTF8Encoding(false);
-                File.WriteAllText(path, json, encoding);
+                File.WriteAllText(gltfFilePath, json, encoding);
             }
 
             {
                 // write to buffer0 local folder
-                var dir = Path.GetDirectoryName(path);
+                var dir = Path.GetDirectoryName(gltfFilePath);
                 var bufferPath = Path.Combine(dir, buffer0.uri);
                 File.WriteAllBytes(bufferPath, data.BinBytes.ToArray());
             }
             // SPDX-SnippetEnd
             #endregion
 
-            var assetsRelPath = $"Assets/{rel}";
+            var assetsRelPath = $"Assets/{gltfAssetRelativePath}";
             {
                 AssetDatabase.ImportAsset(assetsRelPath);
                 AssetDatabase.Refresh();
