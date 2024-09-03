@@ -48,7 +48,7 @@ namespace ResoniteImportHelper.Editor {
             
             var run = new Button(() =>
             {
-                var result = BusinessLogic.PerformConversion(
+                var result = AvatarTransformer.PerformConversion(
                     rootObject.value as GameObject,
                     doRunVRCSDK3APreprocessors.value,
                     doNDMFManualBake.value
