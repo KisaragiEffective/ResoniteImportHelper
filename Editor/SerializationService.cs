@@ -10,18 +10,8 @@ namespace ResoniteImportHelper.Editor
 {
     internal static class SerializationService
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns>Serialized object.</returns>
-        internal static ExportInformation WriteGltfToAssetFolder(GameObject target)
+        private static ExportingGltfData WriteGltf(GameObject target, bool containsVertexColors)
         {
-#if RIH_HAS_UNI_GLTF
-            GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
-            var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
-            
-            //*
             var data = new ExportingGltfData();
             {
                 var exportSettings = new GltfExportSettings
@@ -36,10 +26,24 @@ namespace ResoniteImportHelper.Editor
                 exporter.Export();
             }
 
+            return data;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns>Serialized object.</returns>
+        internal static ExportInformation WriteGltfToAssetFolder(GameObject target)
+        {
+#if RIH_HAS_UNI_GLTF
+            GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
+            var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
+
             {
                 const string destinationFolder = "ZZZ_TemporalAsset";
                 // System.GuidではなくUnityEditor.GUIDであることに注意
-                if (AssetDatabase.GUIDFromAssetPath($"Assets/{destinationFolder}").Empty()) {
+                if (AssetDatabase.GUIDFromAssetPath($"Assets/{destinationFolder}").Empty())
+                {
                     // ReSharper disable once InconsistentNaming
                     var maybeNewGUID = AssetDatabase.CreateFolder("Assets", destinationFolder);
                     if (maybeNewGUID != "")
@@ -47,20 +51,22 @@ namespace ResoniteImportHelper.Editor
                         Debug.Log($"Temporal asset folder was created. GUID: {maybeNewGUID}");
                     }
                 }
-                
+
                 var rel =
                     $"{destinationFolder}/Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}.gltf";
                 Debug.Log("dp: " + Application.dataPath);
                 // dataPathはAssetsで終わることに注意！！
                 var path = $"{Application.dataPath}/{rel}";
-                
+
+                var data = WriteGltf(target, containsVertexColors);
+
                 #region UniGLTF.GltfExportWindow から引用したGLTFを書き出す処理
                 // SPDX-SnippetBegin
                 // SPDX-License-Identifier: MIT
                 // SPDX-SnippetName: UniGLTF.GltfExportWindow
                 // SPFX-SnippetCopyrightText: Copyright (c) 2020 VRM Consortium
                 // SPFX-SnippetCopyrightText: Copyright (c) 2018 Masataka SUMI for MToon
-                
+
                 var (json, buffer0) = data.ToGltf(path);
                 {
                     // write JSON without BOM
@@ -76,7 +82,7 @@ namespace ResoniteImportHelper.Editor
                 }
                 // SPDX-SnippetEnd
                 #endregion
-                
+
                 var assetsRelPath = $"Assets/{rel}";
                 {
                     AssetDatabase.ImportAsset(assetsRelPath);
