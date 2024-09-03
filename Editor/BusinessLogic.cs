@@ -106,6 +106,7 @@ namespace ResoniteImportHelper.Editor
         private static ExportInformation WriteGltfToAssetFolder(GameObject target)
         {
 #if RIH_HAS_UNI_GLTF
+            GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
             
             //*

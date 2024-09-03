@@ -18,5 +18,20 @@ namespace ResoniteImportHelper.Editor
                 }
             }
         }
+
+        internal static void EnableAllChildrenWithRenderers(GameObject root)
+        {
+            foreach (var gameObject in GetChildrenRecursive(root))
+            {
+                if (gameObject.TryGetComponent(out SkinnedMeshRenderer smr))
+                {
+                    gameObject.SetActive(true);
+                    smr.enabled = true;
+                } else if (gameObject.TryGetComponent(out MeshFilter _))
+                {
+                    gameObject.SetActive(true);
+                }
+            }
+        }
     }
 }
