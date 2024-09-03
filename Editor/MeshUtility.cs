@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,7 +10,8 @@ namespace ResoniteImportHelper.Editor
         internal static IEnumerable<Mesh> GetMeshes(GameObject go)
         {
             return GameObjectRecurseUtility.GetChildrenRecursive(go).SelectMany(o => SingleOrNone(
-                o.GetComponent<SkinnedMeshRenderer>()?.sharedMesh ?? o.GetComponent<MeshFilter>().sharedMesh
+                (o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr.sharedMesh : null) 
+                ?? (o.TryGetComponent(out MeshFilter mf) ? mf.sharedMesh : null)
             ));
         }
 
