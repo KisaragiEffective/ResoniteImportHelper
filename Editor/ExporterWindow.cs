@@ -16,7 +16,8 @@ namespace ResoniteImportHelper.Editor {
             GetWindow<ExporterWindow>().Show();
         }
 
-        private void CreateGUI()
+        // ReSharper disable once ParameterHidesMember
+        private static void OnMount(VisualElement rootVisualElement)
         {
             var rootObject = new ObjectField("Target avatar root")
             {
@@ -100,6 +101,11 @@ namespace ResoniteImportHelper.Editor {
             }
             
             rootVisualElement.Add(modelContainsVertexColorNote);
+        }
+        
+        private void CreateGUI()
+        {
+            OnMount(rootVisualElement);
         }
 
         private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField)
