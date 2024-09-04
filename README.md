@@ -46,4 +46,17 @@ Following tools are optional. This tool can invoke their hooks.
 8. The processed avatar appears on its field:\
     ![UI visual](./Doc~/r2.png)
 9. Press "Open in file system".
-10. Drag and drop the outcome onto Resonite.
+10. Drag `model.gltf` in the filesystem and drop it onto Resonite window.
+
+## Folder structure
+There are a few file in the containing folder.
+
+Containing folder can be found in `Assets/ZZZ_TemporalAsset/Run_{date}-{time}`.
+
+* `model.gltf` - The converted gLTF file.
+* Backlink-related files. These file will not be created if original hierarchy not a Prefab.
+  * `serialized_local_modification.prefab` - Used for backlink. \
+      Created if the Prefab instance has yet-saved [overrides](https://docs.unity3d.com/2022.3/Documentation/Manual/PrefabInstanceOverrides.html).
+  * `tied.asset` - Contains backlink. Refers either `serialized_local_modification.prefab` or original Prefab.
+
+![Describe](./Doc~/reference-graph.drawio.png)

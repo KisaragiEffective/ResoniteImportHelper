@@ -1,0 +1,14 @@
+{
+  "name": "ResoniteImportHelper.Runtime",
+  "rootNamespace": "global::ResoniteImportHelper.Runtime",
+  "references": [
+  ],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [
+  ],
+  "noEngineReferences": false
+}
