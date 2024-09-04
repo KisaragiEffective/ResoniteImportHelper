@@ -11,7 +11,7 @@ namespace ResoniteImportHelper.Editor
 {
     internal static class SerializationService
     {
-        private static ExportingGltfData WriteGltf(GameObject target, bool containsVertexColors)
+        private static ExportingGltfData ConstructGltfOnMemory(GameObject target, bool containsVertexColors)
         {
             var data = new ExportingGltfData();
             {
@@ -67,26 +67,35 @@ namespace ResoniteImportHelper.Editor
             }
         }
         
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns>Serialized object.</returns>
-        internal static ExportInformation WriteGltfToAssetFolder(GameObject target)
+        internal static ExportInformation ExportToAssetFolder(GameObject target)
         {
-#if RIH_HAS_UNI_GLTF
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
             var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
             InitializeTemporalAssetDataDirectory(runIdentifier);
 
+            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, runIdentifier);
+
+            return new ExportInformation(serialized, containsVertexColors);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="temporary"></param>
+        /// <param name="containsVertexColors"></param>
+        /// <param name="runIdentifier"></param>
+        /// <returns>Serialized object.</returns>
+        private static GameObject ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, string runIdentifier)
+        {
+#if RIH_HAS_UNI_GLTF
+            Debug.Log("Absolute path to the Asset: " + Application.dataPath);
             var gltfAssetRelativePath =
                 $"{DestinationFolder}/{runIdentifier}/model.gltf";
-            Debug.Log("Absolute path to the Asset: " + Application.dataPath);
             // dataPathはAssetsで終わることに注意！！
             var gltfFilePath = $"{Application.dataPath}/{gltfAssetRelativePath}";
 
-            var data = WriteGltf(target, containsVertexColors);
+            var onMemoryModelData = ConstructGltfOnMemory(temporary, containsVertexColors);
 
             #region UniGLTF.GltfExportWindow から引用したGLTFを書き出す処理
             // SPDX-SnippetBegin
@@ -95,7 +104,7 @@ namespace ResoniteImportHelper.Editor
             // SPFX-SnippetCopyrightText: Copyright (c) 2020 VRM Consortium
             // SPFX-SnippetCopyrightText: Copyright (c) 2018 Masataka SUMI for MToon
 
-            var (json, buffer0) = data.ToGltf(gltfFilePath);
+            var (json, buffer0) = onMemoryModelData.ToGltf(gltfFilePath);
             {
                 // write JSON without BOM
                 var encoding = new System.Text.UTF8Encoding(false);
@@ -106,7 +115,7 @@ namespace ResoniteImportHelper.Editor
                 // write to buffer0 local folder
                 var dir = Path.GetDirectoryName(gltfFilePath);
                 var bufferPath = Path.Combine(dir, buffer0.uri);
-                File.WriteAllBytes(bufferPath, data.BinBytes.ToArray());
+                File.WriteAllBytes(bufferPath, onMemoryModelData.BinBytes.ToArray());
             }
             // SPDX-SnippetEnd
             #endregion
@@ -117,9 +126,7 @@ namespace ResoniteImportHelper.Editor
                 AssetDatabase.Refresh();
             }
 
-            var serialized = AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
-
-            return new ExportInformation(serialized, containsVertexColors);
+            return AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
 #else
             throw new Exception("assertion error: UniGLTF is not installed on the project.");
 #endif
