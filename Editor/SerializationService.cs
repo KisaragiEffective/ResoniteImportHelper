@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ResoniteImportHelper.Runtime;
 using UniGLTF;
 using UnityEditor;
 using UnityEngine;
@@ -29,9 +30,10 @@ namespace ResoniteImportHelper.Editor
 
             return data;
         }
+        
         private const string DestinationFolder = "ZZZ_TemporalAsset";
         
-        private static void InitializeTemporalAssetDataDirectory(string secondaryDirectoryName)
+        private static string InitializeTemporalAssetDataDirectory(string secondaryDirectoryName)
         {
             #region sanity check
             {
@@ -59,6 +61,7 @@ namespace ResoniteImportHelper.Editor
             if (secondaryDirectoryGUID != "")
             {
                 Debug.Log($"Output directory's GUID: {secondaryDirectoryGUID}");
+                return secondaryDirectoryGUID;
             }
             else
             {
@@ -67,16 +70,75 @@ namespace ResoniteImportHelper.Editor
             }
         }
         
-        internal static ExportInformation ExportToAssetFolder(GameObject target)
+        internal static ExportInformation ExportToAssetFolder(SerializationConfiguration config)
         {
+            var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
             var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
-            InitializeTemporalAssetDataDirectory(runIdentifier);
+            // ReSharper disable once InconsistentNaming
+            var exportRootDirGUID = InitializeTemporalAssetDataDirectory(runIdentifier);
 
             var serialized = ExportGltfToAssetFolder(target, containsVertexColors, runIdentifier);
+            Debug.Log("backlink: started");
+            TryCreateBacklink(config, exportRootDirGUID);
+            Debug.Log("backlink: end");
 
             return new ExportInformation(serialized, containsVertexColors);
+        }
+        
+        // ReSharper disable once InconsistentNaming
+        private static void TryCreateBacklink(SerializationConfiguration config, string exportRootDirGUID)
+        {
+            var original = config.OriginalMaybePackedObject;
+            
+            var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
+            if (source == null)
+            {
+                Debug.Log("backlink: skipping generation: the original object is not a Prefab");
+                return;
+            }
+
+            {
+                var path = AssetDatabase.GetAssetPath(source) switch
+                {
+                    "" => "empty??",
+                    null => "null",
+                    var other => other,
+                };
+                
+                Debug.Log($"backlink: path to Prefab: {path}");
+            }
+
+            var hasLocalOverrides = PrefabUtility.HasPrefabInstanceAnyOverrides(original, false);
+            GameObject parent;
+            if (hasLocalOverrides)
+            {
+                Debug.Log("backlink: serialization: original object has local modification");
+                // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
+                var path = AssetDatabase.GUIDToAssetPath(exportRootDirGUID) +
+                           "/serialized_local_modification.prefab";
+                var result = PrefabUtility.SaveAsPrefabAsset(original, path, out var success);
+                if (!success)
+                {
+                    Debug.LogWarning("backlink: serialization: SaveAsPrefabAsset was failed");
+                    return;
+                }
+
+                parent = result;
+            }
+            else
+            {
+                Debug.Log("backlink: reusing pre-existing prefab: original object has no local modification");
+                parent = source;
+            }
+
+            Debug.Log("backlink: create ScriptableObject");
+            var o = ScriptableObject.CreateInstance<TiedBakeSourceDescriptor>();
+            o.SerializedParent = parent;
+
+            Debug.Log("backlink: finalize");
+            AssetDatabase.CreateAsset(o, AssetDatabase.GUIDToAssetPath(exportRootDirGUID) + "/tied.asset");
         }
 
         /// <summary>

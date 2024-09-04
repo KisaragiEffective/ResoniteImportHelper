@@ -23,14 +23,14 @@ namespace ResoniteImportHelper.Editor
     internal static class AvatarTransformer
     {
         private static GameObject PerformConversionPure(
-            GameObject _root,
+            GameObject unmodifiableRoot,
             // ReSharper disable once InconsistentNaming
             bool runVRCSDKPipeline,
             // ReSharper disable once InconsistentNaming
             bool runNDMF
         )
         {
-            var target = _root;
+            var target = unmodifiableRoot;
             if (runVRCSDKPipeline)
             {
 #if RIH_HAS_VRCSDK3A
@@ -73,14 +73,14 @@ namespace ResoniteImportHelper.Editor
         }
 
         internal static ExportInformation PerformConversion(
-            GameObject _root,
+            GameObject unmodifiableRoot,
             // ReSharper disable once InconsistentNaming
             bool runVRCSDKPipeline,
             // ReSharper disable once InconsistentNaming
             bool runNDMF
         )
         {
-            var target = PerformConversionPure(_root, runVRCSDKPipeline, runNDMF);
+            var target = PerformConversionPure(unmodifiableRoot, runVRCSDKPipeline, runNDMF);
 
             if (!ExternalServiceStatus.HasUniGLTF)
 #pragma warning disable CS0162 // Unreachable code detected
@@ -90,7 +90,9 @@ namespace ResoniteImportHelper.Editor
 #pragma warning restore CS0162 // Unreachable code detected
             
             Debug.Log("Exporting model as gLTF");
-            var serialized = SerializationService.ExportToAssetFolder(target);
+            var serialized = SerializationService.ExportToAssetFolder(
+                new SerializationConfiguration(target, unmodifiableRoot)
+            );
             
             Debug.Log("done");
             // we can remove target because it is cloned in either way.
