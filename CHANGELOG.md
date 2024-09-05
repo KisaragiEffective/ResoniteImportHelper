@@ -1,4 +1,7 @@
 # 変更履歴
+## 0.1.2 (2024-09-05)
+* fix: `DivideVertexBuffer` を `false` に
+
 ## 0.1.1 (2024-09-05)
 * renovate: 漏れた`.meta`ファイルの追加
 * feat: gLTFに変換する前のPrefabの参照を保存するように
