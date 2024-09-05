@@ -18,8 +18,8 @@ namespace ResoniteImportHelper.Editor
             {
                 var exportSettings = new GltfExportSettings
                 {
-                    // ???
-                    DivideVertexBuffer = true,
+                    // https://github.com/KisaragiEffective/ResoniteImportHelper/issues/29
+                    DivideVertexBuffer = false,
                     ExportVertexColor = containsVertexColors
                 };
 
