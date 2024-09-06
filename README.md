@@ -4,6 +4,7 @@ Bake and Import.
 ## Requirement and recommended tools
 * UniGLTF is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases).
 * Git is required to install. Download it from [gitforwindows.org](https://gitforwindows.org/).
+* Unity is required to be 2022.3 series. Older or newer series may work, but it will **NOT** be supported.
 
 Following tools are optional. This tool can invoke their hooks.
 * VRChat Avatar SDK ([Download](https://creators.vrchat.com/sdk/))
@@ -61,3 +62,25 @@ Containing folder can be found in `Assets/ZZZ_TemporalAsset/Run_{date}-{time}`.
   * `tied.asset` - Contains backlink. Refers either `serialized_local_modification.prefab` or original Prefab.
 
 ![Describe](./Doc~/reference-graph.drawio.png)
+
+## Versioning Policy
+This project adopts ["Semantic Versioning 2.0.0"](https://semver.org/).
+
+In addition to "Semantic Versioning 2.0.0", following rules applied:
+* Each version component is increased by 1 in general release.
+* If Major component is 0:
+  * Minor component is increased and Patch component reset to 0 if:
+      * Public API is changed in Not Backwards Compatible way
+  * Patch component is increased if any of following happens:
+      * New feature is implemented
+      * Bug fix is applied
+      * UI changes are made
+
+Those are not counted as Public API:
+* Any C# members (class, method, property, field, etc.) that cannot be accessed from outside the codebase without reflection and patching.
+  * This includes `private`, `internal`, `private protected`, and `file` members.
+* Folder structure.
+* Backlink component and its members.
+
+This project may provide experimental feature or implementation.
+It is allowed to be disappeared without marking it as Not Backwards Compatible.
