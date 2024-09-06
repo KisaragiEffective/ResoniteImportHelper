@@ -81,17 +81,15 @@ namespace ResoniteImportHelper.Editor
 
             var serialized = ExportGltfToAssetFolder(target, containsVertexColors, runIdentifier);
             Debug.Log("backlink: started");
-            TryCreateBacklink(config, exportRootDirGUID);
+            TryCreateBacklink(config.OriginalMaybePackedObject, exportRootDirGUID);
             Debug.Log("backlink: end");
 
             return new ExportInformation(serialized, containsVertexColors);
         }
         
         // ReSharper disable once InconsistentNaming
-        private static void TryCreateBacklink(SerializationConfiguration config, string exportRootDirGUID)
+        private static void TryCreateBacklink(GameObject original, string exportRootDirGUID)
         {
-            var original = config.OriginalMaybePackedObject;
-            
             var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
             if (source == null)
             {
