@@ -4,6 +4,7 @@ Bake and Import.
 ## Requirement and recommended tools
 * UniGLTF is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases).
 * Git is required to install. Download it from [gitforwindows.org](https://gitforwindows.org/).
+* Unity is required to be 2022.3 series. Older or newer series may work, but it will **NOT** be supported.
 
 Following tools are optional. This tool can invoke their hooks.
 * VRChat Avatar SDK ([Download](https://creators.vrchat.com/sdk/))
