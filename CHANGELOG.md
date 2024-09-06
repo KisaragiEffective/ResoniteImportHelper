@@ -1,4 +1,7 @@
 # 変更履歴
+## 0.1.3 (2024-09-06)
+* feat: 出力されるglTFの名前を固定せずに元々の`GameObject`から取るように
+
 ## 0.1.2 (2024-09-05)
 * fix: `DivideVertexBuffer` を `false` に
 
