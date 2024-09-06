@@ -1,23 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.UnityEditorUtility;
-#if RIH_HAS_NDMF
-using nadena.dev.ndmf;
-#endif
-#if RIH_HAS_UNI_GLTF
-using UniGLTF;
-#endif
-using UnityEditor;
 using UnityEngine;
-#if RIH_HAS_VRCSDK3A
-using VRC.SDK3.Avatars.Components;
-using VRC.SDKBase.Editor.BuildPipeline;
-#endif
 using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform
