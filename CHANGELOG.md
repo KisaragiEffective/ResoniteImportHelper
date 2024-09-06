@@ -1,4 +1,10 @@
 # 変更履歴
+## 0.1.4 (2024-09-06)
+* fix: [ルーシュカ](https://booth.pm/ja/items/4296675)ちゃんのUpper ChestがVRIKにChestとして認識される問題を修正
+* refactor: アセンブリの分割を伴うリストラクチャリング
+* docs: Unity 2022.3系列のみのサポート及びバージョニングについて規定を明文化
+* docs: "gLTF"をglTFに置き換え
+
 ## 0.1.3 (2024-09-06)
 * feat: 出力されるglTFの名前を固定せずに元々の`GameObject`から取るように
 
