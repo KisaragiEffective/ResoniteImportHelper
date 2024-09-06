@@ -15,7 +15,7 @@ Following tools are optional. This tool can invoke their hooks.
 ### Does
 * Flag non-Rig bone as [`<NoIK>`](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Ignoring_Bones)
 * Rename bones to be [Rig-detector friendly](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Bone_Requirements)
-* Serialize processed avatar as gLTF format
+* Serialize processed avatar as glTF format
 * Call VRChat Avatar Build hooks
 * Call NDMF plugins
 
@@ -53,7 +53,7 @@ There are a few file in the containing folder.
 
 Containing folder can be found in `Assets/ZZZ_TemporalAsset/Run_{date}-{time}`.
 
-* The file ending with `.gltf` - The converted gLTF file. \
+* The file ending with `.gltf` - The converted glTF file. \
     The name is determined from your input. For example, Mafuyu will be exported as `Mafuyu.gltf`.
 * Backlink-related files. These file will not be created if original hierarchy not a Prefab.
   * `serialized_local_modification.prefab` - Used for backlink. \

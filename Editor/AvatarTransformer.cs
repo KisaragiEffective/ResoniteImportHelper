@@ -89,7 +89,7 @@ namespace ResoniteImportHelper.Editor
             }
 #pragma warning restore CS0162 // Unreachable code detected
             
-            Debug.Log("Exporting model as gLTF");
+            Debug.Log("Exporting model as glTF");
             var serialized = SerializationService.ExportToAssetFolder(
                 new SerializationConfiguration(target, unmodifiableRoot)
             );

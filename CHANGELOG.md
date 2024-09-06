@@ -7,11 +7,11 @@
 
 ## 0.1.1 (2024-09-05)
 * renovate: 漏れた`.meta`ファイルの追加
-* feat: gLTFに変換する前のPrefabの参照を保存するように
+* feat: glTFに変換する前のPrefabの参照を保存するように
 * fix: 変換前に`SkinnedMeshRenderer`及び`MeshFilter`を有効化するように
 * fix: 一時アセットを格納するフォルダは一度だけ作成する
 * fix: MissingComponentExceptionを避ける
-* feat: モデルの頂点カラーもgLTFに含むように
+* feat: モデルの頂点カラーもglTFに含むように
 * ui: エクスポート設定を折りたたむ
 * renovate: スキーマの誤りを修正
 * fix: 一時アセットを格納するフォルダを書き込み前に初期化する
