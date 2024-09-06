@@ -15,6 +15,12 @@
     "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.vrmc.gltf",
+            "expression": "0.125.0",
+            "define": "RIH_HAS_UNI_GLTF"
+        }
+    ],
     "noEngineReferences": false
 }
