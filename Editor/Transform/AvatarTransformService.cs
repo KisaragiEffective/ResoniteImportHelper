@@ -81,7 +81,8 @@ namespace ResoniteImportHelper.Transform
             RewriteIfSet(HumanBodyBones.Chest, "Chest");
             RewriteIfSet(HumanBodyBones.Neck, "Neck");
             RewriteIfSet(HumanBodyBones.Head, "Head");
-            RewriteIfSet(HumanBodyBones.UpperChest, "Upper Chest");
+            // BipedRigがルーズすぎてUpperChestがChestとして認識される問題を回避するためにあっても無視する
+            // RewriteIfSet(HumanBodyBones.UpperChest, "Upper Chest");
             
             #region left uppers
             RewriteIfSet(HumanBodyBones.LeftShoulder, "Shoulder.L");
