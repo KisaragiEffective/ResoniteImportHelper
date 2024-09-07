@@ -1,8 +1,9 @@
 {
-    "name": "ResoniteImportHelper.UnityEditorUtility",
-    "rootNamespace": "global::ResoniteImportHelper.UnityEditorUtility",
+    "name": "ResoniteImportHelper.Lint",
+    "rootNamespace": "global::ResoniteImportHelper.Lint",
     "references": [
-        "GUID:e1502863ab7f486a9e1671dfc01ad9a5"
+        "GUID:da758e96819041b2b57ad6379d1c0c58",
+        "GUID:041f840041904fa4965ea30baa9487a6"
     ],
     "includePlatforms": [
         "Editor"
@@ -11,7 +12,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
