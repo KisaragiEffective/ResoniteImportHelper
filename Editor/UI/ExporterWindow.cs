@@ -68,7 +68,14 @@ namespace ResoniteImportHelper.UI {
                 foreach (var diagnostic in diags)
                 {
                     var m = diagnostic.CustomizedShaderUsedMaterial;
-                    Debug.Log($"custom shader warning: {diagnostic.Message()}\nReference: {m}");
+                    var o = diagnostic.ReferencedRenderer;
+                    
+                    Debug.Log($@"custom shader warning: {diagnostic.Message()}
+Material: {m}
+GameObject: {o.gameObject}
+Please consult familiar person to resolve this warning, or you may want to ignore
+-----------------------------
+StackTrace:");
                 }
             })
             {

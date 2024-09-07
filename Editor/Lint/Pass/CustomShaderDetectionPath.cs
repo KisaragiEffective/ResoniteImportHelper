@@ -14,16 +14,22 @@ namespace ResoniteImportHelper.Lint.Pass
         {
             return GameObjectRecurseUtility
                 .GetChildrenRecursive(unmodifiableRoot)
-                .SelectMany(ExtractMaterials)
-                .Where(NonStandardMaterial)
-                .Select(m => new CustomShaderDiagnostic(m));
+                .Select(ExtractMaterials)
+                .Where(r => r.Item2 != null)
+                .Where(r => r.Item1.Any(NonStandardMaterial))
+                .SelectMany(t => t.Item1.Select(m => new CustomShaderDiagnostic(m, t.Item2)));
         }
 
-        private static IEnumerable<Material> ExtractMaterials(GameObject o)
+        private static (IEnumerable<Material>, Renderer?) ExtractMaterials(GameObject o)
         {
-            return (o.TryGetComponent<SkinnedMeshRenderer>(out var smr) ? smr.sharedMaterials : null) 
-                   ?? (o.TryGetComponent<MeshRenderer>(out var mr) ? mr.sharedMaterials : null) 
-                   ?? Enumerable.Empty<Material>();
+            return ExtractMaterials<SkinnedMeshRenderer>(o)
+                   ?? ExtractMaterials<MeshRenderer>(o)
+                   ?? (Enumerable.Empty<Material>(), null);
+        }
+
+        private static (IEnumerable<Material>, Renderer)? ExtractMaterials<TRenderer>(GameObject o) where TRenderer: Renderer
+        {
+            return o.TryGetComponent<TRenderer>(out var r) ? (r.sharedMaterials, r) : null;
         }
 
         private static bool NonStandardMaterial(Material m)

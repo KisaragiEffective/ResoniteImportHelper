@@ -6,10 +6,12 @@ namespace ResoniteImportHelper.Lint.Diagnostic
     internal class CustomShaderDiagnostic : IDiagnostic
     {
         internal readonly Material CustomizedShaderUsedMaterial;
+        internal readonly Renderer ReferencedRenderer;
 
-        internal CustomShaderDiagnostic(Material customizedShaderUsedMaterial)
+        internal CustomShaderDiagnostic(Material customizedShaderUsedMaterial, Renderer referencedRenderer)
         {
             CustomizedShaderUsedMaterial = customizedShaderUsedMaterial;
+            ReferencedRenderer = referencedRenderer;
         }
         
         [NotPublicAPI]
