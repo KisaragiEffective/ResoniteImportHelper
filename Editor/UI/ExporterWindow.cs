@@ -36,6 +36,9 @@ namespace ResoniteImportHelper.UI {
             // ReSharper disable once InconsistentNaming
             var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors);
             exportSettingFoldout.Add(doNDMFManualBake);
+            var experimentalSettingsFoldout = CreateExperimentalSettingsFoldout();
+            exportSettingFoldout.Add(experimentalSettingsFoldout);
+            
             var destination = new ObjectField("Processed avatar")
             {
                 objectType = typeof(GameObject),
@@ -55,7 +58,8 @@ namespace ResoniteImportHelper.UI {
                 var result = Entry.PerformConversion(
                     rootObject.value as GameObject,
                     doRunVRCSDK3APreprocessors.value,
-                    doNDMFManualBake.value
+                    doNDMFManualBake.value,
+                    experimentalSettingsFoldout.BakeShadersConfigurationIntoTextures.value
                 );
                 destination.value = result.SerializedObject;
                 modelContainsVertexColorNote.style.display =
@@ -122,7 +126,12 @@ StackTrace:");
             
             rootVisualElement.Add(modelContainsVertexColorNote);
         }
-        
+
+        private static ExperimentalSettingsFoldout CreateExperimentalSettingsFoldout()
+        {
+            return new ExperimentalSettingsFoldout();
+        }
+
         private void CreateGUI()
         {
             OnMount(rootVisualElement);

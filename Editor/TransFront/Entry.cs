@@ -10,10 +10,16 @@ namespace ResoniteImportHelper.TransFront
             // ReSharper disable once InconsistentNaming
             bool runVRCSDKPipeline,
             // ReSharper disable once InconsistentNaming
-            bool runNDMF
+            bool runNDMF,
+            bool bakeTexture
         )
         {
-            var target = Transform.AvatarTransformService.PerformConversionPure(unmodifiableRoot, runVRCSDKPipeline, runNDMF);
+            var target = Transform.AvatarTransformService.PerformConversionPure(
+                unmodifiableRoot,
+                runVRCSDKPipeline,
+                runNDMF,
+                bakeTexture
+            );
             
             Debug.Log("Exporting model as glTF");
             var serialized = SerializationService.ExportToAssetFolder(

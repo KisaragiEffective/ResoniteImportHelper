@@ -8,9 +8,9 @@ using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform.Environment.VRChat
 {
-    internal class VRChatBuildPipelineHandler : Common.IHandler
+    internal class VRChatBuildPipelineExpander : Common.IPlatformExpander
     {
-        public GameObject PerformEnvironmentConversion(GameObject unmodifiableRoot)
+        public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot)
         {
 #if RIH_HAS_VRCSDK3A
             if (!unmodifiableRoot.TryGetComponent<VRCAvatarDescriptor>(out _))
