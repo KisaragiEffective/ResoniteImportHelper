@@ -1,7 +1,9 @@
 {
     "name": "ResoniteImportHelper.UnityEditorUtility",
     "rootNamespace": "global::ResoniteImportHelper.UnityEditorUtility",
-    "references": [],
+    "references": [
+        "GUID:e1502863ab7f486a9e1671dfc01ad9a5"
+    ],
     "includePlatforms": [
         "Editor"
     ],

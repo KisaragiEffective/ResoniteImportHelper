@@ -29,7 +29,7 @@ namespace ResoniteImportHelper.Lint.Pass
         private static bool NonStandardMaterial(Material m)
         {
             var shader = m.shader;
-            Debug.Log(shader);
+            // Debug.Log(shader);
             return !AssetDatabasePlusPlus.IsUnityEngineBuiltinObject(shader) || shader.name != "Standard";
         }
     }

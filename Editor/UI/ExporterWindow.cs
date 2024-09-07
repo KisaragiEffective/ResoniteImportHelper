@@ -60,14 +60,15 @@ namespace ResoniteImportHelper.UI {
                 destination.value = result.SerializedObject;
                 modelContainsVertexColorNote.style.display =
                     result.HasVertexColor ? DisplayStyle.Flex : DisplayStyle.None;
-                // FIXME: SerializedObjectはUniGLTFが全てStandardシェーダーに変換しているのでBacklinkから拾ってくる必要がある
-                var diags = new CustomShaderDetectionPath().Check(result.SerializedObject).ToList();
+                // SerializedObjectはUniGLTFが全てStandardシェーダーに変換しているので
+                // Backlinkから元々のオブジェクトを拾ってくる必要がある
+                var diags = new CustomShaderDetectionPath().Check(result.LookupBacklink().SerializedParent).ToList();
                 Debug.Log($"{diags.Count} custom materials.");
                 // TODO: 置き場として微妙
                 foreach (var diagnostic in diags)
                 {
                     var m = diagnostic.CustomizedShaderUsedMaterial;
-                    Debug.LogWarning($"custom shader warning: {diagnostic.Message()}\nReference: {m}");
+                    Debug.Log($"custom shader warning: {diagnostic.Message()}\nReference: {m}");
                 }
             })
             {
