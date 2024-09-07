@@ -1,3 +1,5 @@
+using System.Linq;
+using ResoniteImportHelper.Lint.Pass;
 using ResoniteImportHelper.TransFront;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -58,6 +60,15 @@ namespace ResoniteImportHelper.UI {
                 destination.value = result.SerializedObject;
                 modelContainsVertexColorNote.style.display =
                     result.HasVertexColor ? DisplayStyle.Flex : DisplayStyle.None;
+                // FIXME: SerializedObjectはUniGLTFが全てStandardシェーダーに変換しているのでBacklinkから拾ってくる必要がある
+                var diags = new CustomShaderDetectionPath().Check(result.SerializedObject).ToList();
+                Debug.Log($"{diags.Count} custom materials.");
+                // TODO: 置き場として微妙
+                foreach (var diagnostic in diags)
+                {
+                    var m = diagnostic.CustomizedShaderUsedMaterial;
+                    Debug.LogWarning($"custom shader warning: {diagnostic.Message()}\nReference: {m}");
+                }
             })
             {
                 tooltip = "Start"

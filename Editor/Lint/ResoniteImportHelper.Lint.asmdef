@@ -1,0 +1,19 @@
+{
+    "name": "ResoniteImportHelper.Lint",
+    "rootNamespace": "global::ResoniteImportHelper.Lint",
+    "references": [
+        "GUID:da758e96819041b2b57ad6379d1c0c58",
+        "GUID:041f840041904fa4965ea30baa9487a6"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
