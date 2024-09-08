@@ -45,6 +45,7 @@ namespace ResoniteImportHelper.Transform
 
             Debug.Log("Automated NoIK processor");
             ModifyArmature(target, rig);
+            Debug.Log("maybe bake texture");
             if (bakeTexture)
             {
                 BakeTexture(target);
@@ -196,9 +197,7 @@ namespace ResoniteImportHelper.Transform
 
         private static void BakeTexture(GameObject root)
         {
-            // TODO
-            Debug.Log("TODO");
-            // new LilToonHandler().PerformInlineTransform(root);
+            new LilToonHandler().PerformInlineTransform(root);
         }
     }
 }
