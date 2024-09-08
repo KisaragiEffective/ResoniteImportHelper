@@ -77,8 +77,10 @@ In addition to "Semantic Versioning 2.0.0", following rules applied:
       * UI changes are made
 
 Those are not counted as Public API:
-* Any C# members (class, method, property, field, etc.) that cannot be accessed from outside the codebase without reflection and patching.
-  * This includes `private`, `internal`, `private protected`, and `file` members.
+* Any C# members (class, method, property, field, etc.) that:
+  * cannot be accessed from outside the codebase without reflection and patching.
+    * This includes `private`, `internal`, `private protected`, and `file` members.
+  * marked with `[NotPublicAPI]`.
 * Folder structure.
 * Backlink component and its members.
 
