@@ -4,11 +4,11 @@ Bake and Import.
 ## Requirement and recommended tools
 * UniGLTF is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases).
 * Git is required to install. Download it from [gitforwindows.org](https://gitforwindows.org/).
-* Unity is required to be 2022.3 series. Older or newer series may work, but it will **NOT** be supported.
+* Unity® is required to be 2022.3 series. Older or newer series may work, but it will **NOT** be supported.
 
 Following tools are optional. This tool can invoke their hooks.
-* VRChat Avatar SDK ([Download](https://creators.vrchat.com/sdk/))
-* Non-Destructive Modular Framework
+* VRChat® Avatar SDK ([Download](https://creators.vrchat.com/sdk/))
+* Non-Destructive Modular Framework (NDMF)
   * AAO: Avatar Optimizer ([Download](https://vpm.anatawa12.com/avatar-optimizer/en/))
   * Modular Avatar ([Download](https://modular-avatar.nadena.dev/))
 
@@ -86,3 +86,14 @@ Those are not counted as Public API:
 
 This project may provide experimental feature or implementation.
 It is allowed to be disappeared without marking it as Not Backwards Compatible.
+
+## Disclaimer
+glTF and the glTF logo are trademarks of the Khronos Group Inc.
+
+Unity, the Unity logo, and all related names, logos, product and service names, designs, and slogans are registered trademarks of Unity Technologies or its subsidiaries.
+
+VRChat and all related names are trademarks or registered trademarks of VRChat, Inc. (https://trademarks.justia.com/864/50/vrchat-86450229.html)
+
+「VRM」は一般社団法人ＶＲＭコンソーシアムの商標又は登録商標です。 (登録6365806)
+
+Developer nor commiter may NOT be associated with above organizations.
