@@ -38,7 +38,13 @@ namespace ResoniteImportHelper.Serialization
         {
             var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
-            var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
+            var containsVertexColors = MeshUtility.GetMeshes(target).Any(m =>
+            {
+                var t = m.colors32;
+                // if there are completely none => immediately false
+                // if all of them is white => *assumes* there are effectively none
+                return t.Any(c => c.r != 255 && c.g != 255 && c.b != 255 && c.a != 255);
+            });
 
             var serialized = ExportGltfToAssetFolder(target, containsVertexColors, config.Allocator);
             Debug.Log("backlink: started");
