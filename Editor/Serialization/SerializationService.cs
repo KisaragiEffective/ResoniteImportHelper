@@ -111,7 +111,7 @@ namespace ResoniteImportHelper.Serialization
 #if RIH_HAS_UNI_GLTF
             Debug.Log("Absolute path to the Asset: " + Application.dataPath);
             var modelName = temporary.name ?? "model";
-            var gltfAssetRelativePath = (allocator.BasePath + $"{modelName}.gltf")["Assets/".Length..];
+            var gltfAssetRelativePath = (allocator.BasePath + "/" + $"{modelName}.gltf")["Assets/".Length..];
             // dataPathはAssetsで終わることに注意！！
             var gltfFilePath = $"{Application.dataPath}/{gltfAssetRelativePath}";
 
