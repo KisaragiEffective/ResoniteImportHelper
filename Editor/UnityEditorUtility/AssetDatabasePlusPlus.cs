@@ -25,6 +25,7 @@ namespace ResoniteImportHelper.UnityEditorUtility
         {
             // Project root relative. Usually starts with `Asset/` but not necessarily. (Packages/, Resources/, etc.)
             var path = AssetDatabase.GetAssetPath(obj);
+            // Debug.Log("relpath: " + path);
             var parentDirectory = Directory.GetParent(path);
             var unityRelativePath = ExtractProjectRelativePathFromAbsolutePath(parentDirectory!.FullName);
             // Debug.Log($"getting {unityRelativePath}");
@@ -35,8 +36,10 @@ namespace ResoniteImportHelper.UnityEditorUtility
         internal static IEnumerable<DelayedReference<T>> FindSpecificAsset<T>(string[] findInFolder)
             where T : Object
         {
+            var query = $"t:{typeof(T).FullName}";
+            Debug.Log("query: " + query);
             return AssetDatabase
-                .FindAssets($"t:{typeof(T).FullName}", findInFolder)
+                .FindAssets(query, findInFolder)
                 .Select(guid => new DelayedReference<T>(guid));
         }
 

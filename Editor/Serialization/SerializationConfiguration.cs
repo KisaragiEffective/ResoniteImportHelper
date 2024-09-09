@@ -1,3 +1,4 @@
+using ResoniteImportHelper.Allocator;
 using UnityEngine;
 
 namespace ResoniteImportHelper.Serialization
@@ -17,10 +18,13 @@ namespace ResoniteImportHelper.Serialization
         /// </summary>
         internal readonly GameObject OriginalMaybePackedObject;
 
-        internal SerializationConfiguration(GameObject processingTemporaryObjectRoot, GameObject originalMaybePackedObject)
+        internal readonly ResourceAllocator Allocator;
+
+        internal SerializationConfiguration(GameObject processingTemporaryObjectRoot, GameObject originalMaybePackedObject, ResourceAllocator allocator)
         {
             ProcessingTemporaryObjectRoot = processingTemporaryObjectRoot;
             OriginalMaybePackedObject = originalMaybePackedObject;
+            Allocator = allocator;
         }
     }
 }

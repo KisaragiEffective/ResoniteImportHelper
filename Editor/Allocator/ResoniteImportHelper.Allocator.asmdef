@@ -1,10 +1,8 @@
 {
-    "name": "ResoniteImportHelper.TransFront",
-    "rootNamespace": "global::ResoniteImportHelper.TransFront",
+    "name": "ResoniteImportHelper.Allocator",
+    "rootNamespace": "global::ResoniteImportHelper.Allocator",
     "references": [
-        "GUID:9412ec19daea43d8a5d4b2f0c5a7c8ad",
-        "GUID:ff74dcc47a4647d68fe8716871e0d67e",
-        "GUID:2d6737347877424fbda09747226d3718"
+        "GUID:da758e96819041b2b57ad6379d1c0c58"
     ],
     "includePlatforms": [
         "Editor"

@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace ResoniteImportHelper.Transform.Environment.NDMF
 {
-    internal class StandaloneNDMFHandler: IHandler
+    internal class StandaloneNDMFExpander: IPlatformExpander
     {
         
-        public GameObject PerformEnvironmentConversion(GameObject unmodifiableRoot)
+        public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot)
         {
 #if RIH_HAS_NDMF
             return AvatarProcessor.ProcessAvatarUI(unmodifiableRoot);

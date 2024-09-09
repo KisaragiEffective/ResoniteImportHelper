@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Transform.Environment.Common;
+using ResoniteImportHelper.Transform.Environment.LilToon;
 using ResoniteImportHelper.UnityEditorUtility;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -16,18 +18,20 @@ namespace ResoniteImportHelper.Transform
             // ReSharper disable once InconsistentNaming
             bool runVRCSDKPipeline,
             // ReSharper disable once InconsistentNaming
-            bool runNDMF
+            bool runNDMF,
+            bool bakeTexture,
+            ResourceAllocator alloc
         )
         {
             var target = unmodifiableRoot;
 
             if (runVRCSDKPipeline)
             {
-                target = PerformEnvironmentConversion(new Environment.VRChat.VRChatBuildPipelineHandler(), unmodifiableRoot);
+                target = PerformEnvironmentDependantShallowCopy(new Environment.VRChat.VRChatBuildPipelineExpander(), unmodifiableRoot);
             }
             else if (runNDMF)
             {
-                target = PerformEnvironmentConversion(new Environment.NDMF.StandaloneNDMFHandler(), unmodifiableRoot);
+                target = PerformEnvironmentDependantShallowCopy(new Environment.NDMF.StandaloneNDMFExpander(), unmodifiableRoot);
             }
             else
             {
@@ -43,10 +47,20 @@ namespace ResoniteImportHelper.Transform
 
             Debug.Log("Automated NoIK processor");
             ModifyArmature(target, rig);
+            Debug.Log("maybe bake texture");
+            if (bakeTexture)
+            {
+                BakeTexture(target, alloc);
+            }
+            else
+            {
+                Debug.Log("Texture bake was skipped (disabled). Please turn on from experimental settings if you want to turn on.");
+            }
+            
             return target;
 
-            GameObject PerformEnvironmentConversion(IHandler handler, GameObject localUnmodifiableRoot) =>
-                handler.PerformEnvironmentConversion(localUnmodifiableRoot);
+            GameObject PerformEnvironmentDependantShallowCopy(IPlatformExpander handler, GameObject localUnmodifiableRoot) =>
+                handler.PerformEnvironmentDependantShallowCopy(localUnmodifiableRoot);
         }
 
         [CanBeNull]
@@ -181,6 +195,11 @@ namespace ResoniteImportHelper.Transform
                 // TODO: more smart NoIK flag
                 remainedBone.name = $"<NoIK> {remainedBone.name}";
             }
+        }
+
+        private static void BakeTexture(GameObject root, ResourceAllocator allocator)
+        {
+            new LilToonHandler(allocator).PerformInlineTransform(root);
         }
     }
 }
