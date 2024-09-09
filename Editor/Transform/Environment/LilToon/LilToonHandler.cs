@@ -1,11 +1,14 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using lilToon;
 using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform.Environment.LilToon
@@ -41,12 +44,11 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         {
             const int all = 0;
             Debug.Log("bake");
+            var h = MuteDialogIfPossible();
 #if RIH_HAS_LILTOON
             var inspector = (new global::lilToon.lilToonInspector());
             var inty = inspector.GetType();
-            // FIXME:
             // TODO: 例外ケースのダイアログがアレなので一部を切り貼りするべき？
-            // FIXME: getTextureValueがNREで落ちるので、AllProperties.ForEach(p => p.FindProperties(props)) をする
 
             #region initialization for lilInspector
 
@@ -68,7 +70,132 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 #elif RIH_HAS_LILTOON_NEXT
             global::lilToon.lilMaterialBaker.TextureBake(m, all);
 #endif
+            UnmuteDialog(h);
             Debug.Log("bake done");
         }
+        
+        #region Harmony if possible
+        // XXX:
+        // lilToon 1.xシリーズ (1.7.3) ではMaterialPropertyを「ヘッドレス」に焼く方法が存在しない。
+        // これは開発中の2.x (HEAD: 5ed3507003b3cf92eb1879a92a30408615134781) でも同様である。
+        // そのため、私達はHarmonyを用いて焼くメソッドからのダイアログポップアップを抑止する。
+        // そうしないと、不必要なエラーが出てきて自動化の妨げになる。
+
+        private static
+#if RIH_HAS_HARMONY
+        HarmonyLib.Harmony
+#else
+        object?
+#endif
+        MuteDialogIfPossible()
+        {
+#if RIH_HAS_LILTOON_NEXT
+            // FIXME
+            Debug.Log("lilToon 2.0 is not supported yet. Auto-muting does not work.");
+            return null;
+#endif
+            
+#if !RIH_HAS_HARMONY
+            Debug.Log("Harmony is unavailable. Auto-muting dialog does not work.");
+            return null;
+#else
+            var h = new HarmonyLib.Harmony(
+                "io.github.kisaragieffective.resonite-import-helper.liltoon.headless-bake");
+
+            var warningDialogMethod = typeof(EditorUtility)
+                .GetMethod(nameof(EditorUtility.DisplayDialog), new[] { typeof(string), typeof(string), typeof(string) });
+            
+            h.Patch(
+                warningDialogMethod, 
+                prefix: new HarmonyLib.HarmonyMethod(typeof(LilToonHandler), nameof(SkipDisplayDialogFromLilInspector))
+            );
+
+            var bakeMethod = typeof(lilTextureUtils)
+                .GetMethod("SaveTextureToPng", BindingFlags.NonPublic | BindingFlags.Static,
+                    null, new[] { typeof(Material), typeof(Texture2D), typeof(string), typeof(string) }, Array.Empty<ParameterModifier>());
+
+            h.Patch(
+                bakeMethod,
+                prefix: new HarmonyLib.HarmonyMethod(typeof(LilToonHandler), nameof(SkipSaveDestinationDialog))
+            );
+            
+            return h;
+#endif
+        }
+
+        private static bool SkipDisplayDialogFromLilInspector()
+        {
+            // Debug.Log("hello!");
+            var frames = new StackTrace(false).GetFrames();
+            var lilToonInspectorBakeCallFrame = frames!.FirstOrDefault(f =>
+            {
+                if (f == null) return false;
+                var m = f.GetMethod();
+                // Debug.Log($"  checking {m}");
+                var decl = m.DeclaringType;
+                return decl!.FullName == "lilToon.lilToonInspector" && m.Name == "TextureBake";
+            });
+            if (lilToonInspectorBakeCallFrame == null)
+            {
+                // this call is not what we're looking for;
+                return true;
+            }
+            var thisAutomationFrame = frames!.FirstOrDefault(f =>
+            {
+                if (f == null) return false;
+                var m = f.GetMethod();
+                // Debug.Log($"  checking {m}");
+                var decl = m.DeclaringType;
+                return decl!.FullName == typeof(LilToonHandler).FullName && m.Name == nameof(SkipDisplayDialogFromLilInspector);
+            });
+            
+            return thisAutomationFrame == null;
+        }
+
+        private static bool SkipSaveDestinationDialog(ref Texture2D __result, Texture2D tex)
+        {
+            Debug.Log("hello!");
+            // FIXME: initialize
+            return true;
+            var frames = new StackTrace(false).GetFrames();
+            var lilToonInspectorBakeCallFrame = frames!.FirstOrDefault(f =>
+            {
+                if (f == null) return false;
+                var m = f.GetMethod();
+                // Debug.Log($"  checking {m}");
+                var decl = m.DeclaringType;
+                return decl!.FullName == "lilToon.lilToonInspector" && m.Name == "TextureBake";
+            });
+            if (lilToonInspectorBakeCallFrame == null)
+            {
+                // this call is not what we're looking for;
+                return true;
+            }
+            var thisAutomationFrame = frames!.FirstOrDefault(f =>
+            {
+                if (f == null) return false;
+                var m = f.GetMethod();
+                // Debug.Log($"  checking {m}");
+                var decl = m.DeclaringType;
+                return decl!.FullName == typeof(LilToonHandler).FullName && m.Name == nameof(SkipDisplayDialogFromLilInspector);
+            });
+            
+            return thisAutomationFrame == null;
+        }
+
+        private static void UnmuteDialog(
+#if RIH_HAS_HARMONY
+            HarmonyLib.Harmony
+#else
+            object?
+#endif
+                o
+        )
+        {
+            #if RIH_HAS_HARMONY
+            o.UnpatchAll();
+            #endif
+        }
+        #endregion
     }
 }

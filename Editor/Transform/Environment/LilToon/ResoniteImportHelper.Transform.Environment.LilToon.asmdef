@@ -26,6 +26,11 @@
             "name": "jp.lilxyzw.liltoon",
             "expression": "[2.0.0-aaaaaaaaaaaaaaaaa,3.0.0)",
             "define": "RIH_HAS_LILTOON_NEXT"
+        },
+        {
+            "name": "com.vrchat.base",
+            "expression": "",
+            "define": "RIH_HAS_HARMONY"
         }
     ],
     "noEngineReferences": false
