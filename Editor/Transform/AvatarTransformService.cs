@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.Transform.Environment.LilToon;
 using ResoniteImportHelper.UnityEditorUtility;
@@ -18,7 +19,8 @@ namespace ResoniteImportHelper.Transform
             bool runVRCSDKPipeline,
             // ReSharper disable once InconsistentNaming
             bool runNDMF,
-            bool bakeTexture
+            bool bakeTexture,
+            ResourceAllocator alloc
         )
         {
             var target = unmodifiableRoot;
@@ -48,7 +50,7 @@ namespace ResoniteImportHelper.Transform
             Debug.Log("maybe bake texture");
             if (bakeTexture)
             {
-                BakeTexture(target);
+                BakeTexture(target, alloc);
             }
             else
             {
@@ -195,9 +197,9 @@ namespace ResoniteImportHelper.Transform
             }
         }
 
-        private static void BakeTexture(GameObject root)
+        private static void BakeTexture(GameObject root, ResourceAllocator allocator)
         {
-            new LilToonHandler().PerformInlineTransform(root);
+            new LilToonHandler(allocator).PerformInlineTransform(root);
         }
     }
 }

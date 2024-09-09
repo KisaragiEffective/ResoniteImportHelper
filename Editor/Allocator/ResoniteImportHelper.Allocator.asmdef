@@ -1,0 +1,7 @@
+{
+  "name": "ResoniteImportHelper.Allocator",
+  "rootNamespace": "global::ResoniteImportHelper.Allocator",
+  "references": [
+    "GUID:da758e96819041b2b57ad6379d1c0c58"
+  ]
+}

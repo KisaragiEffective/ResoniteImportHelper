@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Backlink.Component;
 using ResoniteImportHelper.UnityEditorUtility;
 using MeshUtility = ResoniteImportHelper.UnityEditorUtility.MeshUtility;
@@ -33,64 +34,22 @@ namespace ResoniteImportHelper.Serialization
             return data;
         }
         
-        private const string DestinationFolder = "ZZZ_TemporalAsset";
-        
-        private static string InitializeTemporalAssetDataDirectory(string secondaryDirectoryName)
-        {
-            #region sanity check
-            {
-                if (!new Regex("^[^*:\\/]+$").IsMatch(secondaryDirectoryName))
-                {
-                    throw new ArgumentException("shall not be empty nor contains special character",
-                        nameof(secondaryDirectoryName));
-                }
-            }
-            #endregion
-            // System.GuidではなくUnityEditor.GUIDであることに注意
-            if (AssetDatabase.GUIDFromAssetPath($"Assets/{DestinationFolder}").Empty())
-            {
-                // ReSharper disable once InconsistentNaming
-                var maybeNewGUID = AssetDatabase.CreateFolder("Assets", DestinationFolder);
-                if (maybeNewGUID != "")
-                {
-                    Debug.Log($"Temporal asset folder was created. GUID: {maybeNewGUID}");
-                }
-            }
-
-            // ReSharper disable once InconsistentNaming
-            var secondaryDirectoryGUID = AssetDatabase.CreateFolder($"Assets/{DestinationFolder}", secondaryDirectoryName);
-
-            if (secondaryDirectoryGUID != "")
-            {
-                Debug.Log($"Output directory's GUID: {secondaryDirectoryGUID}");
-                return secondaryDirectoryGUID;
-            }
-            else
-            {
-                Debug.LogError("Output directory could not be created");
-                throw new Exception("invalid state");
-            }
-        }
-        
         internal static ExportInformation ExportToAssetFolder(SerializationConfiguration config)
         {
             var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m => m.colors32.Length != 0);
-            var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
-            // ReSharper disable once InconsistentNaming
-            var exportRootDirGUID = InitializeTemporalAssetDataDirectory(runIdentifier);
 
-            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, runIdentifier);
+            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, config.Allocator);
             Debug.Log("backlink: started");
-            TryCreateBacklink(config.OriginalMaybePackedObject, exportRootDirGUID);
+            TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
 
             return new ExportInformation(serialized, containsVertexColors);
         }
         
         // ReSharper disable once InconsistentNaming
-        private static void TryCreateBacklink(GameObject original, string exportRootDirGUID)
+        private static void TryCreateBacklink(GameObject original, ResourceAllocator allocator)
         {
             var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
             if (source == null)
@@ -116,8 +75,7 @@ namespace ResoniteImportHelper.Serialization
             {
                 Debug.Log("backlink: serialization: original object has local modification");
                 // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
-                var path = AssetDatabase.GUIDToAssetPath(exportRootDirGUID) +
-                           "/serialized_local_modification.prefab";
+                var path = allocator.BasePath + "/serialized_local_modification.prefab";
                 var result = PrefabUtility.SaveAsPrefabAsset(original, path, out var success);
                 if (!success)
                 {
@@ -138,7 +96,7 @@ namespace ResoniteImportHelper.Serialization
             o.SerializedParent = parent;
 
             Debug.Log("backlink: finalize");
-            AssetDatabase.CreateAsset(o, AssetDatabase.GUIDToAssetPath(exportRootDirGUID) + "/tied.asset");
+            AssetDatabase.CreateAsset(o, allocator.BasePath + "/tied.asset");
         }
 
         /// <summary>
@@ -148,13 +106,12 @@ namespace ResoniteImportHelper.Serialization
         /// <param name="containsVertexColors"></param>
         /// <param name="runIdentifier"></param>
         /// <returns>Serialized object.</returns>
-        private static GameObject ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, string runIdentifier)
+        private static GameObject ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, ResourceAllocator allocator)
         {
 #if RIH_HAS_UNI_GLTF
             Debug.Log("Absolute path to the Asset: " + Application.dataPath);
             var modelName = temporary.name ?? "model";
-            var gltfAssetRelativePath =
-                $"{DestinationFolder}/{runIdentifier}/{modelName}.gltf";
+            var gltfAssetRelativePath = (allocator.BasePath + $"{modelName}.gltf")["Assets/".Length..];
             // dataPathはAssetsで終わることに注意！！
             var gltfFilePath = $"{Application.dataPath}/{gltfAssetRelativePath}";
 

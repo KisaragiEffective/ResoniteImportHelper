@@ -1,5 +1,10 @@
+using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using ResoniteImportHelper.Serialization;
+using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.TransFront
 {
@@ -14,22 +19,64 @@ namespace ResoniteImportHelper.TransFront
             bool bakeTexture
         )
         {
+            var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
+            var rootAlloc = new ResoniteImportHelper.Allocator.ResourceAllocator(InitializeTemporalAssetDataDirectory(runIdentifier));
             var target = Transform.AvatarTransformService.PerformConversionPure(
                 unmodifiableRoot,
                 runVRCSDKPipeline,
                 runNDMF,
-                bakeTexture
+                bakeTexture,
+                rootAlloc
             );
             
             Debug.Log("Exporting model as glTF");
             var serialized = SerializationService.ExportToAssetFolder(
-                new SerializationConfiguration(target, unmodifiableRoot)
+                new SerializationConfiguration(target, unmodifiableRoot, rootAlloc)
             );
             
             Debug.Log("done");
             // we can remove target because it is cloned in either way.
             Object.DestroyImmediate(target, false);
             return serialized;
+        }
+        
+        private const string DestinationFolder = "ZZZ_TemporalAsset";
+        
+        private static string InitializeTemporalAssetDataDirectory(string secondaryDirectoryName)
+        {
+            #region sanity check
+            {
+                if (!new Regex("^[^*:\\/]+$").IsMatch(secondaryDirectoryName))
+                {
+                    throw new ArgumentException("shall not be empty nor contains special character",
+                        nameof(secondaryDirectoryName));
+                }
+            }
+            #endregion
+            // System.GuidではなくUnityEditor.GUIDであることに注意
+            if (AssetDatabase.GUIDFromAssetPath($"Assets/{DestinationFolder}").Empty())
+            {
+                // ReSharper disable once InconsistentNaming
+                var maybeNewGUID = AssetDatabase.CreateFolder("Assets", DestinationFolder);
+                if (maybeNewGUID != "")
+                {
+                    Debug.Log($"Temporal asset folder was created. GUID: {maybeNewGUID}");
+                }
+            }
+
+            // ReSharper disable once InconsistentNaming
+            var secondaryDirectoryGUID = AssetDatabase.CreateFolder($"Assets/{DestinationFolder}", secondaryDirectoryName);
+
+            if (secondaryDirectoryGUID != "")
+            {
+                Debug.Log($"Output directory's GUID: {secondaryDirectoryGUID}");
+                return secondaryDirectoryGUID;
+            }
+            else
+            {
+                Debug.LogError("Output directory could not be created");
+                throw new Exception("invalid state");
+            }
         }
     }
 }

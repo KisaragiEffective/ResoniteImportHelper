@@ -2,7 +2,9 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using lilToon;
+using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.UnityEditorUtility;
@@ -15,6 +17,13 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 {
     internal sealed class LilToonHandler: IPostExpansionTransformer
     {
+        private readonly ResourceAllocator allocator;
+        
+        internal LilToonHandler(ResourceAllocator allocator)
+        {
+            this.allocator = allocator;
+        }
+        
 #if RIH_HAS_LILTOON_NEXT
 #warning lilToon 2.0.0 is under develop and this Transformer may not able to work or be compiled correctly.
 #warning The support is limited, and is under experimental state.
@@ -152,11 +161,9 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             return thisAutomationFrame == null;
         }
 
-        private static bool SkipSaveDestinationDialog(ref Texture2D __result, Texture2D tex)
+        private bool SkipSaveDestinationDialog(ref Texture2D __result, Texture2D tex)
         {
             Debug.Log("hello!");
-            // FIXME: initialize
-            return true;
             var frames = new StackTrace(false).GetFrames();
             var lilToonInspectorBakeCallFrame = frames!.FirstOrDefault(f =>
             {
@@ -177,15 +184,17 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 var m = f.GetMethod();
                 // Debug.Log($"  checking {m}");
                 var decl = m.DeclaringType;
-                return decl!.FullName == typeof(LilToonHandler).FullName && m.Name == nameof(SkipDisplayDialogFromLilInspector);
+                return decl!.FullName == typeof(LilToonHandler).FullName && m.Name == nameof(SkipSaveDestinationDialog);
             });
             
+            __result = this.allocator.Save(tex);
+
             return thisAutomationFrame == null;
         }
 
         private static void UnmuteDialog(
 #if RIH_HAS_HARMONY
-            HarmonyLib.Harmony
+            [CanBeNull] HarmonyLib.Harmony
 #else
             object?
 #endif
@@ -193,7 +202,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         )
         {
             #if RIH_HAS_HARMONY
-            o.UnpatchAll();
+            o?.UnpatchAll();
             #endif
         }
         #endregion
