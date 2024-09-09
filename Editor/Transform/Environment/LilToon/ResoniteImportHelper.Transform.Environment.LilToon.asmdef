@@ -25,7 +25,7 @@
         },
         {
             "name": "jp.lilxyzw.liltoon",
-            "expression": "[2.0.0-aaaaaaaaaaaaaaaaa,3.0.0)",
+            "expression": "[2.0.0,3.0.0)",
             "define": "RIH_HAS_LILTOON_NEXT"
         },
         {

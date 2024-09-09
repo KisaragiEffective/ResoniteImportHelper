@@ -26,13 +26,13 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         
 #if RIH_HAS_LILTOON_NEXT
 #warning lilToon 2.0.0 is under develop and this Transformer may not able to work or be compiled correctly.
-#warning The support is limited, and is under experimental state.
+#warning This is not supported yet. Please downgrade lilToon to 1.x series.
 #endif
         [NotPublicAPI]
         public void PerformInlineTransform(GameObject modifiableRoot)
         {
-#if !RIH_HAS_LILTOON && !RIH_HAS_LILTOON_NEXT
-            Debug.LogWarning("This project does not have lilToon, skipping this IPostExpansionTransformer");
+#if !RIH_HAS_LILTOON
+            Debug.LogWarning("This project does not have supported version of lilToon, skipping this IPostExpansionTransformer");
             return;
 #endif
             foreach (var material in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
@@ -76,8 +76,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 .GetType()!
                 .GetMethod("TextureBake", BindingFlags.Instance | BindingFlags.NonPublic)!
                 .Invoke(inspector, new object[] { m, all });
-#elif RIH_HAS_LILTOON_NEXT
-            global::lilToon.lilMaterialBaker.TextureBake(m, all);
 #endif
             UnmuteDialog(h);
             Debug.Log("bake done");
@@ -98,12 +96,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 #endif
         MuteDialogIfPossible()
         {
-#if RIH_HAS_LILTOON_NEXT
-            // FIXME
-            Debug.Log("lilToon 2.0 is not supported yet. Auto-muting does not work.");
-            return null;
-#endif
-            
 #if !RIH_HAS_HARMONY
             Debug.Log("Harmony is unavailable. Auto-muting dialog does not work.");
             return null;
