@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using ResoniteImportHelper.Serialization;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.TransFront
@@ -19,6 +20,7 @@ namespace ResoniteImportHelper.TransFront
             bool bakeTexture
         )
         {
+            Profiler.BeginSample("PerformConversion");
             var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
             var rootAlloc = new ResoniteImportHelper.Allocator.ResourceAllocator(InitializeTemporalAssetDataDirectory(runIdentifier));
             var target = Transform.AvatarTransformService.PerformConversionPure(
@@ -37,6 +39,7 @@ namespace ResoniteImportHelper.TransFront
             Debug.Log("done");
             // we can remove target because it is cloned in either way.
             Object.DestroyImmediate(target, false);
+            Profiler.EndSample();
             return serialized;
         }
         

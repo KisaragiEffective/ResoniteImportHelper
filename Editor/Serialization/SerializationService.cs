@@ -10,6 +10,7 @@ using MeshUtility = ResoniteImportHelper.UnityEditorUtility.MeshUtility;
 using UniGLTF;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace ResoniteImportHelper.Serialization
 {
@@ -17,6 +18,7 @@ namespace ResoniteImportHelper.Serialization
     {
         private static ExportingGltfData ConstructGltfOnMemory(GameObject target, bool containsVertexColors)
         {
+            Profiler.BeginSample("ConstructGltfOnMemory");
             var data = new ExportingGltfData();
             {
                 var exportSettings = new GltfExportSettings
@@ -26,16 +28,27 @@ namespace ResoniteImportHelper.Serialization
                     ExportVertexColor = containsVertexColors
                 };
 
-                using var exporter = new gltfExporter(data, exportSettings);
+                Profiler.BeginSample(".ctor");
+                var exporter = new gltfExporter(data, exportSettings);
+                Profiler.EndSample();
+                
+                Profiler.BeginSample("Prepare");
                 exporter.Prepare(target);
+                Profiler.EndSample();
+                
+                Profiler.BeginSample("Export");
                 exporter.Export();
+                Profiler.EndSample();
             }
+            Profiler.EndSample();
 
             return data;
         }
         
         internal static ExportInformation ExportToAssetFolder(SerializationConfiguration config)
         {
+            Profiler.BeginSample("ExportToAssetFolder");
+            
             var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m =>
@@ -50,17 +63,21 @@ namespace ResoniteImportHelper.Serialization
             Debug.Log("backlink: started");
             TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
-
+            
+            Profiler.EndSample();
             return new ExportInformation(serialized, containsVertexColors);
         }
         
         // ReSharper disable once InconsistentNaming
         private static void TryCreateBacklink(GameObject original, ResourceAllocator allocator)
         {
+            Profiler.BeginSample("TryCreateBacklink");
+            
             var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
             if (source == null)
             {
                 Debug.Log("backlink: skipping generation: the original object is not a Prefab");
+                Profiler.EndSample();
                 return;
             }
 
@@ -86,6 +103,7 @@ namespace ResoniteImportHelper.Serialization
                 if (!success)
                 {
                     Debug.LogWarning("backlink: serialization: SaveAsPrefabAsset was failed");
+                    Profiler.EndSample();
                     return;
                 }
 
@@ -103,6 +121,7 @@ namespace ResoniteImportHelper.Serialization
 
             Debug.Log("backlink: finalize");
             AssetDatabase.CreateAsset(o, allocator.BasePath + "/tied.asset");
+            Profiler.EndSample();
         }
 
         /// <summary>
