@@ -17,11 +17,12 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 {
     internal sealed class LilToonHandler: IPostExpansionTransformer
     {
-        private readonly ResourceAllocator allocator;
+        private static ResourceAllocator currentAllocator;
         
         internal LilToonHandler(ResourceAllocator allocator)
         {
-            this.allocator = allocator;
+            // TODO: キモいのでいつかインスタンス変数に戻す
+            LilToonHandler.currentAllocator = allocator;
         }
         
 #if RIH_HAS_LILTOON_NEXT
@@ -153,7 +154,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             return thisAutomationFrame == null;
         }
 
-        private bool SkipSaveDestinationDialog(ref Texture2D __result, Texture2D tex)
+        private static bool SkipSaveDestinationDialog(ref Texture2D __result, Texture2D tex)
         {
             Debug.Log("hello!");
             var frames = new StackTrace(false).GetFrames();
@@ -179,7 +180,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 return decl!.FullName == typeof(LilToonHandler).FullName && m.Name == nameof(SkipSaveDestinationDialog);
             });
             
-            __result = this.allocator.Save(tex);
+            __result = currentAllocator.Save(tex);
 
             return thisAutomationFrame == null;
         }
