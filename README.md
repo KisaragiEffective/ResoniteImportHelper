@@ -51,10 +51,13 @@ Following tools are optional. This tool can invoke their hooks.
 
 ### Trouble shooting
 #### false-positive NOIK
-RIH recognizes [HUMANOID] bone from [ANIMATOR COMPONENT]. Please re-check if necessary HUMANOID bones are assigned.
+RIH recognizes [HUMANOID][UNITY-AVATAR] bones from [ANIMATOR COMPONENT]. Please re-check if necessary HUMANOID bones are assigned.
+
+If it is made for VRChat, and has [VRChat Avatar Descriptor], additional logic applies:
+* If [UNITY-AVATAR] does not have left eye bone or right eye bone, RIH pulls them from the Descriptor.
 
 #### false-negative NOIK
-* If your avatar is not treated as [HUMANOID], then RIH does not flag any bone [NOIK].
+* If your avatar is not treated as [HUMANOID][UNITY-AVATAR], then RIH does not flag any bone [NOIK].
   * If your avatar is actually humanoid, please configure as being from [RIG-TAB].
   * This is technical limitation, because RIH can't determine which bone should be used as IK bone.
 
@@ -63,10 +66,11 @@ This is [known bug](https://github.com/KisaragiEffective/ResoniteImportHelper/is
 
 workaround: re-assign Texture on Resonite or UnityEditor.
 
-[HUMANOID]: https://docs.unity3d.com/2022.3/Documentation/Manual/ConfiguringtheAvatar.html
+[UNITY-AVATAR]: https://docs.unity3d.com/2022.3/Documentation/Manual/ConfiguringtheAvatar.html
 [RIG-TAB]: https://docs.unity3d.com/2022.3/Documentation/Manual/FBXImporter-Rig.html
 [ANIMATOR COMPONENT]: https://docs.unity3d.com/2022.3/Documentation/Manual/class-Animator.html
 [NOIK]: https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Ignoring_Bones
+[VRChat Avatar Descriptor]: https://creators.vrchat.com/avatars/creating-your-first-avatar#step-5---adding-an-avatar-descriptor
 
 ## Folder structure
 There are a few file in the containing folder.
