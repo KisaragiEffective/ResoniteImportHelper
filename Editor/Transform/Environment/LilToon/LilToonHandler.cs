@@ -40,7 +40,8 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                          .SelectMany(o => o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr.sharedMaterials : Enumerable.Empty<Material>())
                          .Where(UsesLilToonShader))
             {
-                PerformBakeTexture(material);
+                var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
+                PerformBakeTexture(variant);
             }
         }
 
@@ -56,6 +57,16 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Debug.Log("bake");
             var h = MuteDialogIfPossible();
 #if RIH_HAS_LILTOON
+            #region avoid texture overwrite
+            {
+                var props = MaterialEditor.GetMaterialProperties(new Object[] { m });
+                foreach (var prop in props.Where(prop => prop.type == MaterialProperty.PropType.Texture).Where(prop => prop.textureValue != null))
+                {
+                    var x = currentAllocator.Save(prop.textureValue);
+                    prop.textureValue = x;
+                }
+            }
+            #endregion
             var inspector = (new global::lilToon.lilToonInspector());
             var inty = inspector.GetType();
             // TODO: 例外ケースのダイアログがアレなので一部を切り貼りするべき？
