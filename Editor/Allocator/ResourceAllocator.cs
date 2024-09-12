@@ -26,7 +26,7 @@ namespace ResoniteImportHelper.Allocator
             Debug.Log($"Allocating persistent asset: {typeof(T)} on {basePath}");
             {
                 var path = AssetDatabase.GetAssetPath(obj);
-                if (path != null)
+                if (!string.IsNullOrEmpty(path))
                 {
                     Debug.Log($"Given instance has already serialized: {path}");
                     return obj;
