@@ -24,6 +24,7 @@ namespace ResoniteImportHelper.TransFront
             Profiler.BeginSample("PerformConversion");
             var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
             var rootAlloc = new ResoniteImportHelper.Allocator.ResourceAllocator(InitializeTemporalAssetDataDirectory(runIdentifier));
+            Profiler.BeginSample("PerformConversionPure");
             var target = Transform.AvatarTransformService.PerformConversionPure(
                 unmodifiableRoot,
                 runVRCSDKPipeline,
@@ -31,6 +32,7 @@ namespace ResoniteImportHelper.TransFront
                 bakeTexture,
                 rootAlloc
             );
+            Profiler.EndSample();
             
             Debug.Log("Exporting model as glTF");
             var serialized = SerializationService.ExportToAssetFolder(

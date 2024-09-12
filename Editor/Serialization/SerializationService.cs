@@ -152,6 +152,7 @@ namespace ResoniteImportHelper.Serialization
         /// <returns>Serialized object.</returns>
         private static GameObject ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, ResourceAllocator allocator)
         {
+            Profiler.BeginSample("ExportGltfToAssetFolder");
 #if RIH_HAS_UNI_GLTF
             Debug.Log("Absolute path to the Asset: " + Application.dataPath);
             var modelName = temporary.name ?? "model";
@@ -161,6 +162,7 @@ namespace ResoniteImportHelper.Serialization
 
             var onMemoryModelData = ConstructGltfOnMemory(temporary, containsVertexColors);
 
+            Profiler.BeginSample("Serialization");
             #region UniGLTF.GltfExportWindow から引用したGLTFを書き出す処理
             // SPDX-SnippetBegin
             // SPDX-License-Identifier: MIT
@@ -183,14 +185,22 @@ namespace ResoniteImportHelper.Serialization
             }
             // SPDX-SnippetEnd
             #endregion
-
+            Profiler.EndSample();
+            
+            Profiler.BeginSample("Import and Refresh");
             var assetsRelPath = $"Assets/{gltfAssetRelativePath}";
             {
                 AssetDatabase.ImportAsset(assetsRelPath);
                 AssetDatabase.Refresh();
             }
+            Profiler.EndSample();
 
-            return AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
+            Profiler.BeginSample("load");
+            var x = AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
+            Profiler.EndSample();
+            
+            Profiler.EndSample();
+            return x;
 #else
             throw new Exception("assertion error: UniGLTF is not installed on the project.");
 #endif
