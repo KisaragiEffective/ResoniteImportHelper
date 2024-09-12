@@ -27,9 +27,10 @@ namespace ResoniteImportHelper.UnityEditorUtility
                 {
                     gameObject.SetActive(true);
                     smr.enabled = true;
-                } else if (gameObject.TryGetComponent(out MeshFilter _))
+                } else if (gameObject.TryGetComponent(out MeshRenderer mr))
                 {
                     gameObject.SetActive(true);
+                    mr.enabled = true;
                 }
             }
         }
