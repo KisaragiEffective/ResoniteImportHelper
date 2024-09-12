@@ -1,7 +1,7 @@
+using System.IO;
 using ResoniteImportHelper.Marker;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Windows;
 
 namespace ResoniteImportHelper.Allocator
 {
