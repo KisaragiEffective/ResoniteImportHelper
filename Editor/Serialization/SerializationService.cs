@@ -38,6 +38,10 @@ namespace ResoniteImportHelper.Serialization
         {
             var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
+            if (config.GenerateIntermediateArtifact)
+            {
+                SerializeIntermediateArtifact(target, config.Allocator);
+            }
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m =>
             {
                 var t = m.colors32;
@@ -52,6 +56,12 @@ namespace ResoniteImportHelper.Serialization
             Debug.Log("backlink: end");
 
             return new ExportInformation(serialized, containsVertexColors);
+        }
+
+        private static void SerializeIntermediateArtifact(GameObject processedModifiableRoot, ResourceAllocator allocator)
+        {
+            var path = allocator.BasePath + "/intermediate.prefab";
+            PrefabUtility.SaveAsPrefabAsset(processedModifiableRoot, path);
         }
         
         // ReSharper disable once InconsistentNaming

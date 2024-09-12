@@ -16,7 +16,8 @@ namespace ResoniteImportHelper.TransFront
             bool runVRCSDKPipeline,
             // ReSharper disable once InconsistentNaming
             bool runNDMF,
-            bool bakeTexture
+            bool bakeTexture,
+            bool generateIntermediateArtifact
         )
         {
             var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
@@ -31,7 +32,7 @@ namespace ResoniteImportHelper.TransFront
             
             Debug.Log("Exporting model as glTF");
             var serialized = SerializationService.ExportToAssetFolder(
-                new SerializationConfiguration(target, unmodifiableRoot, rootAlloc)
+                new SerializationConfiguration(target, unmodifiableRoot, generateIntermediateArtifact, rootAlloc)
             );
             
             Debug.Log("done");
