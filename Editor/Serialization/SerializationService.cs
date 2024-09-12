@@ -57,11 +57,22 @@ namespace ResoniteImportHelper.Serialization
         // ReSharper disable once InconsistentNaming
         private static void TryCreateBacklink(GameObject original, ResourceAllocator allocator)
         {
+            // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
+            var serializedLocalModificationPath = allocator.BasePath + "/serialized_local_modification.prefab";
+            
             var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
             if (source == null)
             {
-                Debug.Log("backlink: skipping generation: the original object is not a Prefab");
-                return;
+                // 後続のやつが失敗するので、PrefabじゃなくてもPrefabに仕立て上げる
+                // *効率的に*unpackした元を知るすべはないので、接続はしない
+                // (やろうと思えばできますが、果たしてそれは嬉しいでしょうか？)
+                Debug.Log("backlink: serializing unpacked (or wild) asset as local modification");
+                source = PrefabUtility.SaveAsPrefabAsset(original, serializedLocalModificationPath, out var success);
+                if (!success)
+                {
+                    Debug.LogWarning("backlink: serialization: SaveAsPrefabAsset was failed");
+                    return;
+                }
             }
 
             {
@@ -80,9 +91,7 @@ namespace ResoniteImportHelper.Serialization
             if (hasLocalOverrides)
             {
                 Debug.Log("backlink: serialization: original object has local modification");
-                // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
-                var path = allocator.BasePath + "/serialized_local_modification.prefab";
-                var result = PrefabUtility.SaveAsPrefabAsset(original, path, out var success);
+                var result = PrefabUtility.SaveAsPrefabAsset(original, serializedLocalModificationPath, out var success);
                 if (!success)
                 {
                     Debug.LogWarning("backlink: serialization: SaveAsPrefabAsset was failed");
