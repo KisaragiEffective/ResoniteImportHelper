@@ -7,6 +7,7 @@ using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.Transform.Environment.LilToon;
 using ResoniteImportHelper.UnityEditorUtility;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform
@@ -24,7 +25,8 @@ namespace ResoniteImportHelper.Transform
         )
         {
             var target = unmodifiableRoot;
-
+            
+            Profiler.BeginSample("EnvironmentDependantShallowCopyAndTransform");
             if (runVRCSDKPipeline)
             {
                 target = PerformEnvironmentDependantShallowCopy(new Environment.VRChat.VRChatBuildPipelineExpander(), unmodifiableRoot);
@@ -37,6 +39,7 @@ namespace ResoniteImportHelper.Transform
             {
                 target = Object.Instantiate(target);
             }
+            Profiler.EndSample();
 
             var rig = FindRigSetting(target);
             if (rig == null)

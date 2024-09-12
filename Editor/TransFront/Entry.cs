@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using ResoniteImportHelper.Serialization;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.TransFront
@@ -20,8 +21,10 @@ namespace ResoniteImportHelper.TransFront
             bool generateIntermediateArtifact
         )
         {
+            Profiler.BeginSample("PerformConversion");
             var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
             var rootAlloc = new ResoniteImportHelper.Allocator.ResourceAllocator(InitializeTemporalAssetDataDirectory(runIdentifier));
+            Profiler.BeginSample("PerformConversionPure");
             var target = Transform.AvatarTransformService.PerformConversionPure(
                 unmodifiableRoot,
                 runVRCSDKPipeline,
@@ -29,6 +32,7 @@ namespace ResoniteImportHelper.TransFront
                 bakeTexture,
                 rootAlloc
             );
+            Profiler.EndSample();
             
             Debug.Log("Exporting model as glTF");
             var serialized = SerializationService.ExportToAssetFolder(
@@ -38,6 +42,7 @@ namespace ResoniteImportHelper.TransFront
             Debug.Log("done");
             // we can remove target because it is cloned in either way.
             Object.DestroyImmediate(target, false);
+            Profiler.EndSample();
             return serialized;
         }
         

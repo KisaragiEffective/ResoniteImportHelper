@@ -10,6 +10,7 @@ using MeshUtility = ResoniteImportHelper.UnityEditorUtility.MeshUtility;
 using UniGLTF;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace ResoniteImportHelper.Serialization
 {
@@ -17,6 +18,7 @@ namespace ResoniteImportHelper.Serialization
     {
         private static ExportingGltfData ConstructGltfOnMemory(GameObject target, bool containsVertexColors)
         {
+            Profiler.BeginSample("ConstructGltfOnMemory");
             var data = new ExportingGltfData();
             {
                 var exportSettings = new GltfExportSettings
@@ -26,16 +28,27 @@ namespace ResoniteImportHelper.Serialization
                     ExportVertexColor = containsVertexColors
                 };
 
-                using var exporter = new gltfExporter(data, exportSettings);
+                Profiler.BeginSample(".ctor");
+                var exporter = new gltfExporter(data, exportSettings);
+                Profiler.EndSample();
+                
+                Profiler.BeginSample("Prepare");
                 exporter.Prepare(target);
+                Profiler.EndSample();
+                
+                Profiler.BeginSample("Export");
                 exporter.Export();
+                Profiler.EndSample();
             }
+            Profiler.EndSample();
 
             return data;
         }
         
         internal static ExportInformation ExportToAssetFolder(SerializationConfiguration config)
         {
+            Profiler.BeginSample("ExportToAssetFolder");
+            
             var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             if (config.GenerateIntermediateArtifact)
@@ -54,7 +67,8 @@ namespace ResoniteImportHelper.Serialization
             Debug.Log("backlink: started");
             TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
-
+            
+            Profiler.EndSample();
             return new ExportInformation(serialized, containsVertexColors);
         }
 
@@ -70,6 +84,8 @@ namespace ResoniteImportHelper.Serialization
             // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
             var serializedLocalModificationPath = allocator.BasePath + "/serialized_local_modification.prefab";
             
+            Profiler.BeginSample("TryCreateBacklink");
+            
             var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
             if (source == null)
             {
@@ -81,6 +97,7 @@ namespace ResoniteImportHelper.Serialization
                 if (!success)
                 {
                     Debug.LogWarning("backlink: serialization: SaveAsPrefabAsset was failed");
+                    Profiler.EndSample();
                     return;
                 }
             }
@@ -105,6 +122,7 @@ namespace ResoniteImportHelper.Serialization
                 if (!success)
                 {
                     Debug.LogWarning("backlink: serialization: SaveAsPrefabAsset was failed");
+                    Profiler.EndSample();
                     return;
                 }
 
@@ -122,6 +140,7 @@ namespace ResoniteImportHelper.Serialization
 
             Debug.Log("backlink: finalize");
             AssetDatabase.CreateAsset(o, allocator.BasePath + "/tied.asset");
+            Profiler.EndSample();
         }
 
         /// <summary>
@@ -133,6 +152,7 @@ namespace ResoniteImportHelper.Serialization
         /// <returns>Serialized object.</returns>
         private static GameObject ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, ResourceAllocator allocator)
         {
+            Profiler.BeginSample("ExportGltfToAssetFolder");
 #if RIH_HAS_UNI_GLTF
             Debug.Log("Absolute path to the Asset: " + Application.dataPath);
             var modelName = temporary.name ?? "model";
@@ -142,6 +162,7 @@ namespace ResoniteImportHelper.Serialization
 
             var onMemoryModelData = ConstructGltfOnMemory(temporary, containsVertexColors);
 
+            Profiler.BeginSample("Serialization");
             #region UniGLTF.GltfExportWindow から引用したGLTFを書き出す処理
             // SPDX-SnippetBegin
             // SPDX-License-Identifier: MIT
@@ -164,14 +185,22 @@ namespace ResoniteImportHelper.Serialization
             }
             // SPDX-SnippetEnd
             #endregion
-
+            Profiler.EndSample();
+            
+            Profiler.BeginSample("Import and Refresh");
             var assetsRelPath = $"Assets/{gltfAssetRelativePath}";
             {
                 AssetDatabase.ImportAsset(assetsRelPath);
                 AssetDatabase.Refresh();
             }
+            Profiler.EndSample();
 
-            return AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
+            Profiler.BeginSample("load");
+            var x = AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
+            Profiler.EndSample();
+            
+            Profiler.EndSample();
+            return x;
 #else
             throw new Exception("assertion error: UniGLTF is not installed on the project.");
 #endif
