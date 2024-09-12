@@ -51,6 +51,10 @@ namespace ResoniteImportHelper.Serialization
             
             var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
+            if (config.GenerateIntermediateArtifact)
+            {
+                SerializeIntermediateArtifact(target, config.Allocator);
+            }
             var containsVertexColors = MeshUtility.GetMeshes(target).Any(m =>
             {
                 var t = m.colors32;
@@ -67,18 +71,35 @@ namespace ResoniteImportHelper.Serialization
             Profiler.EndSample();
             return new ExportInformation(serialized, containsVertexColors);
         }
+
+        private static void SerializeIntermediateArtifact(GameObject processedModifiableRoot, ResourceAllocator allocator)
+        {
+            var path = allocator.BasePath + "/intermediate.prefab";
+            PrefabUtility.SaveAsPrefabAsset(processedModifiableRoot, path);
+        }
         
         // ReSharper disable once InconsistentNaming
         private static void TryCreateBacklink(GameObject original, ResourceAllocator allocator)
         {
+            // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
+            var serializedLocalModificationPath = allocator.BasePath + "/serialized_local_modification.prefab";
+            
             Profiler.BeginSample("TryCreateBacklink");
             
             var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
             if (source == null)
             {
-                Debug.Log("backlink: skipping generation: the original object is not a Prefab");
-                Profiler.EndSample();
-                return;
+                // 後続のやつが失敗するので、PrefabじゃなくてもPrefabに仕立て上げる
+                // *効率的に*unpackした元を知るすべはないので、接続はしない
+                // (やろうと思えばできますが、果たしてそれは嬉しいでしょうか？)
+                Debug.Log("backlink: serializing unpacked (or wild) asset as local modification");
+                source = PrefabUtility.SaveAsPrefabAsset(original, serializedLocalModificationPath, out var success);
+                if (!success)
+                {
+                    Debug.LogWarning("backlink: serialization: SaveAsPrefabAsset was failed");
+                    Profiler.EndSample();
+                    return;
+                }
             }
 
             {
@@ -97,9 +118,7 @@ namespace ResoniteImportHelper.Serialization
             if (hasLocalOverrides)
             {
                 Debug.Log("backlink: serialization: original object has local modification");
-                // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
-                var path = allocator.BasePath + "/serialized_local_modification.prefab";
-                var result = PrefabUtility.SaveAsPrefabAsset(original, path, out var success);
+                var result = PrefabUtility.SaveAsPrefabAsset(original, serializedLocalModificationPath, out var success);
                 if (!success)
                 {
                     Debug.LogWarning("backlink: serialization: SaveAsPrefabAsset was failed");

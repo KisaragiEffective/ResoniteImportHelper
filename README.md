@@ -14,7 +14,7 @@ Following tools are optional. This tool can invoke their hooks.
 
 ## What this does and does not
 ### Does
-* Flag non-Rig bone as [`<NoIK>`](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Ignoring_Bones)
+* Flag non-Rig bone as [`<NoIK>`][NOIK]
 * Rename bones to be [Rig-detector friendly](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Bone_Requirements)
 * Serialize processed avatar as glTF format
 * Call VRChat Avatar Build hooks
@@ -30,7 +30,7 @@ Following tools are optional. This tool can invoke their hooks.
     1. Go to `Window > Package Manager`
     2. Click `[+▼]`
     3. Select "Add package from Git URL"
-    4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.6`
+    4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.8`
 3. Go to `Tools > Resonite Import Helper`: \
     ![UI visual](./Doc~/r1.png)
 4. Set processing avatar.
@@ -48,6 +48,29 @@ Following tools are optional. This tool can invoke their hooks.
     ![UI visual](./Doc~/r2.png)
 9. Press "Open in file system".
 10. Drag `model.gltf` in the filesystem and drop it onto Resonite window.
+
+### Trouble shooting
+#### false-positive NOIK
+RIH recognizes [HUMANOID][UNITY-AVATAR] bones from [ANIMATOR COMPONENT]. Please re-check if necessary HUMANOID bones are assigned.
+
+If it is made for VRChat, and has [VRChat Avatar Descriptor], additional logic applies:
+* If [UNITY-AVATAR] does not have left eye bone or right eye bone, RIH pulls them from the Descriptor. \
+  ![Describing figure](./Doc~/EyeBoneFallbackFromVRChatAvatarDescriptor.png)
+#### false-negative NOIK
+* If your avatar is not treated as [HUMANOID][UNITY-AVATAR], then RIH does not flag any bone [NOIK].
+  * If your avatar is actually humanoid, please configure as being from [RIG-TAB].
+  * This is technical limitation, because RIH can't determine which bone should be used as IK bone.
+
+#### semi-transparent texture is exported as opaque texture
+This is [known bug](https://github.com/KisaragiEffective/ResoniteImportHelper/issues/50).
+
+workaround: re-assign Texture on Resonite or UnityEditor.
+
+[UNITY-AVATAR]: https://docs.unity3d.com/2022.3/Documentation/Manual/ConfiguringtheAvatar.html
+[RIG-TAB]: https://docs.unity3d.com/2022.3/Documentation/Manual/FBXImporter-Rig.html
+[ANIMATOR COMPONENT]: https://docs.unity3d.com/2022.3/Documentation/Manual/class-Animator.html
+[NOIK]: https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Ignoring_Bones
+[VRChat Avatar Descriptor]: https://creators.vrchat.com/avatars/creating-your-first-avatar#step-5---adding-an-avatar-descriptor
 
 ## Folder structure
 There are a few file in the containing folder.
