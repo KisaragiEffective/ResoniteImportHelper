@@ -1,4 +1,13 @@
 # 変更履歴
+## 0.1.7 (2024-09-12)
+* fix: `MeshFilter`ではなく`MeshRenderer`を有効にするように
+* fix(allocator): `Texture2D`が正常に保存できていなかった問題を修正
+* fix: アクティブになっていないオブジェクトの下に理解できるレンダラーがある場合、glTFへの変換に含まれるように
+* refactor: 一部プラットフォームでしか利用できない可能性のあるクラスの排除
+* fix: backlinkを非Prefabの入力でも生成するように
+* feat: VRC Avatar Descriptorが存在し、`Animator`に両目のボーンの参照がない場合、VRC ADの参照をコピーするように
+  * docs: 上述の機能を記述
+
 ## 0.1.6 (2024-09-12)
 * fix: lilToon変換を行った時にHarmonyがFormatExceptionをスローし、変換が正常に行われない問題を修正
 
