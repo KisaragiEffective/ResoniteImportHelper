@@ -1,4 +1,13 @@
 # 変更履歴
+## 0.1.8 (2024-09-13)
+* fix: lilToon変換を行った際にRendererのMaterialを更新するように
+* fix: lilToon変換を行った際に元々のMaterialに上書きされないように
+* feat: デバッグのためにglTFに変換する前のモデルを出力できるように
+  * **試験的機能のため、既定では無効です**
+    * Experimental Settings から Generate intermediate prefabを有効にしてオプトインする必要があります
+  * この処理を有効にすると処理時間が若干伸びる場合があります
+* refactor: interfaceの整理
+
 ## 0.1.7 (2024-09-12)
 * fix: `MeshFilter`ではなく`MeshRenderer`を有効にするように
 * fix(allocator): `Texture2D`が正常に保存できていなかった問題を修正
