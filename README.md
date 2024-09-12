@@ -55,7 +55,7 @@ RIH recognizes [HUMANOID][UNITY-AVATAR] bones from [ANIMATOR COMPONENT]. Please 
 
 If it is made for VRChat, and has [VRChat Avatar Descriptor], additional logic applies:
 * If [UNITY-AVATAR] does not have left eye bone or right eye bone, RIH pulls them from the Descriptor. \
-  ![Describing figure](./Doc~/EyeBoneFallbackFromVRChatAvatarDescriptor.tif)
+  ![Describing figure](./Doc~/EyeBoneFallbackFromVRChatAvatarDescriptor.png)
 #### false-negative NOIK
 * If your avatar is not treated as [HUMANOID][UNITY-AVATAR], then RIH does not flag any bone [NOIK].
   * If your avatar is actually humanoid, please configure as being from [RIG-TAB].
