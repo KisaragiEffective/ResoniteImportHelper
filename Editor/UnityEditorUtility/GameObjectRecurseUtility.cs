@@ -26,12 +26,22 @@ namespace ResoniteImportHelper.UnityEditorUtility
                 if (gameObject.TryGetComponent(out SkinnedMeshRenderer smr))
                 {
                     gameObject.SetActive(true);
+                    EnableAllParents(root);
                     smr.enabled = true;
                 } else if (gameObject.TryGetComponent(out MeshRenderer mr))
                 {
                     gameObject.SetActive(true);
+                    EnableAllParents(root);
                     mr.enabled = true;
                 }
+            }
+        }
+
+        private static void EnableAllParents(GameObject innermost)
+        {
+            foreach (var parentTransform in innermost.GetComponentsInParent<Transform>(true))
+            {
+                parentTransform.gameObject.SetActive(true);
             }
         }
     }
