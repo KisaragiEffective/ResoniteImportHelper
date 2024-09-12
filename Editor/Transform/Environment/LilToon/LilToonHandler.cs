@@ -16,7 +16,7 @@ using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform.Environment.LilToon
 {
-    internal sealed class LilToonHandler: IPostExpansionTransformer
+    internal sealed class LilToonHandler: ISameShaderMaterialTransformPass
     {
         private static ResourceAllocator currentAllocator;
         
@@ -30,8 +30,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 #warning lilToon 2.0.0 is under develop and this Transformer may not able to work or be compiled correctly.
 #warning This is not supported yet. Please downgrade lilToon to 1.x series.
 #endif
-        [NotPublicAPI]
-        public void PerformInlineTransform(GameObject modifiableRoot)
+        internal void PerformInlineTransform(GameObject modifiableRoot)
         {
 #if !RIH_HAS_LILTOON
             Debug.LogWarning("This project does not have supported version of lilToon, skipping this IPostExpansionTransformer");
@@ -42,31 +41,11 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                              o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr : null
                          ).Where(o => o != null))
             {
-                var sharedMaterials = new List<Material>(renderer.sharedMaterials.Length);
-
-                foreach (var material in renderer.sharedMaterials)
-                {
-                    if (UsesLilToonShader(material))
-                    {
-                        var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
-                        PerformBakeTexture(variant);
-                        sharedMaterials.Add(variant);
-                    }
-                    else
-                    {
-                        sharedMaterials.Add(material);
-                    }
-                }
-
-                renderer.sharedMaterials = sharedMaterials.ToArray();
+                renderer.sharedMaterials = renderer.sharedMaterials.Select(RewriteInline).ToArray();
             }
         }
 
-        private static bool UsesLilToonShader(Material m)
-        {
-            // FIXME: this is fuzzy
-            return m.shader.name.StartsWith("Hidden/lil");
-        }
+        private static bool UsesLilToonShader(Material m) => LilToonShaderFamily.Instance.Contains(m.shader);
 
         private static void PerformBakeTexture(Material m)
         {
@@ -228,5 +207,18 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             #endif
         }
         #endregion
+
+        [NotPublicAPI]
+        public Material RewriteInline(Material material)
+        {
+            Debug.Log($"try rewrite: {material} ({AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material))})");
+            
+            if (!UsesLilToonShader(material)) return material;
+            
+            var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
+            PerformBakeTexture(variant);
+            return variant;
+
+        }
     }
 }
