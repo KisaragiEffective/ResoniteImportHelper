@@ -11,7 +11,5 @@ namespace ResoniteImportHelper.Transform.Environment.Common
     {
         [NotPublicAPI]
         public Material RewriteInline(Material material);
-
-        internal sealed Material Rewrite(Material material) => RewriteInline(MaterialUtility.CreateVariant(material));
     }
 }

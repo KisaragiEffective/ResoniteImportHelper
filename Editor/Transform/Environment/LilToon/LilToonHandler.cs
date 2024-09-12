@@ -41,10 +41,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                              o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr : null
                          ).Where(o => o != null))
             {
-                renderer.sharedMaterials = renderer.sharedMaterials.Select(Rewrite).ToArray();
-                continue;
-
-                Material Rewrite(Material material) => ((ISameShaderMaterialTransformPass)this).Rewrite(material);
+                renderer.sharedMaterials = renderer.sharedMaterials.Select(RewriteInline).ToArray();
             }
         }
 
@@ -214,6 +211,8 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         [NotPublicAPI]
         public Material RewriteInline(Material material)
         {
+            Debug.Log($"try rewrite: {material} ({AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material))})");
+            
             if (!UsesLilToonShader(material)) return material;
             
             var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
