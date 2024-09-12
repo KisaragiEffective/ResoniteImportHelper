@@ -1,6 +1,7 @@
 using ResoniteImportHelper.Marker;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Windows;
 
 namespace ResoniteImportHelper.Allocator
 {
@@ -21,10 +22,33 @@ namespace ResoniteImportHelper.Allocator
         [NotPublicAPI]
         public T Save<T>(T obj, string name) where T : Object
         {
-            var path = BasePath + "/" + name;
-            AssetDatabase.CreateAsset(obj, path);
+            var basePath = BasePath + "/" + name;
+            Debug.Log($"Allocating persistent asset: {typeof(T)} on {basePath}");
+            T persistent;
+            if (obj is Texture2D tex)
+            {
+                var path = $"{basePath}.png";
+                var fw = tex.EncodeToPNG();
+                var fullyQualifiedPath = $"{Application.dataPath}/../{path}";
+                Debug.Log($"Note: Allocator saves given Texture2D as PNG file. This is non-avoidable behavior.\nDestination path: {fullyQualifiedPath}");
+                
+                File.WriteAllBytes(fullyQualifiedPath, fw);
+                
+                AssetDatabase.ImportAsset(path);
+
+                persistent = AssetDatabase.LoadAssetAtPath<T>(path);
+            }
+            else
+            {
+                var path = $"{basePath}.asset";
+                AssetDatabase.CreateAsset(obj, path);
             
-            return AssetDatabase.LoadAssetAtPath<T>(path);
+                persistent = AssetDatabase.LoadAssetAtPath<T>(path);
+            }
+            
+            Debug.Log($"Importer: {AssetDatabase.GetImporterType(basePath)}");
+
+            return persistent;
         }
 
         /// <summary>
