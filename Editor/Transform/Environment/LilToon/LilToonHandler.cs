@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -36,12 +37,28 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Debug.LogWarning("This project does not have supported version of lilToon, skipping this IPostExpansionTransformer");
             return;
 #endif
-            foreach (var material in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
-                         .SelectMany(o => o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr.sharedMaterials : Enumerable.Empty<Material>())
-                         .Where(UsesLilToonShader))
+            foreach (var renderer in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
+                         .Select(o => 
+                             o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr : null
+                         ).Where(o => o != null))
             {
-                var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
-                PerformBakeTexture(variant);
+                var sharedMaterials = new List<Material>(renderer.sharedMaterials.Length);
+
+                foreach (var material in renderer.sharedMaterials)
+                {
+                    if (UsesLilToonShader(material))
+                    {
+                        var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
+                        PerformBakeTexture(variant);
+                        sharedMaterials.Add(variant);
+                    }
+                    else
+                    {
+                        sharedMaterials.Add(material);
+                    }
+                }
+
+                renderer.sharedMaterials = sharedMaterials.ToArray();
             }
         }
 
@@ -54,7 +71,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         private static void PerformBakeTexture(Material m)
         {
             const int all = 0;
-            Debug.Log("bake");
+            // Debug.Log("bake");
             var h = MuteDialogIfPossible();
 #if RIH_HAS_LILTOON
             #region avoid texture overwrite
@@ -90,7 +107,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 .Invoke(inspector, new object[] { m, all });
 #endif
             UnmuteDialog(h);
-            Debug.Log("bake done");
+            // Debug.Log("bake done");
         }
         
         #region Harmony if possible
@@ -167,7 +184,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 
         private static bool SkipSaveDestinationDialog(ref Texture2D __result, Texture2D tex)
         {
-            Debug.Log("hello!");
             var frames = new StackTrace(false).GetFrames();
             var lilToonInspectorBakeCallFrame = frames!.FirstOrDefault(f =>
             {
@@ -190,8 +206,10 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 var decl = m.DeclaringType;
                 return decl!.FullName == typeof(LilToonHandler).FullName && m.Name == nameof(SkipSaveDestinationDialog);
             });
-            
-            __result = currentAllocator.Save(tex);
+            var persistent = currentAllocator.Save(tex);
+            Debug.Log($"baking actual: {persistent} / GUID: {AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(persistent))}");
+
+            __result = persistent;
 
             return thisAutomationFrame == null;
         }
