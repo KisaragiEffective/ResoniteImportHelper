@@ -83,7 +83,25 @@ namespace ResoniteImportHelper.Transform
             void RewriteIfSet(HumanBodyBones hbb, string newName)
             {
                 var b = rig.GetBoneTransform(hbb);
-                if (b == null) return;
+                if (b == null)
+                {
+#if RIH_HAS_VRCSDK3A
+                    // 一部アバターはAnimatorではなくVRC-ADのみに目のボーンをアサインしていることがあるので気をつける
+                    if (hbb is not (HumanBodyBones.LeftEye or HumanBodyBones.RightEye)) return;
+                    
+                    if (!root.TryGetComponent<VRC.SDK3.Avatars.Components.VRCAvatarDescriptor>(out var ad))
+                    {
+                        return;
+                    }
+
+                    var eyeConfiguration = ad.customEyeLookSettings;
+                    var left = eyeConfiguration.leftEye;
+                    var right = eyeConfiguration.rightEye;
+
+                    b = hbb is HumanBodyBones.LeftEye ? left : right;
+                    Debug.Log($"RewriteIfSet: fallback from VRC Avatar Descriptor: {hbb.ToString()} = {b.name}");
+#endif
+                }
                 
                 b.gameObject.name = newName;
                 touchedBone.Add(b.gameObject);
