@@ -59,7 +59,8 @@ namespace ResoniteImportHelper.UI {
                     rootObject.value as GameObject,
                     doRunVRCSDK3APreprocessors.value,
                     doNDMFManualBake.value,
-                    experimentalSettingsFoldout.BakeShadersConfigurationIntoTextures.value
+                    experimentalSettingsFoldout.BakeShadersConfigurationIntoTextures.value,
+                    experimentalSettingsFoldout.GenerateIntermediateArtifact.value
                 );
                 destination.value = result.SerializedObject;
                 modelContainsVertexColorNote.style.display =

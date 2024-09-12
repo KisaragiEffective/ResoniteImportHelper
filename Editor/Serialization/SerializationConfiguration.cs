@@ -18,12 +18,23 @@ namespace ResoniteImportHelper.Serialization
         /// </summary>
         internal readonly GameObject OriginalMaybePackedObject;
 
+        /// <summary>
+        /// 変換後のデータを参照するために、全ての処理が完了した後かつ、glTFにシリアライズする前にOriginal Prefabとして中間アーティファクトを残す。
+        /// </summary>
+        internal readonly bool GenerateIntermediateArtifact;
+
         internal readonly ResourceAllocator Allocator;
 
-        internal SerializationConfiguration(GameObject processingTemporaryObjectRoot, GameObject originalMaybePackedObject, ResourceAllocator allocator)
+        internal SerializationConfiguration(
+            GameObject processingTemporaryObjectRoot,
+            GameObject originalMaybePackedObject,
+            bool generateIntermediateArtifact,
+            ResourceAllocator allocator
+        )
         {
             ProcessingTemporaryObjectRoot = processingTemporaryObjectRoot;
             OriginalMaybePackedObject = originalMaybePackedObject;
+            GenerateIntermediateArtifact = generateIntermediateArtifact;
             Allocator = allocator;
         }
     }
