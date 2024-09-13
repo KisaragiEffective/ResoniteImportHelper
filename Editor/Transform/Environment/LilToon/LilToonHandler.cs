@@ -270,11 +270,26 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Debug.Log($"try rewrite: {material} ({AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material))})");
             
             if (!UsesLilToonShader(material)) return material;
-            
+            var ret = material;
+            // AssetDatabase.StartAssetEditing();
             var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
             PerformBakeTexture(variant);
+
+            if (MaterialUtility.HasAnyOverride(variant))
+            {
+                Debug.Log("this iteration produces override.");
+                ret = variant;
+            }
+            else
+            {
+                Debug.Log("this iteration does not produce override, destroying allocated Variant.");
+                Profiler.BeginSample("Deallocate");
+                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(variant));
+                Profiler.EndSample();
+            }
+
             Profiler.EndSample();
-            return variant;
+            return ret;
 
         }
     }
