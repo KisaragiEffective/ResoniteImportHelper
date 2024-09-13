@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
+#if RIH_HAS_LILTOON
 using lilToon;
+#endif
 using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.Transform.Environment.Common;
