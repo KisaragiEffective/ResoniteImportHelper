@@ -71,6 +71,7 @@ namespace ResoniteImportHelper.Allocator
 
             Debug.Log($"Importer: {AssetDatabase.GetImporterType(basePath)}");
 
+            Debug.Assert(!AssetDatabase.GUIDFromAssetPath(AssetDatabase.GetAssetPath(persistent)).Empty(), "object must be serialized on exit.");
             return persistent;
         }
 
