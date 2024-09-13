@@ -126,14 +126,15 @@ namespace ResoniteImportHelper.UI
         private static void AssignVersionInformation(in TextElement e, string installedVersion,
             [CanBeNull] string gitRevision)
         {
-            var rev = gitRevision[..Math.Min(gitRevision.Length - 1, 12)];
-            
-            var revision = rev != null 
+            var rev = gitRevision?[..Math.Min(gitRevision.Length, 12)];
+
+            var givenRev = !string.IsNullOrEmpty(rev);
+            var revision = givenRev 
                 ? $"<a href=\"https://github.com/KisaragiEffective/ResoniteImportHelper/tree/{rev}\">{rev}</a>"
                 : "???";
             
             e.text = $"v. {installedVersion} (commit {revision})";
-            e.enableRichText = rev != null;
+            e.enableRichText = givenRev;
         }
     }
     
