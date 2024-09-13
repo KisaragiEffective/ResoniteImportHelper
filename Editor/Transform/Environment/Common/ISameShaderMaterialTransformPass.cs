@@ -10,6 +10,6 @@ namespace ResoniteImportHelper.Transform.Environment.Common
     internal interface ISameShaderMaterialTransformPass
     {
         [NotPublicAPI]
-        public Material RewriteInline(Material material);
+        public IMaterialConversionResult RewriteInline(Material material);
     }
 }
