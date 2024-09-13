@@ -1,5 +1,7 @@
 using nadena.dev.ndmf;
+#if RIH_HAS_NDMF
 using ResoniteImportHelper.Transform.Environment.Common;
+#endif
 using UnityEngine;
 
 namespace ResoniteImportHelper.Transform.Environment.NDMF
