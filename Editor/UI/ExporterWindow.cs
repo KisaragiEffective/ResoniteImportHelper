@@ -4,11 +4,14 @@ using ResoniteImportHelper.TransFront;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 #if RIH_HAS_VRCSDK3A
 using VRC.SDK3.Avatars.Components;
 #endif
 using static ResoniteImportHelper.UI.ExternalServiceStatus;
+using Button = UnityEngine.UIElements.Button;
+using Toggle = UnityEngine.UIElements.Toggle;
 
 namespace ResoniteImportHelper.UI {
     internal class ExporterWindow : EditorWindow
@@ -22,6 +25,9 @@ namespace ResoniteImportHelper.UI {
         // ReSharper disable once ParameterHidesMember
         private static void OnMount(VisualElement rootVisualElement)
         {
+            rootVisualElement.Add(new WindowHeader());
+            rootVisualElement.Add(new HorizontalLine());
+            
             var rootObject = new ObjectField("Target avatar root")
             {
                 objectType = typeof(GameObject),
@@ -95,7 +101,7 @@ StackTrace:");
             });
 #endif
             rootVisualElement.Add(run);
-            rootVisualElement.Add(CreateHorizontalLine());
+            rootVisualElement.Add(new HorizontalLine());
 #if !RIH_HAS_UNI_GLTF
             {
                 rootVisualElement.Add(
@@ -183,16 +189,5 @@ StackTrace:");
                     (false, false) => true,
                 };
         }
-
-        // ReSharper disable once InconsistentNaming
-
-        private static VisualElement CreateHorizontalLine() => new()
-        {
-            style =
-            {
-                borderTopColor = new StyleColor(new Color(153.0f / 255.0f, 153.0f / 255.0f, 153.0f / 255.0f)),
-                borderTopWidth = new StyleFloat(1.0f) 
-            }
-        };
     }
 }
