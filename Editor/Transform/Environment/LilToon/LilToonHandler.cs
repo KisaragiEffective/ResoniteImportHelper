@@ -40,22 +40,13 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             return;
 #endif
             Profiler.BeginSample("LilToonHandler.PerformInlineTransform");
-            try
+            foreach (var renderer in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
+                         .Select(o => 
+                             o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr : null
+                         ).Where(o => o != null))
             {
-                AssetDatabase.StartAssetEditing();
-                foreach (var renderer in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
-                             .Select(o => 
-                                 o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr : null
-                             ).Where(o => o != null))
-                {
-                    renderer.sharedMaterials = renderer.sharedMaterials.Select(RewriteInline).ToArray();
-                }
+                renderer.sharedMaterials = renderer.sharedMaterials.Select(RewriteInline).ToArray();
             }
-            finally
-            {
-                AssetDatabase.StopAssetEditing();
-            }
-            
             Profiler.EndSample();
         }
 
