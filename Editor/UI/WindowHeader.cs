@@ -114,7 +114,7 @@ namespace ResoniteImportHelper.UI
                 p.WaitForExit();
 
                 var x = p.StandardOutput.ReadToEnd().Trim('\n', '\r');
-                return x[..Math.Min(x.Length - 1, 12)];
+                return x;
             }
             catch (Win32Exception e)
             {
@@ -126,12 +126,14 @@ namespace ResoniteImportHelper.UI
         private static void AssignVersionInformation(in TextElement e, string installedVersion,
             [CanBeNull] string gitRevision)
         {
-            var revision = gitRevision != null 
-                ? $"<a href=\"https://github.com/KisaragiEffective/ResoniteImportHelper/tree/{gitRevision}\">{gitRevision}</a>"
+            var rev = gitRevision[..Math.Min(gitRevision.Length - 1, 12)];
+            
+            var revision = rev != null 
+                ? $"<a href=\"https://github.com/KisaragiEffective/ResoniteImportHelper/tree/{rev}\">{rev}</a>"
                 : "???";
             
             e.text = $"v. {installedVersion} (commit {revision})";
-            e.enableRichText = gitRevision != null;
+            e.enableRichText = rev != null;
         }
     }
     
