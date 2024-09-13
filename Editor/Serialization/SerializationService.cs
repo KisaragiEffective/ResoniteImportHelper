@@ -29,7 +29,7 @@ namespace ResoniteImportHelper.Serialization
                 };
 
                 Profiler.BeginSample(".ctor");
-                var exporter = new gltfExporter(data, exportSettings);
+                using var exporter = new gltfExporter(data, exportSettings);
                 Profiler.EndSample();
                 
                 Profiler.BeginSample("Prepare");
