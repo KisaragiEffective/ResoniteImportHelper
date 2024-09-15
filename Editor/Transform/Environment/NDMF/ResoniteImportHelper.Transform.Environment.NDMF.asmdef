@@ -1,25 +1,25 @@
 {
-    "name": "ResoniteImportHelper.Transform.Environment.NDMF",
-    "rootNamespace": "global::ResoniteImportHelper.Transform.Environment.NDMF",
-    "references": [
-        "GUID:0694516e4ae346d2b14de667ae2b82ba",
-        "GUID:62ced99b048af7f4d8dfe4bed8373d76"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "nadena.dev.ndmf",
-            "expression": "",
-            "define": "RIH_HAS_NDMF"
-        }
-    ],
-    "noEngineReferences": false
+  "name": "ResoniteImportHelper.Transform.Environment.NDMF",
+  "rootNamespace": "global::ResoniteImportHelper.Transform.Environment.NDMF",
+  "references": [
+    "GUID:0694516e4ae346d2b14de667ae2b82ba",
+    "GUID:62ced99b048af7f4d8dfe4bed8373d76"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [
+    {
+      "name": "nadena.dev.ndmf",
+      "expression": "",
+      "define": "RIH_HAS_NDMF"
+    }
+  ],
+  "noEngineReferences": false
 }

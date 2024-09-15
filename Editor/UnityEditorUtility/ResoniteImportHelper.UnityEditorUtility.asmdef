@@ -1,18 +1,18 @@
 {
-    "name": "ResoniteImportHelper.UnityEditorUtility",
-    "rootNamespace": "global::ResoniteImportHelper.UnityEditorUtility",
-    "references": [
-        "GUID:e1502863ab7f486a9e1671dfc01ad9a5"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "ResoniteImportHelper.UnityEditorUtility",
+  "rootNamespace": "global::ResoniteImportHelper.UnityEditorUtility",
+  "references": [
+    "GUID:e1502863ab7f486a9e1671dfc01ad9a5"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }

@@ -1,16 +1,16 @@
 {
-    "name": "ResoniteImportHelper.Backlink.Component",
-    "rootNamespace": "global::ResoniteImportHelper.Backlink.Component",
-    "references": [],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "ResoniteImportHelper.Backlink.Component",
+  "rootNamespace": "global::ResoniteImportHelper.Backlink.Component",
+  "references": [],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }
