@@ -1,20 +1,20 @@
 {
-    "name": "ResoniteImportHelper.TransFront",
-    "rootNamespace": "global::ResoniteImportHelper.TransFront",
-    "references": [
-        "GUID:9412ec19daea43d8a5d4b2f0c5a7c8ad",
-        "GUID:ff74dcc47a4647d68fe8716871e0d67e",
-        "GUID:2d6737347877424fbda09747226d3718"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
-    "excludePlatforms": [],
-    "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": false,
-    "defineConstraints": [],
-    "versionDefines": [],
-    "noEngineReferences": false
+  "name": "ResoniteImportHelper.TransFront",
+  "rootNamespace": "global::ResoniteImportHelper.TransFront",
+  "references": [
+    "GUID:9412ec19daea43d8a5d4b2f0c5a7c8ad",
+    "GUID:ff74dcc47a4647d68fe8716871e0d67e",
+    "GUID:2d6737347877424fbda09747226d3718"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
 }
