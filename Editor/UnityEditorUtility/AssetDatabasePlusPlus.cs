@@ -25,7 +25,7 @@ namespace ResoniteImportHelper.UnityEditorUtility
         {
             // Project root relative. Usually starts with `Asset/` but not necessarily. (Packages/, Resources/, etc.)
             var path = AssetDatabase.GetAssetPath(obj);
-            // Debug.Log("relpath: " + path);
+            Debug.Log("ContainingFolder realpath: " + path);
             var parentDirectory = Directory.GetParent(path);
             var unityRelativePath = ExtractProjectRelativePathFromAbsolutePath(parentDirectory!.FullName);
             // Debug.Log($"getting {unityRelativePath}");

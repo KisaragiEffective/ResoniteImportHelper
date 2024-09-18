@@ -63,7 +63,7 @@ namespace ResoniteImportHelper.Serialization
                 return t.Any(c => c.r != 255 && c.g != 255 && c.b != 255 && c.a != 255);
             });
 
-            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, config.Allocator);
+            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, config.Allocator, false);
             Debug.Log("backlink: started");
             TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
@@ -150,7 +150,12 @@ namespace ResoniteImportHelper.Serialization
         /// <param name="containsVertexColors"></param>
         /// <param name="runIdentifier"></param>
         /// <returns>Serialized object.</returns>
-        private static GameObject ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, ResourceAllocator allocator)
+        private static GameObject ExportGltfToAssetFolder(
+            GameObject temporary,
+            bool containsVertexColors,
+            ResourceAllocator allocator,
+            bool alignInitialMorphValues
+        )
         {
             Profiler.BeginSample("ExportGltfToAssetFolder");
 #if RIH_HAS_UNI_GLTF
@@ -195,6 +200,11 @@ namespace ResoniteImportHelper.Serialization
             }
             Profiler.EndSample();
 
+            if (alignInitialMorphValues)
+            {
+                
+            }
+            
             Profiler.BeginSample("load");
             var x = AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
             Profiler.EndSample();
