@@ -2,10 +2,11 @@ using System.Linq;
 using ResoniteImportHelper.Bootstrap.Logic;
 using ResoniteImportHelper.Lint.Pass;
 using ResoniteImportHelper.TransFront;
+using ResoniteImportHelper.UI.Component;
+using ResoniteImportHelper.UI.Localize;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.UIElements;
 #if RIH_HAS_VRCSDK3A
 using VRC.SDK3.Avatars.Components;
@@ -27,34 +28,38 @@ namespace ResoniteImportHelper.UI {
         private static void OnMount(VisualElement rootVisualElement)
         {
             rootVisualElement.Add(new WindowHeader());
+            var localeSelector = new LocaleSelector();
+            var lang = localeSelector.GetLanguage();
+            
+            rootVisualElement.Add(localeSelector);
             rootVisualElement.Add(new HorizontalLine());
             
-            var rootObject = new ObjectField("Target avatar root")
+            var rootObject = new ObjectField(lang.Root())
             {
                 objectType = typeof(GameObject),
-                tooltip = "Specify avatar root. This is usually prefab root, or GameObject where VRCAvatarDescriptor is attached."
+                tooltip = lang.RootTooltip()
             };
             rootVisualElement.Add(rootObject);
-            var exportSettingFoldout = new Foldout { text = "Export settings" };
+            var exportSettingFoldout = new Foldout { text = lang.ExportSetting() };
             rootVisualElement.Add(exportSettingFoldout);
             // ReSharper disable once InconsistentNaming
-            var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox(rootObject);
+            var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox(rootObject, lang);
             exportSettingFoldout.Add(doRunVRCSDK3APreprocessors);
             // ReSharper disable once InconsistentNaming
-            var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors);
+            var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors, lang);
             exportSettingFoldout.Add(doNDMFManualBake);
             var experimentalSettingsFoldout = CreateExperimentalSettingsFoldout();
             exportSettingFoldout.Add(experimentalSettingsFoldout);
             
-            var destination = new ObjectField("Processed avatar")
+            var destination = new ObjectField(lang.ProcessedAvatarLabel())
             {
                 objectType = typeof(GameObject),
-                tooltip = "Processed avatar. Readonly."
+                tooltip = lang.ProcessedAvatarTooltip()
             };
             destination.RegisterCallback<DragUpdatedEvent>(ev => ev.PreventDefault());
             destination.RegisterCallback<DragPerformEvent>(ev => ev.PreventDefault());
             var modelContainsVertexColorNote =
-                new HelpBox("Model contains Vertex Color. Import it on Resonite if you want to use.",
+                new HelpBox(lang.ModelContainsVertexColor(),
                     HelpBoxMessageType.Info)
                 {
                     style = { display = DisplayStyle.None }
@@ -91,9 +96,9 @@ StackTrace:");
                 }
             })
             {
-                tooltip = "Start"
+                tooltip = lang.Start()
             };
-            run.Add(new Label("Start"));
+            run.Add(new Label(lang.Start()));
             run.SetEnabled(false);
 #if RIH_HAS_UNI_GLTF
             rootObject.RegisterValueChangedCallback(ev =>
@@ -106,19 +111,19 @@ StackTrace:");
 #if !RIH_HAS_UNI_GLTF
             {
                 rootVisualElement.Add(
-                    new HelpBox("UniGLTFがプロジェクトにインストールされていません。続行するにはプロジェクトへインストールして下さい。", HelpBoxMessageType.Error)
+                    new HelpBox(lang.UniGLTFIsNotInstalled(), HelpBoxMessageType.Error)
                 );
                 {
                     var button = new Button(() =>
                     {
                         Application.OpenURL("https://github.com/vrm-c/UniVRM/releases");
                     });
-                    button.Add(new Label("UniGLTFのインストールページを開く"));
+                    button.Add(new Label(lang.OpenInstallationPageForUniGLTF()));
                     rootVisualElement.Add(button);
                 }
                 {
                     var button = new Button(PackageManagerProxy.InstallUniGLTF);
-                    button.Add(new Label("自動的にインストールする"));
+                    button.Add(new Label(lang.InstallUniGLTFAutomatically()));
                     rootVisualElement.Add(button);
                 }
             }
@@ -134,7 +139,7 @@ StackTrace:");
                     button.SetEnabled(ev.newValue != null);
                 });
                 
-                button.Add(new Label("Open in file system"));
+                button.Add(new Label(lang.OpenInFileSystemLabel()));
                 button.SetEnabled(false);
                 rootVisualElement.Add(button);
             }
@@ -152,9 +157,9 @@ StackTrace:");
             OnMount(rootVisualElement);
         }
 
-        private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField)
+        private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField, ILocalizedTexts lang)
         {
-            var ret = new Toggle("Invoke VRChat SDK Preprocessor") { value = HasVRCSDK3A, tooltip = "Do you want NDMF or VRCFury to run?" };
+            var ret = new Toggle(lang.InvokeVRCSDKPreprocessorLabel()) { value = HasVRCSDK3A, tooltip = lang.InvokeVRCSDKPreprocessorTooltip() };
             ret.SetEnabled(HasVRCSDK3A);
 #if RIH_HAS_VRCSDK3A
             rootObjectField.RegisterValueChangedCallback(ev =>
@@ -174,9 +179,9 @@ StackTrace:");
         }
 
         // ReSharper disable once InconsistentNaming
-        private static Toggle CreateNDMFManualBakeCheckbox(Toggle v)
+        private static Toggle CreateNDMFManualBakeCheckbox(Toggle v, ILocalizedTexts lang)
         {
-            var ret = new Toggle("NDMF Manual Bake") { value = HasNDMF, tooltip = "Do you want NDMF to run?" };
+            var ret = new Toggle(lang.NDMFManualBakeLabel()) { value = HasNDMF, tooltip = lang.NDMFManualBakeTooltip() };
             ret.SetEnabled(Toggleable());
             v.RegisterValueChangedCallback(ev =>
             {
