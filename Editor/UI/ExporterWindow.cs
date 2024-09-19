@@ -1,19 +1,6 @@
-using System.Linq;
-using ResoniteImportHelper.Bootstrap.Logic;
-using ResoniteImportHelper.Lint.Pass;
-using ResoniteImportHelper.TransFront;
 using ResoniteImportHelper.UI.Component;
-using ResoniteImportHelper.UI.Localize;
 using UnityEditor;
-using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
-#if RIH_HAS_VRCSDK3A
-using VRC.SDK3.Avatars.Components;
-#endif
-using static ResoniteImportHelper.UI.ExternalServiceStatus;
-using Button = UnityEngine.UIElements.Button;
-using Toggle = UnityEngine.UIElements.Toggle;
 
 namespace ResoniteImportHelper.UI {
     internal class ExporterWindow : EditorWindow
@@ -33,174 +20,12 @@ namespace ResoniteImportHelper.UI {
             
             rootVisualElement.Add(localeSelector);
             rootVisualElement.Add(new HorizontalLine());
-            
-            var rootObject = new ObjectField(lang.Root())
-            {
-                objectType = typeof(GameObject),
-                tooltip = lang.RootTooltip()
-            };
-            rootVisualElement.Add(rootObject);
-            var exportSettingFoldout = new Foldout { text = lang.ExportSetting() };
-            rootVisualElement.Add(exportSettingFoldout);
-            // ReSharper disable once InconsistentNaming
-            var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox(rootObject, lang);
-            exportSettingFoldout.Add(doRunVRCSDK3APreprocessors);
-            // ReSharper disable once InconsistentNaming
-            var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors, lang);
-            exportSettingFoldout.Add(doNDMFManualBake);
-            var experimentalSettingsFoldout = CreateExperimentalSettingsFoldout(lang);
-            exportSettingFoldout.Add(experimentalSettingsFoldout);
-            
-            var destination = new ObjectField(lang.ProcessedAvatarLabel())
-            {
-                objectType = typeof(GameObject),
-                tooltip = lang.ProcessedAvatarTooltip()
-            };
-            destination.RegisterCallback<DragUpdatedEvent>(ev => ev.PreventDefault());
-            destination.RegisterCallback<DragPerformEvent>(ev => ev.PreventDefault());
-            var modelContainsVertexColorNote =
-                new HelpBox(lang.ModelContainsVertexColor(),
-                    HelpBoxMessageType.Info)
-                {
-                    style = { display = DisplayStyle.None }
-                };
-            
-            var run = new Button(() =>
-            {
-                var result = Entry.PerformConversion(
-                    rootObject.value as GameObject,
-                    doRunVRCSDK3APreprocessors.value,
-                    doNDMFManualBake.value,
-                    experimentalSettingsFoldout.BakeShadersConfigurationIntoTextures.value,
-                    experimentalSettingsFoldout.GenerateIntermediateArtifact.value
-                );
-                destination.value = result.SerializedObject;
-                modelContainsVertexColorNote.style.display =
-                    result.HasVertexColor ? DisplayStyle.Flex : DisplayStyle.None;
-                // SerializedObjectはUniGLTFが全てStandardシェーダーに変換しているので
-                // Backlinkから元々のオブジェクトを拾ってくる必要がある
-                var diags = new CustomShaderDetectionPath().Check(result.LookupBacklink().SerializedParent).ToList();
-                Debug.Log($"{diags.Count} custom materials.");
-                // TODO: 置き場として微妙
-                foreach (var diagnostic in diags)
-                {
-                    var m = diagnostic.CustomizedShaderUsedMaterial;
-                    var o = diagnostic.ReferencedRenderer;
-                    
-                    Debug.Log($@"custom shader warning: {diagnostic.Message()}
-Material: {m}
-GameObject: {o.gameObject}
-Please consult familiar person to resolve this warning, or you may want to ignore
------------------------------
-StackTrace:");
-                }
-            })
-            {
-                tooltip = lang.Start()
-            };
-            run.Add(new Label(lang.Start()));
-            run.SetEnabled(false);
-#if RIH_HAS_UNI_GLTF
-            rootObject.RegisterValueChangedCallback(ev =>
-            {
-                run.SetEnabled(ev.newValue != null);
-            });
-#endif
-            rootVisualElement.Add(run);
-            rootVisualElement.Add(new HorizontalLine());
-#if !RIH_HAS_UNI_GLTF
-            {
-                rootVisualElement.Add(
-                    new HelpBox(lang.UniGLTFIsNotInstalled(), HelpBoxMessageType.Error)
-                );
-                {
-                    var button = new Button(() =>
-                    {
-                        Application.OpenURL("https://github.com/vrm-c/UniVRM/releases");
-                    });
-                    button.Add(new Label(lang.OpenInstallationPageForUniGLTF()));
-                    rootVisualElement.Add(button);
-                }
-                {
-                    var button = new Button(PackageManagerProxy.InstallUniGLTF);
-                    button.Add(new Label(lang.InstallUniGLTFAutomatically()));
-                    rootVisualElement.Add(button);
-                }
-            }
-#endif
-            rootVisualElement.Add(destination);
-            {
-                var button = new Button(() =>
-                {
-                    EditorUtility.RevealInFinder(AssetDatabase.GetAssetPath(destination.value));
-                });
-                destination.RegisterValueChangedCallback(ev =>
-                {
-                    button.SetEnabled(ev.newValue != null);
-                });
-                
-                button.Add(new Label(lang.OpenInFileSystemLabel()));
-                button.SetEnabled(false);
-                rootVisualElement.Add(button);
-            }
-            
-            rootVisualElement.Add(modelContainsVertexColorNote);
-        }
-
-        private static ExperimentalSettingsFoldout CreateExperimentalSettingsFoldout(ILocalizedTexts lang)
-        {
-            return new ExperimentalSettingsFoldout(lang);
+            rootVisualElement.Add(new Body(lang));
         }
 
         private void CreateGUI()
         {
             OnMount(rootVisualElement);
-        }
-
-        private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField, ILocalizedTexts lang)
-        {
-            var ret = new Toggle(lang.InvokeVRCSDKPreprocessorLabel()) { value = HasVRCSDK3A, tooltip = lang.InvokeVRCSDKPreprocessorTooltip() };
-            ret.SetEnabled(HasVRCSDK3A);
-#if RIH_HAS_VRCSDK3A
-            rootObjectField.RegisterValueChangedCallback(ev =>
-            {
-                var v = ev.newValue as GameObject;
-                if (v == null)
-                {
-                    return;
-                }
-
-                var hasAvatarDescriptor = v.TryGetComponent(out VRCAvatarDescriptor _);
-                ret.value = hasAvatarDescriptor;
-                ret.SetEnabled(hasAvatarDescriptor);
-            });
-#endif
-            return ret;
-        }
-
-        // ReSharper disable once InconsistentNaming
-        private static Toggle CreateNDMFManualBakeCheckbox(Toggle v, ILocalizedTexts lang)
-        {
-            var ret = new Toggle(lang.NDMFManualBakeLabel()) { value = HasNDMF, tooltip = lang.NDMFManualBakeTooltip() };
-            ret.SetEnabled(Toggleable());
-            v.RegisterValueChangedCallback(ev =>
-            {
-                if (ev.newValue)
-                {
-                    ret.value = true;
-                }
-                ret.SetEnabled(Toggleable());
-            });
-            return ret;
-
-            bool Toggleable() =>
-                (v.value, HasNDMF) switch
-                {
-                    (true, true) => false,
-                    (true, false) => false,
-                    (false, true) => true,
-                    (false, false) => true,
-                };
         }
     }
 }
