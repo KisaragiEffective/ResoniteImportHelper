@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace ResoniteImportHelper.UI
+namespace ResoniteImportHelper.UI.Component
 {
     internal sealed class WindowHeader: VisualElement
     {
