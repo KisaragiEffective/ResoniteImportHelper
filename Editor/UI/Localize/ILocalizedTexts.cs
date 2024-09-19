@@ -22,5 +22,12 @@ namespace ResoniteImportHelper.UI.Localize
         string InvokeVRCSDKPreprocessorTooltip();
         string NDMFManualBakeLabel();
         string NDMFManualBakeTooltip();
+        
+        string ExperimentalSettingRootLabel();
+        string ExperimentalSettingsAreNeverSupported();
+        string ExperimentalSetting_BakeLilToonLabel();
+        string ExperimentalSetting_BakeLilToonTooltip();
+        string ExperimentalSetting_GenerateIntermediateArtifactLabel();
+        string ExperimentalSetting_GenerateIntermediateArtifactTooltip();
     }
 }

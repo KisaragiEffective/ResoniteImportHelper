@@ -1,3 +1,4 @@
+using ResoniteImportHelper.UI.Localize;
 using UnityEngine.UIElements;
 
 namespace ResoniteImportHelper.UI
@@ -8,23 +9,23 @@ namespace ResoniteImportHelper.UI
 
         internal readonly Toggle GenerateIntermediateArtifact;
 
-        internal ExperimentalSettingsFoldout()
+        internal ExperimentalSettingsFoldout(ILocalizedTexts lang)
         {
             this.value = false;
-            this.text = "Experimental Settings";
+            this.text = lang.ExperimentalSettingRootLabel();
             this.Add(
-                new HelpBox("Experimental Settings may disappear at anytime, and break your avatar!\nUse at your own peril and wisely.", HelpBoxMessageType.Warning)
+                new HelpBox(lang.ExperimentalSettingsAreNeverSupported(), HelpBoxMessageType.Warning)
             );
             
-            BakeShadersConfigurationIntoTextures = new Toggle("Bake lilToon's configuration into Texture")
+            BakeShadersConfigurationIntoTextures = new Toggle(lang.ExperimentalSetting_BakeLilToonLabel())
             {
-                tooltip = "Do you want to bake configuration such as AlphaMask?"
+                tooltip = lang.ExperimentalSetting_BakeLilToonTooltip()
             };
             this.Add(BakeShadersConfigurationIntoTextures);
 
-            GenerateIntermediateArtifact = new Toggle("Generate intermediate prefab")
+            GenerateIntermediateArtifact = new Toggle(lang.ExperimentalSetting_GenerateIntermediateArtifactLabel())
             {
-                tooltip = "Do you want to intermediate artifacts to debug?\nIt will be persisted under the same directory."
+                tooltip = lang.ExperimentalSetting_GenerateIntermediateArtifactTooltip()
             };
             
             this.Add(GenerateIntermediateArtifact);

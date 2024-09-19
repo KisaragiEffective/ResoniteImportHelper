@@ -48,7 +48,7 @@ namespace ResoniteImportHelper.UI {
             // ReSharper disable once InconsistentNaming
             var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors, lang);
             exportSettingFoldout.Add(doNDMFManualBake);
-            var experimentalSettingsFoldout = CreateExperimentalSettingsFoldout();
+            var experimentalSettingsFoldout = CreateExperimentalSettingsFoldout(lang);
             exportSettingFoldout.Add(experimentalSettingsFoldout);
             
             var destination = new ObjectField(lang.ProcessedAvatarLabel())
@@ -147,9 +147,9 @@ StackTrace:");
             rootVisualElement.Add(modelContainsVertexColorNote);
         }
 
-        private static ExperimentalSettingsFoldout CreateExperimentalSettingsFoldout()
+        private static ExperimentalSettingsFoldout CreateExperimentalSettingsFoldout(ILocalizedTexts lang)
         {
-            return new ExperimentalSettingsFoldout();
+            return new ExperimentalSettingsFoldout(lang);
         }
 
         private void CreateGUI()

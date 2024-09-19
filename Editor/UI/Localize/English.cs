@@ -38,5 +38,19 @@ namespace ResoniteImportHelper.UI.Localize
         public string NDMFManualBakeLabel() => "NDMF Manual Bake";
 
         public string NDMFManualBakeTooltip() => "Do you want NDMF to run?";
+        public string ExperimentalSettingRootLabel() => "Experimental Settings";
+
+        public string ExperimentalSettingsAreNeverSupported() =>
+            "Experimental Settings may disappear at anytime, and break your avatar!\nUse at your own peril and wisely.";
+
+        public string ExperimentalSetting_BakeLilToonLabel() => "Bake lilToon's configuration into Texture";
+
+        public string ExperimentalSetting_BakeLilToonTooltip() =>
+            "Do you want to bake configuration such as AlphaMask?";
+
+        public string ExperimentalSetting_GenerateIntermediateArtifactLabel() => "Generate intermediate prefab";
+
+        public string ExperimentalSetting_GenerateIntermediateArtifactTooltip() =>
+            "Do you want to intermediate artifacts to debug?\nIt will be persisted under the same directory.";
     }
 }
