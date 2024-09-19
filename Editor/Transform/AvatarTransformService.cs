@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using ResoniteImportHelper.Allocator;
+using ResoniteImportHelper.ClonedMarker;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.Transform.Environment.LilToon;
 using ResoniteImportHelper.UnityEditorUtility;
@@ -40,6 +41,7 @@ namespace ResoniteImportHelper.Transform
                 target = Object.Instantiate(target);
             }
             Profiler.EndSample();
+            var intermediateMarker = IntermediateClonedHierarchyMarker.Construct(target, unmodifiableRoot);
 
             var rig = FindRigSetting(target);
             if (rig == null)
@@ -60,6 +62,7 @@ namespace ResoniteImportHelper.Transform
                 Debug.Log("Texture bake was skipped (disabled). Please turn on from experimental settings if you want to turn on.");
             }
             
+            Object.Destroy(intermediateMarker);
             return target;
 
             GameObject PerformEnvironmentDependantShallowCopy(IPlatformExpander handler, GameObject localUnmodifiableRoot) =>
