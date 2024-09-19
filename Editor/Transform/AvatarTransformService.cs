@@ -25,24 +25,50 @@ namespace ResoniteImportHelper.Transform
             ResourceAllocator alloc
         )
         {
-            var target = unmodifiableRoot;
-            
             Profiler.BeginSample("EnvironmentDependantShallowCopyAndTransform");
+            var target = Expand(unmodifiableRoot, runVRCSDKPipeline, runNDMF);
+            Profiler.EndSample();
+            
+            var intermediateMarker = IntermediateClonedHierarchyMarker.Construct(target, unmodifiableRoot);
+
+            InPlaceConvert(target, bakeTexture, alloc);
+            
+            Object.Destroy(intermediateMarker);
+            return target;
+
+        }
+        
+        private static GameObject Expand(
+            GameObject unmodifiableRoot,
+            // ReSharper disable once InconsistentNaming
+            bool runVRCSDKPipeline,
+            // ReSharper disable once InconsistentNaming
+            bool runNDMF
+        )
+        {
+            GameObject modifiableRoot;
+
             if (runVRCSDKPipeline)
             {
-                target = PerformEnvironmentDependantShallowCopy(new Environment.VRChat.VRChatBuildPipelineExpander(), unmodifiableRoot);
+                modifiableRoot = PerformEnvironmentDependantShallowCopy(new Environment.VRChat.VRChatBuildPipelineExpander(), unmodifiableRoot);
             }
             else if (runNDMF)
             {
-                target = PerformEnvironmentDependantShallowCopy(new Environment.NDMF.StandaloneNDMFExpander(), unmodifiableRoot);
+                modifiableRoot = PerformEnvironmentDependantShallowCopy(new Environment.NDMF.StandaloneNDMFExpander(), unmodifiableRoot);
             }
             else
             {
-                target = Object.Instantiate(target);
+                modifiableRoot = Object.Instantiate(unmodifiableRoot);
             }
-            Profiler.EndSample();
-            var intermediateMarker = IntermediateClonedHierarchyMarker.Construct(target, unmodifiableRoot);
 
+            return modifiableRoot;
+
+            GameObject PerformEnvironmentDependantShallowCopy(IPlatformExpander handler, GameObject localUnmodifiableRoot) =>
+                handler.PerformEnvironmentDependantShallowCopy(localUnmodifiableRoot);
+        }
+
+        private static void InPlaceConvert(GameObject target, bool bakeTexture, ResourceAllocator alloc)
+        {
             var rig = FindRigSetting(target);
             if (rig == null)
             {
@@ -61,19 +87,11 @@ namespace ResoniteImportHelper.Transform
             {
                 Debug.Log("Texture bake was skipped (disabled). Please turn on from experimental settings if you want to turn on.");
             }
-            
-            Object.Destroy(intermediateMarker);
-            return target;
-
-            GameObject PerformEnvironmentDependantShallowCopy(IPlatformExpander handler, GameObject localUnmodifiableRoot) =>
-                handler.PerformEnvironmentDependantShallowCopy(localUnmodifiableRoot);
         }
 
         [CanBeNull]
-        private static Animator FindRigSetting(GameObject root)
-        {
-            return root.TryGetComponent<Animator>(out var a) ? a : null;
-        }
+        private static Animator FindRigSetting(GameObject root) => 
+            root.TryGetComponent<Animator>(out var a) ? a : null;
 
         /// <summary>
         /// See also: <a href="https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK">Wiki</a>
