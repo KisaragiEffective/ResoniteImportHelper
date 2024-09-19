@@ -1,4 +1,5 @@
 using System.Linq;
+using ResoniteImportHelper.Bootstrap.Logic;
 using ResoniteImportHelper.Lint.Pass;
 using ResoniteImportHelper.TransFront;
 using UnityEditor;
@@ -107,12 +108,19 @@ StackTrace:");
                 rootVisualElement.Add(
                     new HelpBox("UniGLTFがプロジェクトにインストールされていません。続行するにはプロジェクトへインストールして下さい。", HelpBoxMessageType.Error)
                 );
-                var button = new Button(() =>
                 {
-                    Application.OpenURL("https://github.com/vrm-c/UniVRM/releases");
-                });
-                button.Add(new Label("UniGLTFのインストールページを開く"));
-                rootVisualElement.Add(button);
+                    var button = new Button(() =>
+                    {
+                        Application.OpenURL("https://github.com/vrm-c/UniVRM/releases");
+                    });
+                    button.Add(new Label("UniGLTFのインストールページを開く"));
+                    rootVisualElement.Add(button);
+                }
+                {
+                    var button = new Button(PackageManagerProxy.InstallUniGLTF);
+                    button.Add(new Label("自動的にインストールする"));
+                    rootVisualElement.Add(button);
+                }
             }
 #endif
             rootVisualElement.Add(destination);

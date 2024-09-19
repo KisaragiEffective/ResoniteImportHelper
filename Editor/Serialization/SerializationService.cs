@@ -7,7 +7,11 @@ using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Backlink.Component;
 using ResoniteImportHelper.UnityEditorUtility;
 using MeshUtility = ResoniteImportHelper.UnityEditorUtility.MeshUtility;
+#if RIH_HAS_UNI_GLTF
 using UniGLTF;
+#else
+using ExportingGltfData = System.Object;
+#endif
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -18,6 +22,7 @@ namespace ResoniteImportHelper.Serialization
     {
         private static ExportingGltfData ConstructGltfOnMemory(GameObject target, bool containsVertexColors)
         {
+            #if RIH_HAS_UNI_GLTF
             Profiler.BeginSample("ConstructGltfOnMemory");
             var data = new ExportingGltfData();
             {
@@ -43,6 +48,9 @@ namespace ResoniteImportHelper.Serialization
             Profiler.EndSample();
 
             return data;
+            #else
+            throw new Exception("assertion error");
+#endif
         }
         
         internal static ExportInformation ExportToAssetFolder(SerializationConfiguration config)
