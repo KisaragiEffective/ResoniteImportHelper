@@ -8,8 +8,8 @@ namespace ResoniteImportHelper.UI.Component
 {
     internal sealed class LocaleSelector : VisualElement
     {
-        private readonly PopupField<LocaleKind> _f;
-        private LocaleKind Kind => _f.value;
+        internal readonly PopupField<LocaleKind> PullDown;
+        private LocaleKind Kind => PullDown.value;
 
         internal ILocalizedTexts GetLanguage()
         {
@@ -23,12 +23,12 @@ namespace ResoniteImportHelper.UI.Component
         
         internal LocaleSelector()
         {
-            _f = new PopupField<LocaleKind>(Enum.GetValues(typeof(LocaleKind)).Cast<LocaleKind>().ToList(),
+            PullDown = new PopupField<LocaleKind>(Enum.GetValues(typeof(LocaleKind)).Cast<LocaleKind>().ToList(),
                 LocaleKind.English);
-            this.Add(_f);
+            this.Add(PullDown);
         }
 
-        private enum LocaleKind
+        internal enum LocaleKind
         {
             English = 0,
             Japanese = 1,

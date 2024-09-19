@@ -18,16 +18,35 @@ namespace ResoniteImportHelper.UI.Component
 {
     internal sealed class Body : VisualElement
     {
-        internal Body(ILocalizedTexts lang)
+        private LocaleSelector.LocaleKind _currentLanguage;
+        
+        internal Body(LocaleSelector ls)
+        {
+            var lang = ls.GetLanguage();
+            
+            RenderTo(this, lang);
+            ls.PullDown.RegisterValueChangedCallback(ev =>
+            {
+                if (_currentLanguage == ev.newValue) return;
+
+                _currentLanguage = ev.newValue;
+
+                // rebuild
+                this.Clear();
+                RenderTo(this, ls.GetLanguage());
+            });
+        }
+
+        private static void RenderTo(VisualElement rootVisualElement, ILocalizedTexts lang)
         {
             var rootObject = new ObjectField(lang.Root())
             {
                 objectType = typeof(GameObject),
                 tooltip = lang.RootTooltip()
             };
-            this.Add(rootObject);
+            rootVisualElement.Add(rootObject);
             var exportSettingFoldout = new Foldout { text = lang.ExportSetting() };
-            this.Add(exportSettingFoldout);
+            rootVisualElement.Add(exportSettingFoldout);
             // ReSharper disable once InconsistentNaming
             var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox(rootObject, lang);
             exportSettingFoldout.Add(doRunVRCSDK3APreprocessors);
@@ -76,7 +95,7 @@ namespace ResoniteImportHelper.UI.Component
                     Debug.Log($@"custom shader warning: {diagnostic.Message()}
 Material: {m}
 GameObject: {o.gameObject}
-Please consult familiar person to resolve this warning, or you may want to ignore
+Please consult familiar person to resolve rootVisualElement warning, or you may want to ignore
 -----------------------------
 StackTrace:");
                 }
@@ -92,11 +111,11 @@ StackTrace:");
                 run.SetEnabled(ev.newValue != null);
             });
 #endif
-            this.Add(run);
-            this.Add(new HorizontalLine());
+            rootVisualElement.Add(run);
+            rootVisualElement.Add(new HorizontalLine());
 #if !RIH_HAS_UNI_GLTF
             {
-                this.Add(
+                rootVisualElement.Add(
                     new HelpBox(lang.UniGLTFIsNotInstalled(), HelpBoxMessageType.Error)
                 );
                 {
@@ -105,16 +124,16 @@ StackTrace:");
                         Application.OpenURL("https://github.com/vrm-c/UniVRM/releases");
                     });
                     button.Add(new Label(lang.OpenInstallationPageForUniGLTF()));
-                    this.Add(button);
+                    rootVisualElement.Add(button);
                 }
                 {
                     var button = new Button(PackageManagerProxy.InstallUniGLTF);
                     button.Add(new Label(lang.InstallUniGLTFAutomatically()));
-                    this.Add(button);
+                    rootVisualElement.Add(button);
                 }
             }
 #endif
-            this.Add(destination);
+            rootVisualElement.Add(destination);
             {
                 var button = new Button(() =>
                 {
@@ -127,10 +146,10 @@ StackTrace:");
                 
                 button.Add(new Label(lang.OpenInFileSystemLabel()));
                 button.SetEnabled(false);
-                this.Add(button);
+                rootVisualElement.Add(button);
             }
             
-            this.Add(modelContainsVertexColorNote);
+            rootVisualElement.Add(modelContainsVertexColorNote);
         }
         
         private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField, ILocalizedTexts lang)

@@ -20,7 +20,7 @@ namespace ResoniteImportHelper.UI {
             
             rootVisualElement.Add(localeSelector);
             rootVisualElement.Add(new HorizontalLine());
-            rootVisualElement.Add(new Body(lang));
+            rootVisualElement.Add(new Body(localeSelector));
         }
 
         private void CreateGUI()
