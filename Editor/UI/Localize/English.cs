@@ -20,11 +20,11 @@ namespace ResoniteImportHelper.UI.Localize
 
         public string Start() => "Start";
 
-        public string UniGLTFIsNotInstalled() => "UniGLTFがプロジェクトにインストールされていません。続行するにはプロジェクトへインストールして下さい。";
+        public string UniGLTFIsNotInstalled() => "UniGLTF is not installed on the Project. Please install to continue.";
 
-        public string OpenInstallationPageForUniGLTF() => "UniGLTFのインストールページを開く";
+        public string OpenInstallationPageForUniGLTF() => "Open installation page";
 
-        public string InstallUniGLTFAutomatically() => "自動的にUniGLTFをインストールする";
+        public string InstallUniGLTFAutomatically() => "install UniGLTF automatically";
 
         public string OpenInFileSystemLabel() => "Open in file system";
         public string ProcessedAvatarLabel() => "Processed avatar";
