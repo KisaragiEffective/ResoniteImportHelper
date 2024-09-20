@@ -123,6 +123,12 @@ namespace ResoniteImportHelper.Transform
                     var right = eyeConfiguration.rightEye;
 
                     b = hbb is HumanBodyBones.LeftEye ? left : right;
+                    if (b == null)
+                    {
+                        Debug.Log($"RewriteIfSet: {hbb.ToString()} is not set on Animator or VRC-AD");
+                        return;
+                    }
+                    
                     Debug.Log($"RewriteIfSet: fallback from VRC Avatar Descriptor: {hbb.ToString()} = {b.name}");
 #endif
                 }
