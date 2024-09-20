@@ -25,7 +25,10 @@ Following tools are optional. This tool can invoke their hooks.
 * Convert Animation: Always ignored. You may want to reconstruct them by Protoflux after importing.
 
 ## How to use and import
-1. Install UniGLTF.
+1. Install UniGLTF. \
+    You may use one of:
+    * Install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0) page, or
+    * Let RIH download it: ![UI](./Doc~/AutomatedInstallationUI.png)
 2. Install this package via Package Manager.
     1. Go to `Window > Package Manager`
     2. Click `[+▼]`
