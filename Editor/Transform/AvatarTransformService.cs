@@ -7,6 +7,7 @@ using ResoniteImportHelper.ClonedMarker;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.Transform.Environment.LilToon;
 using ResoniteImportHelper.UnityEditorUtility;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Object = UnityEngine.Object;
@@ -33,7 +34,7 @@ namespace ResoniteImportHelper.Transform
 
             InPlaceConvert(target, bakeTexture, alloc);
             
-            Object.Destroy(intermediateMarker);
+            Object.DestroyImmediate(intermediateMarker);
             return target;
 
         }
@@ -87,6 +88,8 @@ namespace ResoniteImportHelper.Transform
             {
                 Debug.Log("Texture bake was skipped (disabled). Please turn on from experimental settings if you want to turn on.");
             }
+
+            LowerShader(target, alloc);
         }
 
         [CanBeNull]
@@ -248,6 +251,23 @@ namespace ResoniteImportHelper.Transform
         private static void BakeTexture(GameObject root, ResourceAllocator allocator)
         {
             new LilToonHandler(allocator).PerformInlineTransform(root);
+        }
+
+        private static void LowerShader(GameObject root, ResourceAllocator allocator)
+        {
+            foreach (var skinnedMeshRenderer in root.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                skinnedMeshRenderer.sharedMaterials =
+                    skinnedMeshRenderer.sharedMaterials
+                        .Select(m => LowerMaterialInline(m, allocator))
+                        .ToArray();
+            }
+        }
+        
+        
+        private static Material LowerMaterialInline(Material m, ResourceAllocator alloc)
+        {
+            return new LilToonHandler(alloc).LowerInline(m);
         }
     }
 }

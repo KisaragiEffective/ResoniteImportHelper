@@ -19,7 +19,7 @@ using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform.Environment.LilToon
 {
-    internal sealed class LilToonHandler: ISameShaderMaterialTransformPass
+    internal sealed class LilToonHandler: ISameShaderMaterialTransformPass, ICustomShaderLowerPass
     {
         private static ResourceAllocator currentAllocator;
         
@@ -303,6 +303,58 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         private static IEnumerable<T> Single<T>(T obj)
         {
             yield return obj;
+        }
+
+        private static readonly int BumpMap = Shader.PropertyToID("_BumpMap");
+        private static readonly int StandardShaderMixtureMode = Shader.PropertyToID("_Mode");
+        private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
+
+        [NotPublicAPI]
+        public Material LowerInline(Material m)
+        {
+            if (!UsesLilToonShader(m)) return m;
+            
+            var standardMaterial = new Material(Shader.Find("Standard"))
+            {
+                mainTexture = m.mainTexture,
+                mainTextureScale = m.mainTextureScale,
+                mainTextureOffset = m.mainTextureOffset,
+                color = m.color
+            };
+            
+            const int Opaque = 0;
+            const int Transparent = 3;
+            Debug.Log($"typeof mainTexture: {m.mainTexture.GetType()}");
+            var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m.mainTexture));
+            Debug.Log($"typeof importer: {importer.GetType()}");
+            if (importer is TextureImporter ti)
+            {
+                var t = m.mainTexture;
+                var hasAlpha = ti.alphaSource == TextureImporterAlphaSource.FromInput;
+                var isNonOpaqueShader = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(m.shader)) !=
+                                        "efa77a80ca0344749b4f19fdd5891cbe";
+                var hasAnyNonOpaquePixel = TextureUtility.HasAnyNonOpaquePixel(t as Texture2D);
+                Debug.Log($"Test for {t}: import: {hasAlpha}, isNonOpaque: {isNonOpaqueShader}, pixels: {hasAnyNonOpaquePixel}");
+                var givenAlpha = hasAlpha && isNonOpaqueShader && hasAnyNonOpaquePixel;
+                standardMaterial.SetFloat(StandardShaderMixtureMode, givenAlpha ? Transparent : Opaque);
+                standardMaterial.SetFloat(ZWrite, givenAlpha ? 1 : 0);
+                if (givenAlpha)
+                {
+                    standardMaterial.renderQueue = 3000;
+                }
+            }
+            else
+            {
+                standardMaterial.SetFloat(StandardShaderMixtureMode, Transparent);
+                standardMaterial.SetFloat(ZWrite, 0);
+                standardMaterial.renderQueue = 3000;
+            }
+            
+            // set NormalMap
+            standardMaterial.SetTexture(BumpMap, m.GetTexture(BumpMap));
+            currentAllocator.Save(standardMaterial);
+            
+            return standardMaterial;
         }
     }
 }
