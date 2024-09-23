@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Codice.Client.BaseCommands;
 using JetBrains.Annotations;
 using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.ClonedMarker;
+using ResoniteImportHelper.Generic.Collections;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.Transform.Environment.LilToon;
 using ResoniteImportHelper.UnityEditorUtility;
@@ -16,7 +18,7 @@ namespace ResoniteImportHelper.Transform
 {
     internal static class AvatarTransformService
     {
-        internal static GameObject PerformConversionPure(
+        internal static Result PerformConversionPure(
             GameObject unmodifiableRoot,
             // ReSharper disable once InconsistentNaming
             bool runVRCSDKPipeline,
@@ -32,11 +34,11 @@ namespace ResoniteImportHelper.Transform
             
             var intermediateMarker = IntermediateClonedHierarchyMarker.Construct(target, unmodifiableRoot);
 
-            InPlaceConvert(target, bakeTexture, alloc);
+            var c = InPlaceConvert(target, bakeTexture, alloc);
             
             Object.DestroyImmediate(intermediateMarker);
-            return target;
 
+            return new Result(target, c.Materials);
         }
         
         private static GameObject Expand(
@@ -68,7 +70,17 @@ namespace ResoniteImportHelper.Transform
                 handler.PerformEnvironmentDependantShallowCopy(localUnmodifiableRoot);
         }
 
-        private static void InPlaceConvert(GameObject target, bool bakeTexture, ResourceAllocator alloc)
+        internal sealed class InPlaceConvertResult
+        {
+            internal readonly MultipleUnorderedDictionary<LoweredRenderMode, Material> Materials;
+
+            internal InPlaceConvertResult(MultipleUnorderedDictionary<LoweredRenderMode, Material> materials)
+            {
+                Materials = materials;
+            }
+        }
+        
+        private static InPlaceConvertResult InPlaceConvert(GameObject target, bool bakeTexture, ResourceAllocator alloc)
         {
             var rig = FindRigSetting(target);
             if (rig == null)
@@ -89,7 +101,9 @@ namespace ResoniteImportHelper.Transform
                 Debug.Log("Texture bake was skipped (disabled). Please turn on from experimental settings if you want to turn on.");
             }
 
-            LowerShader(target, alloc);
+            var materialMap = LowerShader(target, alloc);
+
+            return new InPlaceConvertResult(materialMap);
         }
 
         [CanBeNull]
@@ -253,21 +267,64 @@ namespace ResoniteImportHelper.Transform
             new LilToonHandler(allocator).PerformInlineTransform(root);
         }
 
-        private static void LowerShader(GameObject root, ResourceAllocator allocator)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="allocator"></param>
+        /// <returns>Materials that considered to be transparent.</returns>
+        private static MultipleUnorderedDictionary<LoweredRenderMode, Material> LowerShader(GameObject root, ResourceAllocator allocator)
         {
+            var outer = new MultipleUnorderedDictionary<LoweredRenderMode, Material>
+                {
+                    [LoweredRenderMode.Unknown] = new HashSet<Material>(),
+                    [LoweredRenderMode.Opaque] = new HashSet<Material>(),
+                    [LoweredRenderMode.Cutout] = new HashSet<Material>(),
+                    [LoweredRenderMode.Blend] = new HashSet<Material>()
+                };
+
             foreach (var skinnedMeshRenderer in root.GetComponentsInChildren<SkinnedMeshRenderer>())
             {
-                skinnedMeshRenderer.sharedMaterials =
+                var (convertedMaterials, renderModeMapping, _) = 
                     skinnedMeshRenderer.sharedMaterials
                         .Select(m => LowerMaterialInline(m, allocator))
-                        .ToArray();
+                        .Aggregate(
+                        (
+                            Materials: new Material[skinnedMeshRenderer.sharedMaterials.Length],
+                            Map: outer,
+                            Counter: 0
+                        ),
+                        (acc, currentMaterial) =>
+                        {
+                            var m = currentMaterial.GetMaybeConvertedMaterial();
+                            acc.Materials[acc.Counter] = m;
+                            acc.Map.Append(currentMaterial.GetComputedRenderMode(), m);
+                            return (acc.Materials, acc.Map, acc.Counter + 1);
+                        }
+                    );
+
+                skinnedMeshRenderer.sharedMaterials = convertedMaterials;
             }
+
+            return outer;
         }
         
         
-        private static Material LowerMaterialInline(Material m, ResourceAllocator alloc)
+        private static ISealedLoweredMaterialReference LowerMaterialInline(Material m, ResourceAllocator alloc)
         {
             return new LilToonHandler(alloc).LowerInline(m);
+        }
+
+        internal sealed class Result
+        {
+            internal readonly GameObject Processed;
+            internal readonly MultipleUnorderedDictionary<LoweredRenderMode, Material> Materials;
+
+            internal Result(GameObject processed, MultipleUnorderedDictionary<LoweredRenderMode, Material> materials)
+            {
+                Processed = processed;
+                Materials = materials;
+            }
         }
     }
 }

@@ -310,9 +310,9 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
 
         [NotPublicAPI]
-        public Material LowerInline(Material m)
+        public ISealedLoweredMaterialReference LowerInline(Material m)
         {
-            if (!UsesLilToonShader(m)) return m;
+            if (!UsesLilToonShader(m)) return new NonConvertedMaterial(m);
             
             var standardMaterial = new Material(Shader.Find("Standard"))
             {
@@ -327,6 +327,8 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Debug.Log($"typeof mainTexture: {m.mainTexture.GetType()}");
             var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m.mainTexture));
             Debug.Log($"typeof importer: {importer.GetType()}");
+            LoweredRenderMode mode;
+            
             if (importer is TextureImporter ti)
             {
                 var t = m.mainTexture;
@@ -336,6 +338,8 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 var hasAnyNonOpaquePixel = TextureUtility.HasAnyNonOpaquePixel(t as Texture2D);
                 Debug.Log($"Test for {t}: import: {hasAlpha}, isNonOpaque: {isNonOpaqueShader}, pixels: {hasAnyNonOpaquePixel}");
                 var givenAlpha = hasAlpha && isNonOpaqueShader && hasAnyNonOpaquePixel;
+                mode = givenAlpha ? LoweredRenderMode.Blend : LoweredRenderMode.Opaque;
+                
                 standardMaterial.SetFloat(StandardShaderMixtureMode, givenAlpha ? Transparent : Opaque);
                 standardMaterial.SetFloat(ZWrite, givenAlpha ? 1 : 0);
                 if (givenAlpha)
@@ -345,6 +349,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             }
             else
             {
+                mode = LoweredRenderMode.Blend;
                 standardMaterial.SetFloat(StandardShaderMixtureMode, Transparent);
                 standardMaterial.SetFloat(ZWrite, 0);
                 standardMaterial.renderQueue = 3000;
@@ -354,7 +359,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             standardMaterial.SetTexture(BumpMap, m.GetTexture(BumpMap));
             currentAllocator.Save(standardMaterial);
             
-            return standardMaterial;
+            return new LoweredMaterialReference(standardMaterial, mode);
         }
     }
 }

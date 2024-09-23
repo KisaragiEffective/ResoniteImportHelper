@@ -20,6 +20,6 @@ namespace ResoniteImportHelper.Transform.Environment.Common
     internal interface ICustomShaderLowerPass
     {
         [NotPublicAPI]
-        public Material LowerInline(Material m);
+        public ISealedLoweredMaterialReference LowerInline(Material m);
     }
 }

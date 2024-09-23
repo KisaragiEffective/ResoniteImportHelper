@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Backlink.Component;
+using ResoniteImportHelper.Generic.Collections;
+using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.UnityEditorUtility;
 using MeshUtility = ResoniteImportHelper.UnityEditorUtility.MeshUtility;
 #if RIH_HAS_UNI_GLTF
@@ -75,9 +79,79 @@ namespace ResoniteImportHelper.Serialization
             Debug.Log("backlink: started");
             TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
+
+            PostGLTF(serialized.Guid, config.MaterialsConsideredToBeTransparent);
+            Debug.Log("PostGLTF: done. reloading");
+            AssetDatabase.Refresh();
             
             Profiler.EndSample();
-            return new ExportInformation(serialized, containsVertexColors);
+            return new ExportInformation(serialized.LoadFromAssetDatabase(), containsVertexColors);
+        }
+
+        // ReSharper disable once InconsistentNaming
+        private static void PostGLTF(string gltfGuid, MultipleUnorderedDictionary<LoweredRenderMode, Material> _materials)
+        {
+            var materials = _materials[LoweredRenderMode.Blend] ?? new HashSet<Material>();
+            Debug.Log($"materials considered to be transparent: \n{string.Join("\n", materials.Select(m => m.name))}");
+            
+            var consideredAsBeingTransparentRaw = materials.Select(x => x.name).ToHashSet();
+            
+            var absoluteFilePath = Application.dataPath + "/../" + AssetDatabase.GUIDToAssetPath(gltfGuid);
+            var fileContent = File.ReadAllText(absoluteFilePath);
+            dynamic proxy = Newtonsoft.Json.JsonConvert.DeserializeObject(fileContent);
+            if (proxy == null)
+            {
+                Debug.LogError($"PostGLTF: asset identified by given GUID ({gltfGuid}) is not a glTF.");
+                return;
+            }
+
+            var rawMaterials = proxy["materials"];
+            if (rawMaterials is not IEnumerable<dynamic> dynMaterials)
+            {
+                Debug.LogError($"PostGLTF: asset identified by given GUID ({gltfGuid}) is not a glTF: `materials` is not an IEnumerable`1. actual type: {rawMaterials?.GetType() ?? "null"}");
+                return;
+            }
+
+            var contents = PartialReYield(
+                dynMaterials,
+                dynM => dynM.alphaMode != "BLEND" && consideredAsBeingTransparentRaw.Contains((
+                    (dynM.name as JValue)!.Value as string
+                )),
+                dynM =>
+                {
+                    dynM.alphaMode = "BLEND";
+                    dynM.doubleSided = true;
+                    Debug.Log(dynM);
+                    return dynM;
+                }
+            ).ToArray();
+            
+            proxy["materials"] = new JArray(contents);
+
+            string rewrittenJson = Newtonsoft.Json.JsonConvert.SerializeObject(proxy);
+            File.WriteAllText(absoluteFilePath, rewrittenJson);
+        }
+
+        private static T Inspect<T>(T obj)
+        {
+            Debug.Log($"inspect: {obj} (type: {obj.GetType()})");
+            return obj;
+        }
+
+        private static IEnumerable<TValue> PartialReYield<TValue>(IEnumerable<TValue> source, Func<TValue, bool> condition,
+            Func<TValue, TValue> map)
+        {
+            foreach (var s in source)
+            {
+                if (condition(s))
+                {
+                    yield return map(s);
+                }
+                else
+                {
+                    yield return s;
+                }
+            }
         }
 
         private static void SerializeIntermediateArtifact(GameObject processedModifiableRoot, ResourceAllocator allocator)
@@ -157,8 +231,8 @@ namespace ResoniteImportHelper.Serialization
         /// <param name="temporary"></param>
         /// <param name="containsVertexColors"></param>
         /// <param name="runIdentifier"></param>
-        /// <returns>Serialized object.</returns>
-        private static GameObject ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, ResourceAllocator allocator)
+        /// <returns>Lazily-loaded glTF as a <see cref="GameObject"/>.</returns>
+        private static DelayedReference<GameObject> ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, ResourceAllocator allocator)
         {
             Profiler.BeginSample("ExportGltfToAssetFolder");
 #if RIH_HAS_UNI_GLTF
@@ -203,12 +277,8 @@ namespace ResoniteImportHelper.Serialization
             }
             Profiler.EndSample();
 
-            Profiler.BeginSample("load");
-            var x = AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
             Profiler.EndSample();
-            
-            Profiler.EndSample();
-            return x;
+            return new DelayedReference<GameObject>(AssetDatabase.AssetPathToGUID(assetsRelPath));
 #else
             throw new Exception("assertion error: UniGLTF is not installed on the project.");
 #endif
