@@ -285,9 +285,9 @@ namespace ResoniteImportHelper.Transform
 
             var loweredMaterialCache = new Dictionary<Material, ISealedLoweredMaterialReference>();
             
-            foreach (var skinnedMeshRenderer in root.GetComponentsInChildren<SkinnedMeshRenderer>())
+            foreach (var skinnedMeshRenderer in RendererUtility.GetConvertibleRenderersInChildren(root))
             {
-                var (convertedMaterials, renderModeMapping, _) = 
+                var (convertedMaterials, _ , _) = 
                     skinnedMeshRenderer.sharedMaterials
                         .Select(m =>
                         {
