@@ -322,8 +322,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 color = m.color
             };
             
-            const int Opaque = 0;
-            const int Transparent = 3;
             Debug.Log($"typeof mainTexture: {m.mainTexture.GetType()}");
             var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m.mainTexture));
             Debug.Log($"typeof importer: {importer.GetType()}");
@@ -340,8 +338,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 var givenAlpha = hasAlpha && isNonOpaqueShader && hasAnyNonOpaquePixel;
                 mode = givenAlpha ? LoweredRenderMode.Blend : LoweredRenderMode.Opaque;
                 
-                standardMaterial.SetFloat(StandardShaderMixtureMode, givenAlpha ? Transparent : Opaque);
-                standardMaterial.SetFloat(ZWrite, givenAlpha ? 1 : 0);
+                standardMaterial.SetOverrideTag("RenderType", givenAlpha ? "Transparent" : "");
                 if (givenAlpha)
                 {
                     standardMaterial.renderQueue = 3000;
@@ -350,8 +347,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             else
             {
                 mode = LoweredRenderMode.Blend;
-                standardMaterial.SetFloat(StandardShaderMixtureMode, Transparent);
-                standardMaterial.SetFloat(ZWrite, 0);
+                standardMaterial.SetOverrideTag("RenderType", "Transparent");
                 standardMaterial.renderQueue = 3000;
             }
             
