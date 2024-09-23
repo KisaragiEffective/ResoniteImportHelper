@@ -293,6 +293,7 @@ namespace ResoniteImportHelper.Transform
                         {
                             if (loweredMaterialCache.TryGetValue(m, out var cached))
                             {
+                                Debug.Log($"LowerShader: cache hit: {m.name} -> {cached.GetMaybeConvertedMaterial()} ({cached.GetComputedRenderMode()})");
                                 return cached;
                             }
                             
