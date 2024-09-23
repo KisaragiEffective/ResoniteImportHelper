@@ -321,34 +321,42 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 mainTextureOffset = m.mainTextureOffset,
                 color = m.color
             };
-            
-            Debug.Log($"typeof mainTexture: {m.mainTexture.GetType()}");
-            var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(m.mainTexture));
-            Debug.Log($"typeof importer: {importer.GetType()}");
+
             LoweredRenderMode mode;
-            
-            if (importer is TextureImporter ti)
+            var mainTexture = m.mainTexture;
+            if (mainTexture != null)
             {
-                var t = m.mainTexture;
-                var hasAlpha = ti.alphaSource == TextureImporterAlphaSource.FromInput;
-                var isNonOpaqueShader = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(m.shader)) !=
-                                        "efa77a80ca0344749b4f19fdd5891cbe";
-                var hasAnyNonOpaquePixel = TextureUtility.HasAnyNonOpaquePixel(t as Texture2D);
-                Debug.Log($"Test for {t}: import: {hasAlpha}, isNonOpaque: {isNonOpaqueShader}, pixels: {hasAnyNonOpaquePixel}");
-                var givenAlpha = hasAlpha && isNonOpaqueShader && hasAnyNonOpaquePixel;
-                mode = givenAlpha ? LoweredRenderMode.Blend : LoweredRenderMode.Opaque;
-                
-                standardMaterial.SetOverrideTag("RenderType", givenAlpha ? "Transparent" : "");
-                if (givenAlpha)
+                Debug.Log($"typeof mainTexture: {mainTexture.GetType()}");
+                var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(mainTexture));
+                Debug.Log($"typeof importer: {importer.GetType()}");
+            
+                if (importer is TextureImporter ti)
                 {
+                    var t = mainTexture;
+                    var hasAlpha = ti.alphaSource == TextureImporterAlphaSource.FromInput;
+                    var isNonOpaqueShader = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(m.shader)) !=
+                                            "efa77a80ca0344749b4f19fdd5891cbe";
+                    var hasAnyNonOpaquePixel = TextureUtility.HasAnyNonOpaquePixel(t as Texture2D);
+                    Debug.Log($"Test for {t}: import: {hasAlpha}, isNonOpaque: {isNonOpaqueShader}, pixels: {hasAnyNonOpaquePixel}");
+                    var givenAlpha = hasAlpha && isNonOpaqueShader && hasAnyNonOpaquePixel;
+                    mode = givenAlpha ? LoweredRenderMode.Blend : LoweredRenderMode.Opaque;
+                
+                    standardMaterial.SetOverrideTag("RenderType", givenAlpha ? "Transparent" : "");
+                    if (givenAlpha)
+                    {
+                        standardMaterial.renderQueue = 3000;
+                    }
+                }
+                else
+                {
+                    mode = LoweredRenderMode.Blend;
+                    standardMaterial.SetOverrideTag("RenderType", "Transparent");
                     standardMaterial.renderQueue = 3000;
                 }
             }
             else
             {
-                mode = LoweredRenderMode.Blend;
-                standardMaterial.SetOverrideTag("RenderType", "Transparent");
-                standardMaterial.renderQueue = 3000;
+                mode = LoweredRenderMode.Opaque;
             }
             
             // set NormalMap
