@@ -283,11 +283,25 @@ namespace ResoniteImportHelper.Transform
                     [LoweredRenderMode.Blend] = new HashSet<Material>()
                 };
 
+            var loweredMaterialCache = new Dictionary<Material, ISealedLoweredMaterialReference>();
+            
             foreach (var skinnedMeshRenderer in root.GetComponentsInChildren<SkinnedMeshRenderer>())
             {
                 var (convertedMaterials, renderModeMapping, _) = 
                     skinnedMeshRenderer.sharedMaterials
-                        .Select(m => LowerMaterialInline(m, allocator))
+                        .Select(m =>
+                        {
+                            if (loweredMaterialCache.TryGetValue(m, out var cached))
+                            {
+                                return cached;
+                            }
+                            
+                            var lowered = LowerMaterialInline(m, allocator);
+                            
+                            loweredMaterialCache.Add(m, lowered);
+
+                            return lowered;
+                        })
                         .Aggregate(
                         (
                             Materials: new Material[skinnedMeshRenderer.sharedMaterials.Length],

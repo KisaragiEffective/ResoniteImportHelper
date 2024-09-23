@@ -23,6 +23,26 @@ namespace ResoniteImportHelper.Transform.Environment.Common
     /// </summary>
     internal interface ICustomShaderLowerPass
     {
+        /// <summary>
+        /// カスタムシェーダーを用いているかもしれないMaterialをUniGLTFが認識できるシェーダーで描画されるMaterialへ変換する。
+        /// この実装は、次のように実装されなければならない:
+        /// <list type="bullet">
+        /// <item>
+        /// ある<see cref="Material" /> <c>m</c> に対して、<c>LowerInline(m).GetMaybeConvertedMaterial()</c>が
+        /// <c>LowerInline(LowerInline(m).GetMaybeConvertedMaterial()).GetMaybeConvertedMaterial()</c> と等しいこと。
+        /// </item>
+        /// <item>
+        /// 同じ入力を与えられたときに、同じ出力を返すこと。<br />
+        /// ある<c>Material a</c>及び<c>Material b</c>が存在し、<c>a == b</c>であるとき、以下の等式も成り立つこと。
+        /// <list type="bullet">
+        /// <item><c>LowerInline(a).GetMaybeConvertedMaterial() == LowerInline(b).GetMaybeConvertedMaterial()</c></item>
+        /// <item><c>LowerInline(a).GetComputedRenderMode() == LowerInline(b).GetComputedRenderMode()</c></item>
+        /// </list>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         [NotPublicAPI]
         public ISealedLoweredMaterialReference LowerInline(Material m);
     }
