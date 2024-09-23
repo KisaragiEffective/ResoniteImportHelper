@@ -16,6 +16,10 @@ namespace ResoniteImportHelper.Transform.Environment.Common
     /// </list>
     ///
     /// 通常はNormal MapやMetallic Gross Mapを格納できるStandardシェーダーにするのが得策だろう。
+    /// <remarks>
+    /// 変換先のシェーダーをStandardシェーダーにする場合、かつ変換元シェーダーが半透明またはカットアウトで描画する場合、第一引数を<c>RenderMode</c>にした<see cref="Material.SetOverrideTag(string, string)"/>を忘れないこと。<br />
+    /// さもなくばUniGLTFはBlendModeが不透明であるとみなし、結果としてテクスチャのアルファチャンネルの損失を招く (<a href="https://github.com/vrm-c/UniVRM/blob/f8120fb22dade99ea8a9e03b77a3bbc2a4c79806/Assets/UniGLTF/Runtime/UniGLTF/IO/MaterialIO/BuiltInRP/Export/Materials/BuiltInStandardMaterialExporter.cs#L40-L57">ソース</a>)。
+    /// </remarks>
     /// </summary>
     internal interface ICustomShaderLowerPass
     {
