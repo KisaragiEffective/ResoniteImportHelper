@@ -83,7 +83,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 var props = MaterialEditor.GetMaterialProperties(new Object[] { m });
                 foreach (var prop in props.Where(prop => prop.type == MaterialProperty.PropType.Texture).Where(prop => prop.textureValue != null))
                 {
-                    var x = currentAllocator.Save(prop.textureValue);
+                    var x = currentAllocator.SaveAmbiguously(prop.textureValue);
                     prop.textureValue = x;
                 }
                 Profiler.EndSample();
@@ -263,7 +263,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 Profiler.BeginSample("Post");
             
                 Profiler.BeginSample("Allocation");
-                var persistent = currentAllocator.Save(tex);
+                var persistent = currentAllocator.SaveAmbiguously(tex);
                 Profiler.EndSample();
             
                 Profiler.BeginSample("Log computation");

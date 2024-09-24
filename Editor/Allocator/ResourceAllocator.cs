@@ -24,7 +24,7 @@ namespace ResoniteImportHelper.Allocator
         }
 
         [NotPublicAPI]
-        public T Save<T>(T obj, string name) where T : Object
+        private T Save<T>(T obj, string name) where T : Object
         {
             var basePath = BasePath + "/" + name;
             Debug.Log($"Allocating persistent asset: {typeof(T)} on {basePath}");
@@ -86,8 +86,7 @@ namespace ResoniteImportHelper.Allocator
         /// <exception cref="UnityException">すでにアセットとして存在するものをシリアライズしようとした時。</exception>
         /// <returns></returns>
         [NotPublicAPI]
-        [Obsolete("このメソッドは引数がすでに保存されているものかどうか区別がつかないので使うべきではない。")]
-        public T Save<T>(T obj) where T : Object
+        public T SaveAmbiguously<T>(T obj) where T : Object
         {
             return this.Save(obj, GUID.Generate().ToString());
         }
