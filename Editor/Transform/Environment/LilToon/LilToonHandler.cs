@@ -60,6 +60,9 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 
         private static bool UsesLilToonShader(Material m) => LilToonShaderFamily.Instance.Contains(m.shader);
 
+        private static bool _isInspectorInitialized = false;
+        private static MethodInfo _bakeMethod = null;
+        
         private static void PerformBakeTexture(Material m)
         {
             Profiler.BeginSample("LilToonHandler.PerformBakeTexture");
@@ -79,8 +82,8 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 Profiler.EndSample();
             }
             #endregion
-            var inspector = (new global::lilToon.lilToonInspector());
-            var inty = inspector.GetType();
+            var inspector = new lilToonInspector();
+            var inspectorType = inspector.GetType()!;
             // TODO: 例外ケースのダイアログがアレなので一部を切り貼りするべき？
 
             #region initialization for lilInspector
@@ -88,7 +91,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             {
                 Profiler.BeginSample("LilToonHandler.LilInspectorInitializationStub");
                 var props = MaterialEditor.GetMaterialProperties(new Object[] { m });
-                var apMethod = inty.GetMethod("AllProperties", BindingFlags.Instance | BindingFlags.NonPublic);
+                var apMethod = inspectorType.GetMethod("AllProperties", BindingFlags.Instance | BindingFlags.NonPublic);
                 var lmpProxies = (object[]) apMethod!.Invoke(inspector, Array.Empty<object>());
                 var lmpType = lmpProxies.GetType().GetElementType();
                 var findPropMethod = lmpType!.GetMethod("FindProperty", BindingFlags.Instance | BindingFlags.Public);
@@ -101,16 +104,12 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             {
                 Profiler.BeginSample("LilToonHandler.Reflect-TextureBake");
                 
-                Profiler.BeginSample("type");
-                var ty = inspector.GetType()!;
-                Profiler.EndSample();
-                
                 Profiler.BeginSample("method");
-                var method = ty!.GetMethod("TextureBake", BindingFlags.Instance | BindingFlags.NonPublic);
+                _bakeMethod ??= inspectorType!.GetMethod("TextureBake", BindingFlags.Instance | BindingFlags.NonPublic);
                 Profiler.EndSample();
                 
                 Profiler.BeginSample("invoke");
-                method!.Invoke(inspector, new object[] { m, all });
+                _bakeMethod!.Invoke(inspector, new object[] { m, all });
                 Profiler.EndSample();
                 
                 Profiler.EndSample();
