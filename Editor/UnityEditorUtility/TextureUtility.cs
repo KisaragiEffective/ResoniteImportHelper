@@ -8,9 +8,6 @@ namespace ResoniteImportHelper.UnityEditorUtility
     [NotPublicAPI]
     public static class TextureUtility
     {
-        internal static bool HasAnyNonOpaquePixel(Texture2D t2) =>
-            MaybeDuplicateTexture(t2).GetRawTextureData<Color32>().AsReadOnly().Any(c => c.a != 255);
-        
         /// <summary>
         /// see: <a href="https://discussions.unity.com/t/848617/2">Unity forum</a>
         /// </summary>

@@ -332,13 +332,11 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             
                 if (importer is TextureImporter ti)
                 {
-                    var t = mainTexture;
                     var hasAlpha = ti.alphaSource == TextureImporterAlphaSource.FromInput;
                     var isNonOpaqueShader = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(m.shader)) !=
                                             "efa77a80ca0344749b4f19fdd5891cbe";
-                    var hasAnyNonOpaquePixel = TextureUtility.HasAnyNonOpaquePixel(t as Texture2D);
-                    Debug.Log($"Test for {t}: import: {hasAlpha}, isNonOpaque: {isNonOpaqueShader}, pixels: {hasAnyNonOpaquePixel}");
-                    var givenAlpha = hasAlpha && isNonOpaqueShader && hasAnyNonOpaquePixel;
+                    Debug.Log($"Test for {mainTexture}: import: {hasAlpha}, isNonOpaque: {isNonOpaqueShader}");
+                    var givenAlpha = hasAlpha && isNonOpaqueShader;
                     mode = givenAlpha ? LoweredRenderMode.Blend : LoweredRenderMode.Opaque;
                 
                     standardMaterial.SetOverrideTag("RenderType", givenAlpha ? "Transparent" : "");
