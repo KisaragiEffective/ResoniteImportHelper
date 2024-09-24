@@ -39,7 +39,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Debug.LogWarning("This project does not have supported version of lilToon, skipping this IPostExpansionTransformer");
             return;
 #endif
-            var disposableMaterials = new List<Material>();
             Profiler.BeginSample("LilToonHandler.PerformInlineTransform");
             Profiler.BeginSample("Inline transform");
             foreach (var renderer in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
@@ -48,15 +47,12 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                          ).Where(o => o != null))
             {
                 var conversionResults = renderer.sharedMaterials.Select(RewriteInline).ToList();
-                renderer.sharedMaterials = conversionResults.Select(r => r.GetOutcome()).ToArray();
-                
-                disposableMaterials.AddRange(conversionResults.SelectMany(r => r.DisposableMaterialVariants()));
+                renderer.sharedMaterials = conversionResults.Select(r =>
+                {
+                    var x = r.AllocatedConvertedMaterial();
+                    return x != null ? currentAllocator.Save(x.Value) : r.GetOutcome();
+                }).ToArray();
             }
-            Profiler.EndSample();
-
-            Profiler.BeginSample("Garbage collection");
-            AssetDatabase.DeleteAssets(disposableMaterials.Select(AssetDatabase.GetAssetPath).ToArray(),
-                new List<string>());
             Profiler.EndSample();
             
             Profiler.EndSample();
@@ -281,19 +277,20 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Profiler.BeginSample("LilToonHandler.RewriteInline");
             Debug.Log($"try rewrite: {material} ({AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material))})");
             
-            if (!UsesLilToonShader(material)) return IMaterialConversionResult.NotModified(material, null);
-            var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
+            if (!UsesLilToonShader(material)) return IMaterialConversionResult.NotModified(material);
+            
+            var variant = MaterialUtility.CreateVariant(material);
             PerformBakeTexture(variant);
 
             IMaterialConversionResult ret;
             if (MaterialUtility.HasAnyOverride(variant))
             {
                 Debug.Log("this iteration produces override.");
-                ret = IMaterialConversionResult.Modified(material, variant, null);
+                ret = IMaterialConversionResult.Modified(material, variant);
             }
             else
             {
-                ret = IMaterialConversionResult.NotModified(material, Single(variant));
+                ret = IMaterialConversionResult.NotModified(material);
             }
 
             Profiler.EndSample();
@@ -359,9 +356,8 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             
             // set NormalMap
             standardMaterial.SetTexture(BumpMap, m.GetTexture(BumpMap));
-            currentAllocator.Save(standardMaterial);
             
-            return new LoweredMaterialReference(standardMaterial, mode);
+            return new LoweredMaterialReference(new InMemory<Material>(standardMaterial), mode);
         }
     }
 }

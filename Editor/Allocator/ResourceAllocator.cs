@@ -1,9 +1,11 @@
+using System;
 using System.IO;
 using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Allocator
 {
@@ -84,9 +86,22 @@ namespace ResoniteImportHelper.Allocator
         /// <exception cref="UnityException">すでにアセットとして存在するものをシリアライズしようとした時。</exception>
         /// <returns></returns>
         [NotPublicAPI]
+        [Obsolete("このメソッドは引数がすでに保存されているものかどうか区別がつかないので使うべきではない。")]
         public T Save<T>(T obj) where T : Object
         {
             return this.Save(obj, GUID.Generate().ToString());
+        }
+
+        /// <summary>
+        /// メモリ上に存在するオブジェクトを不定の名前で永続化する。
+        /// </summary>
+        /// <param name="toBeSerialized"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        [NotPublicAPI]
+        public T Save<T>(InMemory<T> toBeSerialized) where T : Object
+        {
+            return this.Save(toBeSerialized.InMemoryValue, GUID.Generate().ToString());
         }
     }
 }
