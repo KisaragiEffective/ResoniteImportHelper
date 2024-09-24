@@ -41,6 +41,12 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 #endif
             Profiler.BeginSample("LilToonHandler.PerformInlineTransform");
             Profiler.BeginSample("Inline transform");
+            
+            Profiler.BeginSample("MuteDialog");
+            // Harmonyのパッチが遅いので一度だけやる
+            var h = MuteDialogIfPossible();
+            Profiler.EndSample();
+            
             foreach (var renderer in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
                          .Select(o => 
                              o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr : null
@@ -53,6 +59,8 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                     return x != null ? currentAllocator.Save(x.Value) : r.GetOutcome();
                 }).ToArray();
             }
+            
+            UnmuteDialog(h);
             Profiler.EndSample();
             
             Profiler.EndSample();
@@ -68,7 +76,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Profiler.BeginSample("LilToonHandler.PerformBakeTexture");
             const int all = 0;
             // Debug.Log("bake");
-            var h = MuteDialogIfPossible();
 #if RIH_HAS_LILTOON
             #region avoid texture overwrite
             {
@@ -82,7 +89,9 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 Profiler.EndSample();
             }
             #endregion
+            Profiler.BeginSample(".ctor");
             var inspector = new lilToonInspector();
+            Profiler.EndSample();
             var inspectorType = inspector.GetType()!;
             // TODO: 例外ケースのダイアログがアレなので一部を切り貼りするべき？
 
@@ -115,7 +124,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 Profiler.EndSample();
             }
 #endif
-            UnmuteDialog(h);
             Profiler.EndSample();
             // Debug.Log("bake done");
         }
@@ -139,25 +147,44 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Debug.Log("Harmony is unavailable. Auto-muting dialog does not work.");
             return null;
 #else
+            Profiler.BeginSample("Harmony .ctor");
             var h = new HarmonyLib.Harmony(
                 "io.github.kisaragieffective.resonite-import-helper.liltoon.headless-bake");
-
+            Profiler.EndSample();
+            
+            Profiler.BeginSample("Mute warnings");
+            Profiler.BeginSample("Get Method");
             var warningDialogMethod = typeof(EditorUtility)
                 .GetMethod(nameof(EditorUtility.DisplayDialog), new[] { typeof(string), typeof(string), typeof(string) });
+            Profiler.EndSample();
             
+            Profiler.BeginSample("Construct method");
+            var prefix =
+                new HarmonyLib.HarmonyMethod(typeof(LilToonHandler), nameof(SkipDisplayDialogFromLilInspector));
+            Profiler.EndSample();
+            
+            Profiler.BeginSample("Patch");
             h.Patch(
                 warningDialogMethod, 
-                prefix: new HarmonyLib.HarmonyMethod(typeof(LilToonHandler), nameof(SkipDisplayDialogFromLilInspector))
+                prefix
             );
+            Profiler.EndSample();
+            Profiler.EndSample();
 
+            Profiler.BeginSample("Mute file destination dialog");
+            Profiler.BeginSample("Get Method");
             var bakeMethod = typeof(lilTextureUtils)
                 .GetMethod("SaveTextureToPng", BindingFlags.NonPublic | BindingFlags.Static,
                     null, new[] { typeof(Material), typeof(Texture2D), typeof(string), typeof(string) }, Array.Empty<ParameterModifier>());
-
+            Profiler.EndSample();
+            
+            Profiler.BeginSample("Patch");
             h.Patch(
                 bakeMethod,
                 prefix: new HarmonyLib.HarmonyMethod(typeof(LilToonHandler), nameof(SkipSaveDestinationDialog))
             );
+            Profiler.EndSample();
+            Profiler.EndSample();
             
             return h;
 #endif
