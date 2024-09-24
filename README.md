@@ -33,7 +33,7 @@ Following tools are optional. This tool can invoke their hooks.
     1. Go to `Window > Package Manager`
     2. Click `[+▼]`
     3. Select "Add package from Git URL"
-    4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.12`
+    4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.13`
 3. Go to `Tools > Resonite Import Helper`: \
     ![UI visual](./Doc~/r1.png)
 4. Set processing avatar.
