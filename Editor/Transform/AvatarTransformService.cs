@@ -285,43 +285,51 @@ namespace ResoniteImportHelper.Transform
 
             var loweredMaterialCache = new Dictionary<Material, ISealedLoweredMaterialReference>();
             
-            foreach (var skinnedMeshRenderer in RendererUtility.GetConvertibleRenderersInChildren(root))
+            foreach (var renderer in RendererUtility.GetConvertibleRenderersInChildren(root))
             {
-                var (convertedMaterials, _ , _) = 
-                    skinnedMeshRenderer.sharedMaterials
-                        .Select(m =>
-                        {
-                            if (loweredMaterialCache.TryGetValue(m, out var cached))
-                            {
-                                Debug.Log($"LowerShader: cache hit: {m.name} -> {cached.GetMaybeConvertedMaterial()} ({cached.GetComputedRenderMode()})");
-                                return cached;
-                            }
-                            
-                            var lowered = LowerMaterialInline(m, allocator);
-                            
-                            loweredMaterialCache.Add(m, lowered);
-
-                            return lowered;
-                        })
-                        .Aggregate(
-                        (
-                            Materials: new Material[skinnedMeshRenderer.sharedMaterials.Length],
-                            Map: outer,
-                            Counter: 0
-                        ),
-                        (acc, currentMaterial) =>
-                        {
-                            var m = currentMaterial.GetMaybeConvertedMaterial();
-                            acc.Materials[acc.Counter] = m;
-                            acc.Map.Append(currentMaterial.GetComputedRenderMode(), m);
-                            return (acc.Materials, acc.Map, acc.Counter + 1);
-                        }
-                    );
-
-                skinnedMeshRenderer.sharedMaterials = convertedMaterials;
+                renderer.sharedMaterials = LowerShaderInner(renderer, loweredMaterialCache, outer, allocator);
             }
 
             return outer;
+        }
+
+        private static Material[] LowerShaderInner(
+            Renderer renderer,
+            Dictionary<Material, ISealedLoweredMaterialReference> loweredMaterialCache,
+            MultipleUnorderedDictionary<LoweredRenderMode, Material> outer,
+            ResourceAllocator allocator
+        )
+        {
+            return renderer
+                .sharedMaterials
+                .Select(m =>
+                {
+                    if (loweredMaterialCache.TryGetValue(m, out var cached))
+                    {
+                        Debug.Log($"LowerShader: cache hit: {m.name} -> {cached.GetMaybeConvertedMaterial()} ({cached.GetComputedRenderMode()})");
+                        return cached;
+                    }
+                        
+                    var lowered = LowerMaterialInline(m, allocator);
+                        
+                    loweredMaterialCache.Add(m, lowered);
+
+                    return lowered;
+                })
+                .Aggregate(
+                    (
+                        Materials: new Material[renderer.sharedMaterials.Length],
+                        Map: outer,
+                        Counter: 0
+                    ),
+                    (acc, currentMaterial) =>
+                    {
+                        var m = currentMaterial.GetMaybeConvertedMaterial();
+                        acc.Materials[acc.Counter] = m;
+                        acc.Map.Append(currentMaterial.GetComputedRenderMode(), m);
+                        return (acc.Materials, acc.Map, acc.Counter + 1);
+                    }
+                ).Materials;
         }
         
         
