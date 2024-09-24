@@ -1,9 +1,11 @@
+using System;
 using System.IO;
 using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Allocator
 {
@@ -22,7 +24,7 @@ namespace ResoniteImportHelper.Allocator
         }
 
         [NotPublicAPI]
-        public T Save<T>(T obj, string name) where T : Object
+        private T Save<T>(T obj, string name) where T : Object
         {
             var basePath = BasePath + "/" + name;
             Debug.Log($"Allocating persistent asset: {typeof(T)} on {basePath}");
@@ -77,16 +79,29 @@ namespace ResoniteImportHelper.Allocator
         }
 
         /// <summary>
-        /// ファイルを不定の名前でセーブする。ファイル名を制御したい時は<see cref="Save{T}(T,string)"/>を使うこと。
+        /// 与えられたアセットを不定の名前で永続化する。
         /// </summary>
         /// <param name="obj"></param>
+        /// <param name="name"></param>
         /// <typeparam name="T"></typeparam>
         /// <exception cref="UnityException">すでにアセットとして存在するものをシリアライズしようとした時。</exception>
         /// <returns></returns>
         [NotPublicAPI]
-        public T Save<T>(T obj) where T : Object
+        public T SaveAmbiguously<T>(T obj, string? name = null) where T : Object
         {
-            return this.Save(obj, GUID.Generate().ToString());
+            return this.Save(obj, name ?? GUID.Generate().ToString());
+        }
+
+        /// <summary>
+        /// メモリ上に存在するオブジェクトを不定の名前で永続化する。
+        /// </summary>
+        /// <param name="toBeSerialized"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        [NotPublicAPI]
+        public T Save<T>(InMemory<T> toBeSerialized) where T : Object
+        {
+            return this.Save(toBeSerialized.InMemoryValue, GUID.Generate().ToString());
         }
     }
 }

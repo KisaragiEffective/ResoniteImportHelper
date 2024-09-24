@@ -1,3 +1,4 @@
+using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Marker;
 using UnityEngine;
 
@@ -11,6 +12,12 @@ namespace ResoniteImportHelper.Transform.Environment.Common
         /// <returns>変換されたかもしれない<see cref="Material"/>。</returns>
         [NotPublicAPI]
         public Material GetMaybeConvertedMaterial();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>存在する場合はそれ、ない場合はnull</returns>
+        public InMemory<Material>? GetAllocationJob();
 
         /// <summary>
         /// 
@@ -29,23 +36,29 @@ namespace ResoniteImportHelper.Transform.Environment.Common
         }
 
         public Material GetMaybeConvertedMaterial() => _originalMaterial;
+        public InMemory<Material>? GetAllocationJob() => null;
 
         public LoweredRenderMode GetComputedRenderMode() => LoweredRenderMode.Unknown;
     }
 
     internal readonly struct LoweredMaterialReference : ISealedLoweredMaterialReference
     {
-        internal readonly Material ConvertedMaterial;
+        internal readonly InMemory<Material> ToBeAllocatedMaterial;
         internal readonly LoweredRenderMode RenderMode;
 
-        internal LoweredMaterialReference(Material convertedMaterial, LoweredRenderMode renderMode)
+        internal LoweredMaterialReference(InMemory<Material> toBeAllocatedMaterial, LoweredRenderMode renderMode)
         {
-            ConvertedMaterial = convertedMaterial;
+            ToBeAllocatedMaterial = toBeAllocatedMaterial;
             RenderMode = renderMode;
         }
 
         [NotPublicAPI]
-        public Material GetMaybeConvertedMaterial() => ConvertedMaterial;
+        public Material GetMaybeConvertedMaterial() => ToBeAllocatedMaterial.InMemoryValue;
+
+        public InMemory<Material>? GetAllocationJob()
+        {
+            return ToBeAllocatedMaterial;
+        }
 
         [NotPublicAPI]
         public LoweredRenderMode GetComputedRenderMode() => RenderMode;

@@ -275,6 +275,7 @@ namespace ResoniteImportHelper.Transform
         /// <returns>Materials that considered to be transparent.</returns>
         private static MultipleUnorderedDictionary<LoweredRenderMode, Material> LowerShader(GameObject root, ResourceAllocator allocator)
         {
+            Profiler.BeginSample("LowerShader");
             var outer = new MultipleUnorderedDictionary<LoweredRenderMode, Material>
                 {
                     [LoweredRenderMode.Unknown] = new HashSet<Material>(),
@@ -289,6 +290,7 @@ namespace ResoniteImportHelper.Transform
             {
                 renderer.sharedMaterials = LowerShaderInner(renderer, loweredMaterialCache, outer, allocator);
             }
+            Profiler.EndSample();
 
             return outer;
         }
@@ -300,7 +302,8 @@ namespace ResoniteImportHelper.Transform
             ResourceAllocator allocator
         )
         {
-            return renderer
+            Profiler.BeginSample("LowerShaderInner.CachedLower");
+            var materials = renderer
                 .sharedMaterials
                 .Select(m =>
                 {
@@ -315,27 +318,52 @@ namespace ResoniteImportHelper.Transform
                     loweredMaterialCache.Add(m, lowered);
 
                     return lowered;
-                })
-                .Aggregate(
-                    (
-                        Materials: new Material[renderer.sharedMaterials.Length],
-                        Map: outer,
-                        Counter: 0
-                    ),
-                    (acc, currentMaterial) =>
-                    {
-                        var m = currentMaterial.GetMaybeConvertedMaterial();
-                        acc.Materials[acc.Counter] = m;
-                        acc.Map.Append(currentMaterial.GetComputedRenderMode(), m);
-                        return (acc.Materials, acc.Map, acc.Counter + 1);
-                    }
-                ).Materials;
+                });
+            Profiler.EndSample();
+
+            Material[] materials2;
+            
+            try
+            {
+                Profiler.BeginSample("Allocate and collect");
+                AssetDatabase.StartAssetEditing();
+                materials2 = materials
+                    .Aggregate(
+                        (
+                            Materials: new Material[renderer.sharedMaterials.Length],
+                            Map: outer,
+                            Counter: 0
+                        ),
+                        (acc, currentMaterial) =>
+                        {
+                            var aj = currentMaterial.GetAllocationJob();
+                            if (aj != null)
+                            {
+                                var m = allocator.Save(aj.Value);
+                            
+                                acc.Materials[acc.Counter] = m;
+                                acc.Map.Append(currentMaterial.GetComputedRenderMode(), m);
+                            }
+                            
+                            return (acc.Materials, acc.Map, acc.Counter + 1);
+                        }
+                    ).Materials;
+            }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+                Profiler.EndSample();
+            }
+
+            return materials2;
         }
-        
         
         private static ISealedLoweredMaterialReference LowerMaterialInline(Material m, ResourceAllocator alloc)
         {
-            return new LilToonHandler(alloc).LowerInline(m);
+            Profiler.BeginSample("LowerMaterialInline");
+            var x = new LilToonHandler(alloc).LowerInline(m);
+            Profiler.EndSample();
+            return x;
         }
 
         internal sealed class Result
