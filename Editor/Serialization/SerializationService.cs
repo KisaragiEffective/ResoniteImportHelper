@@ -80,78 +80,11 @@ namespace ResoniteImportHelper.Serialization
             TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
 
-            PostGLTF(serialized.Guid, config.MaterialsConsideredToBeTransparent);
             Debug.Log("PostGLTF: done. reloading");
             AssetDatabase.Refresh();
             
             Profiler.EndSample();
             return new ExportInformation(serialized.LoadFromAssetDatabase(), containsVertexColors);
-        }
-
-        // ReSharper disable once InconsistentNaming
-        private static void PostGLTF(string gltfGuid, MultipleUnorderedDictionary<LoweredRenderMode, Material> _materials)
-        {
-            var materials = _materials[LoweredRenderMode.Blend] ?? new HashSet<Material>();
-            Debug.Log($"materials considered to be transparent: \n{string.Join("\n", materials.Select(m => m.name))}");
-            
-            var consideredAsBeingTransparentRaw = materials.Select(x => x.name).ToHashSet();
-            
-            var absoluteFilePath = Application.dataPath + "/../" + AssetDatabase.GUIDToAssetPath(gltfGuid);
-            var fileContent = File.ReadAllText(absoluteFilePath);
-            dynamic proxy = Newtonsoft.Json.JsonConvert.DeserializeObject(fileContent);
-            if (proxy == null)
-            {
-                Debug.LogError($"PostGLTF: asset identified by given GUID ({gltfGuid}) is not a glTF.");
-                return;
-            }
-
-            var rawMaterials = proxy["materials"];
-            if (rawMaterials is not IEnumerable<dynamic> dynMaterials)
-            {
-                Debug.LogError($"PostGLTF: asset identified by given GUID ({gltfGuid}) is not a glTF: `materials` is not an IEnumerable`1. actual type: {rawMaterials?.GetType() ?? "null"}");
-                return;
-            }
-
-            var contents = PartialReYield(
-                dynMaterials,
-                dynM => dynM.alphaMode != "BLEND" && consideredAsBeingTransparentRaw.Contains((
-                    (dynM.name as JValue)!.Value as string
-                )),
-                dynM =>
-                {
-                    dynM.alphaMode = "BLEND";
-                    dynM.doubleSided = true;
-                    Debug.Log(dynM);
-                    return dynM;
-                }
-            ).ToArray();
-            
-            proxy["materials"] = new JArray(contents);
-
-            string rewrittenJson = Newtonsoft.Json.JsonConvert.SerializeObject(proxy);
-            File.WriteAllText(absoluteFilePath, rewrittenJson);
-        }
-
-        private static T Inspect<T>(T obj)
-        {
-            Debug.Log($"inspect: {obj} (type: {obj.GetType()})");
-            return obj;
-        }
-
-        private static IEnumerable<TValue> PartialReYield<TValue>(IEnumerable<TValue> source, Func<TValue, bool> condition,
-            Func<TValue, TValue> map)
-        {
-            foreach (var s in source)
-            {
-                if (condition(s))
-                {
-                    yield return map(s);
-                }
-                else
-                {
-                    yield return s;
-                }
-            }
         }
 
         private static void SerializeIntermediateArtifact(GameObject processedModifiableRoot, ResourceAllocator allocator)
