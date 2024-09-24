@@ -270,8 +270,23 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         }
         #endregion
 
+        private readonly Dictionary<Material, IMaterialConversionResult> _conversionCache = new();
+        
         [NotPublicAPI]
         public IMaterialConversionResult RewriteInline(Material material)
+        {
+            if (_conversionCache.TryGetValue(material, out var value))
+            {
+                return value;
+            }
+
+            var v = RewriteInline0(material);
+            _conversionCache.Add(material, v);
+            
+            return v;
+        }
+        
+        private static IMaterialConversionResult RewriteInline0(Material material)
         {
             Profiler.BeginSample("LilToonHandler.RewriteInline");
             Debug.Log($"try rewrite: {material} ({AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material))})");
