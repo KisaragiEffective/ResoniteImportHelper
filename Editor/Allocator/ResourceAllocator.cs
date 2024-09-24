@@ -79,16 +79,17 @@ namespace ResoniteImportHelper.Allocator
         }
 
         /// <summary>
-        /// ファイルを不定の名前でセーブする。ファイル名を制御したい時は<see cref="Save{T}(T,string)"/>を使うこと。
+        /// 与えられたアセットを不定の名前で永続化する。
         /// </summary>
         /// <param name="obj"></param>
+        /// <param name="name"></param>
         /// <typeparam name="T"></typeparam>
         /// <exception cref="UnityException">すでにアセットとして存在するものをシリアライズしようとした時。</exception>
         /// <returns></returns>
         [NotPublicAPI]
-        public T SaveAmbiguously<T>(T obj) where T : Object
+        public T SaveAmbiguously<T>(T obj, string? name = null) where T : Object
         {
-            return this.Save(obj, GUID.Generate().ToString());
+            return this.Save(obj, name ?? GUID.Generate().ToString());
         }
 
         /// <summary>
