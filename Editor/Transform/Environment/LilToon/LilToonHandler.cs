@@ -19,7 +19,7 @@ using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform.Environment.LilToon
 {
-    internal sealed class LilToonHandler: ISameShaderMaterialTransformPass
+    internal sealed class LilToonHandler: ISameShaderMaterialTransformPass, ICustomShaderLowerPass
     {
         private static ResourceAllocator currentAllocator;
         
@@ -303,6 +303,67 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         private static IEnumerable<T> Single<T>(T obj)
         {
             yield return obj;
+        }
+
+        private static readonly int BumpMap = Shader.PropertyToID("_BumpMap");
+        private static readonly int StandardShaderMixtureMode = Shader.PropertyToID("_Mode");
+        private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
+
+        [NotPublicAPI]
+        public ISealedLoweredMaterialReference LowerInline(Material m)
+        {
+            if (!UsesLilToonShader(m)) return new NonConvertedMaterial(m);
+            
+            var standardMaterial = new Material(Shader.Find("Standard"))
+            {
+                mainTexture = m.mainTexture,
+                mainTextureScale = m.mainTextureScale,
+                mainTextureOffset = m.mainTextureOffset,
+                color = m.color
+            };
+
+            LoweredRenderMode mode;
+            var mainTexture = m.mainTexture;
+            if (mainTexture != null)
+            {
+                Debug.Log($"typeof mainTexture: {mainTexture.GetType()}");
+                var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(mainTexture));
+                Debug.Log($"typeof importer: {importer.GetType()}");
+            
+                if (importer is TextureImporter ti)
+                {
+                    var t = mainTexture;
+                    var hasAlpha = ti.alphaSource == TextureImporterAlphaSource.FromInput;
+                    var isNonOpaqueShader = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(m.shader)) !=
+                                            "efa77a80ca0344749b4f19fdd5891cbe";
+                    var hasAnyNonOpaquePixel = TextureUtility.HasAnyNonOpaquePixel(t as Texture2D);
+                    Debug.Log($"Test for {t}: import: {hasAlpha}, isNonOpaque: {isNonOpaqueShader}, pixels: {hasAnyNonOpaquePixel}");
+                    var givenAlpha = hasAlpha && isNonOpaqueShader && hasAnyNonOpaquePixel;
+                    mode = givenAlpha ? LoweredRenderMode.Blend : LoweredRenderMode.Opaque;
+                
+                    standardMaterial.SetOverrideTag("RenderType", givenAlpha ? "Transparent" : "");
+                    if (givenAlpha)
+                    {
+                        standardMaterial.renderQueue = 3000;
+                    }
+                }
+                else
+                {
+                    mode = LoweredRenderMode.Blend;
+                    standardMaterial.SetOverrideTag("RenderType", "Transparent");
+                    standardMaterial.renderQueue = 3000;
+                }
+            }
+            else
+            {
+                mode = LoweredRenderMode.Opaque;
+            }
+            
+            // set NormalMap
+            standardMaterial.SetTexture(BumpMap, m.GetTexture(BumpMap));
+            currentAllocator.Save(standardMaterial);
+            
+            return new LoweredMaterialReference(standardMaterial, mode);
         }
     }
 }

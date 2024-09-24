@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using ResoniteImportHelper.Allocator;
+using ResoniteImportHelper.Generic.Collections;
+using ResoniteImportHelper.Transform.Environment.Common;
 using UnityEngine;
 
 namespace ResoniteImportHelper.Serialization
@@ -23,18 +26,25 @@ namespace ResoniteImportHelper.Serialization
         /// </summary>
         internal readonly bool GenerateIntermediateArtifact;
 
+        /// <summary>
+        /// シリアライズする前の段階で透明、または半透明として描画されるべきと判断された<see cref="Material"/>を列挙する。
+        /// </summary>
+        internal readonly MultipleUnorderedDictionary<LoweredRenderMode, Material> MaterialsConsideredToBeTransparent;
+
         internal readonly ResourceAllocator Allocator;
 
         internal SerializationConfiguration(
             GameObject processingTemporaryObjectRoot,
             GameObject originalMaybePackedObject,
             bool generateIntermediateArtifact,
+            MultipleUnorderedDictionary<LoweredRenderMode, Material> materialsConsideredToBeTransparent,
             ResourceAllocator allocator
         )
         {
             ProcessingTemporaryObjectRoot = processingTemporaryObjectRoot;
             OriginalMaybePackedObject = originalMaybePackedObject;
             GenerateIntermediateArtifact = generateIntermediateArtifact;
+            MaterialsConsideredToBeTransparent = materialsConsideredToBeTransparent;
             Allocator = allocator;
         }
     }
