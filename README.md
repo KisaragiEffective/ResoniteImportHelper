@@ -112,9 +112,9 @@ If it is made for VRChat, and has [VRChat Avatar Descriptor], additional logic a
   * This is technical limitation, because RIH can't determine which bone should be used as IK bone.
 
 #### semi-transparent texture is exported as opaque texture
-This is [known bug](https://github.com/KisaragiEffective/ResoniteImportHelper/issues/50).
+This is implemented in release [0.1.13](https://github.com/KisaragiEffective/ResoniteImportHelper/releases/tag/0.1.13).
 
-workaround: re-assign Texture on Resonite or UnityEditor.
+Please report bug if it does not solve your case.
 
 [UNITY-AVATAR]: https://docs.unity3d.com/2022.3/Documentation/Manual/ConfiguringtheAvatar.html
 [RIG-TAB]: https://docs.unity3d.com/2022.3/Documentation/Manual/FBXImporter-Rig.html
