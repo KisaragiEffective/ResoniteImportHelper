@@ -78,13 +78,6 @@ Snippet after `#` specifies revision to be installed. By this configuration, you
 11. Press "Open in file system". File explorer will be pop up on top of screen.
 12. Find a file ending with `.gltf` in the directory and drop it onto Resonite window.
 13. Make sure every material keeps their looks.
-    * By default, following property are kept:
-        * Albedo and its transparency
-        * Normal map
-    * Plus if you enabled "Bake lilToon's configuration into Texture" (behind Experimental Settings), Albedo is going to have those:
-        * Toon Correction
-        * 2nd / 3rd Main Texture
-        * Alpha Mask
 14. Implement workaround or find alternative solution. The following Unity and Platform-specific components cannot be exported because glTF lacks corresponding concept:
     * **Animation**. Workaround: Configure ProtoFlux to toggle properties.
     * **Expression Menu**. Workaround: Set up [Context Menu](https://wiki.resonite.com/Category:Components:Radiant_UI:Context_Menu) to achieve similar effect.
@@ -121,6 +114,31 @@ Please report bug if it does not solve your case.
 [ANIMATOR COMPONENT]: https://docs.unity3d.com/2022.3/Documentation/Manual/class-Animator.html
 [NOIK]: https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Ignoring_Bones
 [VRChat Avatar Descriptor]: https://creators.vrchat.com/avatars/creating-your-first-avatar#step-5---adding-an-avatar-descriptor
+
+#### Converted model looks like far from original, what went wrong?
+Typically, this is caused by Custom Shaders.
+
+> [!NOTE]
+> Definition: Custom Shader \
+> Any Shader on Unity *except* Unity's Standard Shader is considered as Custom Shader. \
+> This including, but not limited to lilToon, Poiyomi, and UTS.
+
+By default (and most case), following property are kept:
+* Albedo and its transparency
+* Normal map
+
+Please let me know if that's not true.
+
+Supporting around Custom Shader-specific properties in is poor. 
+
+However please remember that it will **never** be considered if you do not let me know.
+
+Plus if you enabled "Bake lilToon's configuration into Texture" (behind Experimental Settings), Albedo is going to have those:
+* Toon Correction
+* 2nd / 3rd Main Texture
+* Alpha Mask
+
+It is not possible to cover all Custom Shaders. Because you may write one.
 
 ## Folder structure
 There are a few file in the containing folder.
