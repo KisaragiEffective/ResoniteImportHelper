@@ -78,7 +78,6 @@ Snippet after `#` specifies revision to be installed. By this configuration, you
 11. Press "Open in file system". File explorer will be pop up on top of screen.
 12. Find a file ending with `.gltf` in the directory and drop it onto Resonite window.
 13. Make sure every material keeps their looks.
-
 14. Implement workaround or find alternative solution. The following Unity and Platform-specific components cannot be exported because glTF lacks corresponding concept:
     * **Animation**. Workaround: Configure ProtoFlux to toggle properties.
     * **Expression Menu**. Workaround: Set up [Context Menu](https://wiki.resonite.com/Category:Components:Radiant_UI:Context_Menu) to achieve similar effect.
