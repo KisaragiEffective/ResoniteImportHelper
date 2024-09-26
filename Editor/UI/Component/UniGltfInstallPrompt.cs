@@ -1,4 +1,6 @@
+using ResoniteImportHelper.Bootstrap.Logic;
 using ResoniteImportHelper.UI.Localize;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace ResoniteImportHelper.UI.Component
@@ -10,8 +12,15 @@ namespace ResoniteImportHelper.UI.Component
             var rootVisualElement = this;
 #if !RIH_HAS_UNI_GLTF
             {
+                var message =
+#if RIH_HAS_UNI_GLTF_ANY
+                    lang.ConflictingVersionOfUniGLTFIsInstalled()
+#else
+                    lang.UniGLTFIsNotInstalled()
+#endif
+                    ;
                 rootVisualElement.Add(
-                    new HelpBox(lang.UniGLTFIsNotInstalled(), HelpBoxMessageType.Error)
+                    new HelpBox(message, HelpBoxMessageType.Error)
                 );
                 {
                     var button = new Button(() =>
