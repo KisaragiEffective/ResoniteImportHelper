@@ -1,5 +1,3 @@
-using System;
-
 namespace ResoniteImportHelper.UI.Localize
 {
     internal sealed class English : ILocalizedTexts
