@@ -1,5 +1,4 @@
 using System.Linq;
-using ResoniteImportHelper.Bootstrap.Logic;
 using ResoniteImportHelper.Lint.Pass;
 using ResoniteImportHelper.TransFront;
 using ResoniteImportHelper.UI.Localize;

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Generic.Collections;
 using ResoniteImportHelper.Transform.Environment.Common;

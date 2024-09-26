@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.UnityEditorUtility;

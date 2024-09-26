@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json.Linq;
 using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Backlink.Component;
-using ResoniteImportHelper.Generic.Collections;
-using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.UnityEditorUtility;
 using MeshUtility = ResoniteImportHelper.UnityEditorUtility.MeshUtility;
 #if RIH_HAS_UNI_GLTF
