@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using JetBrains.Annotations;
 using ResoniteImportHelper.Allocator;
+using ResoniteImportHelper.ClonedMarker;
+using ResoniteImportHelper.Generic.Collections;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.Transform.Environment.LilToon;
 using ResoniteImportHelper.UnityEditorUtility;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Object = UnityEngine.Object;
@@ -14,7 +18,7 @@ namespace ResoniteImportHelper.Transform
 {
     internal static class AvatarTransformService
     {
-        internal static GameObject PerformConversionPure(
+        internal static Result PerformConversionPure(
             GameObject unmodifiableRoot,
             // ReSharper disable once InconsistentNaming
             bool runVRCSDKPipeline,
@@ -24,23 +28,60 @@ namespace ResoniteImportHelper.Transform
             ResourceAllocator alloc
         )
         {
-            var target = unmodifiableRoot;
-            
             Profiler.BeginSample("EnvironmentDependantShallowCopyAndTransform");
+            var target = Expand(unmodifiableRoot, runVRCSDKPipeline, runNDMF);
+            Profiler.EndSample();
+            
+            var intermediateMarker = IntermediateClonedHierarchyMarker.Construct(target, unmodifiableRoot);
+
+            var c = InPlaceConvert(target, bakeTexture, alloc);
+            
+            Object.DestroyImmediate(intermediateMarker);
+
+            return new Result(target, c.Materials);
+        }
+        
+        private static GameObject Expand(
+            GameObject unmodifiableRoot,
+            // ReSharper disable once InconsistentNaming
+            bool runVRCSDKPipeline,
+            // ReSharper disable once InconsistentNaming
+            bool runNDMF
+        )
+        {
+            GameObject modifiableRoot;
+
             if (runVRCSDKPipeline)
             {
-                target = PerformEnvironmentDependantShallowCopy(new Environment.VRChat.VRChatBuildPipelineExpander(), unmodifiableRoot);
+                modifiableRoot = PerformEnvironmentDependantShallowCopy(new Environment.VRChat.VRChatBuildPipelineExpander(), unmodifiableRoot);
             }
             else if (runNDMF)
             {
-                target = PerformEnvironmentDependantShallowCopy(new Environment.NDMF.StandaloneNDMFExpander(), unmodifiableRoot);
+                modifiableRoot = PerformEnvironmentDependantShallowCopy(new Environment.NDMF.StandaloneNDMFExpander(), unmodifiableRoot);
             }
             else
             {
-                target = Object.Instantiate(target);
+                modifiableRoot = Object.Instantiate(unmodifiableRoot);
             }
-            Profiler.EndSample();
 
+            return modifiableRoot;
+
+            GameObject PerformEnvironmentDependantShallowCopy(IPlatformExpander handler, GameObject localUnmodifiableRoot) =>
+                handler.PerformEnvironmentDependantShallowCopy(localUnmodifiableRoot);
+        }
+
+        internal sealed class InPlaceConvertResult
+        {
+            internal readonly MultipleUnorderedDictionary<LoweredRenderMode, Material> Materials;
+
+            internal InPlaceConvertResult(MultipleUnorderedDictionary<LoweredRenderMode, Material> materials)
+            {
+                Materials = materials;
+            }
+        }
+        
+        private static InPlaceConvertResult InPlaceConvert(GameObject target, bool bakeTexture, ResourceAllocator alloc)
+        {
             var rig = FindRigSetting(target);
             if (rig == null)
             {
@@ -59,18 +100,15 @@ namespace ResoniteImportHelper.Transform
             {
                 Debug.Log("Texture bake was skipped (disabled). Please turn on from experimental settings if you want to turn on.");
             }
-            
-            return target;
 
-            GameObject PerformEnvironmentDependantShallowCopy(IPlatformExpander handler, GameObject localUnmodifiableRoot) =>
-                handler.PerformEnvironmentDependantShallowCopy(localUnmodifiableRoot);
+            var materialMap = LowerShader(target, alloc);
+
+            return new InPlaceConvertResult(materialMap);
         }
 
         [CanBeNull]
-        private static Animator FindRigSetting(GameObject root)
-        {
-            return root.TryGetComponent<Animator>(out var a) ? a : null;
-        }
+        private static Animator FindRigSetting(GameObject root) => 
+            root.TryGetComponent<Animator>(out var a) ? a : null;
 
         /// <summary>
         /// See also: <a href="https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK">Wiki</a>
@@ -102,6 +140,12 @@ namespace ResoniteImportHelper.Transform
                     var right = eyeConfiguration.rightEye;
 
                     b = hbb is HumanBodyBones.LeftEye ? left : right;
+                    if (b == null)
+                    {
+                        Debug.Log($"RewriteIfSet: {hbb.ToString()} is not set on Animator or VRC-AD");
+                        return;
+                    }
+                    
                     Debug.Log($"RewriteIfSet: fallback from VRC Avatar Descriptor: {hbb.ToString()} = {b.name}");
 #endif
                 }
@@ -221,6 +265,117 @@ namespace ResoniteImportHelper.Transform
         private static void BakeTexture(GameObject root, ResourceAllocator allocator)
         {
             new LilToonHandler(allocator).PerformInlineTransform(root);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="allocator"></param>
+        /// <returns>Materials that considered to be transparent.</returns>
+        private static MultipleUnorderedDictionary<LoweredRenderMode, Material> LowerShader(GameObject root, ResourceAllocator allocator)
+        {
+            Profiler.BeginSample("LowerShader");
+            var outer = new MultipleUnorderedDictionary<LoweredRenderMode, Material>
+                {
+                    [LoweredRenderMode.Unknown] = new HashSet<Material>(),
+                    [LoweredRenderMode.Opaque] = new HashSet<Material>(),
+                    [LoweredRenderMode.Cutout] = new HashSet<Material>(),
+                    [LoweredRenderMode.Blend] = new HashSet<Material>()
+                };
+
+            var loweredMaterialCache = new Dictionary<Material, ISealedLoweredMaterialReference>();
+            
+            foreach (var renderer in RendererUtility.GetConvertibleRenderersInChildren(root))
+            {
+                renderer.sharedMaterials = LowerShaderInner(renderer, loweredMaterialCache, outer, allocator);
+            }
+            Profiler.EndSample();
+
+            return outer;
+        }
+
+        private static Material[] LowerShaderInner(
+            Renderer renderer,
+            Dictionary<Material, ISealedLoweredMaterialReference> loweredMaterialCache,
+            MultipleUnorderedDictionary<LoweredRenderMode, Material> outer,
+            ResourceAllocator allocator
+        )
+        {
+            Profiler.BeginSample("LowerShaderInner.CachedLower");
+            var materials = renderer
+                .sharedMaterials
+                .Select(m =>
+                {
+                    if (loweredMaterialCache.TryGetValue(m, out var cached))
+                    {
+                        Debug.Log($"LowerShader: cache hit: {m.name} -> {cached.GetMaybeConvertedMaterial()} ({cached.GetComputedRenderMode()})");
+                        return cached;
+                    }
+                        
+                    var lowered = LowerMaterialInline(m, allocator);
+                        
+                    loweredMaterialCache.Add(m, lowered);
+
+                    return lowered;
+                });
+            Profiler.EndSample();
+
+            Material[] materials2;
+            
+            try
+            {
+                Profiler.BeginSample("Allocate and collect");
+                AssetDatabase.StartAssetEditing();
+                materials2 = materials
+                    .Aggregate(
+                        (
+                            Materials: new Material[renderer.sharedMaterials.Length],
+                            Map: outer,
+                            Counter: 0
+                        ),
+                        (acc, currentMaterial) =>
+                        {
+                            var aj = currentMaterial.GetAllocationJob();
+                            if (aj != null)
+                            {
+                                var m = allocator.Save(aj.Value);
+                            
+                                acc.Materials[acc.Counter] = m;
+                                acc.Map.Append(currentMaterial.GetComputedRenderMode(), m);
+                            }
+                            
+                            return (acc.Materials, acc.Map, acc.Counter + 1);
+                        }
+                    ).Materials;
+            }
+            finally
+            {
+                AssetDatabase.StopAssetEditing();
+                Profiler.EndSample();
+            }
+
+            return materials2;
+        }
+        
+        private static ISealedLoweredMaterialReference LowerMaterialInline(Material m, ResourceAllocator alloc)
+        {
+            Profiler.BeginSample("LowerMaterialInline");
+            var x = new LilToonHandler(alloc).LowerInline(m);
+            Profiler.EndSample();
+            return x;
+        }
+
+        internal sealed class Result
+        {
+            internal readonly GameObject Processed;
+            internal readonly MultipleUnorderedDictionary<LoweredRenderMode, Material> Materials;
+
+            internal Result(GameObject processed, MultipleUnorderedDictionary<LoweredRenderMode, Material> materials)
+            {
+                Processed = processed;
+                Materials = materials;
+            }
         }
     }
 }

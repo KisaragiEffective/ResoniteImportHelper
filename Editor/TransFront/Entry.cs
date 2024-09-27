@@ -25,7 +25,7 @@ namespace ResoniteImportHelper.TransFront
             var runIdentifier = $"Run_{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}";
             var rootAlloc = new ResoniteImportHelper.Allocator.ResourceAllocator(InitializeTemporalAssetDataDirectory(runIdentifier));
             Profiler.BeginSample("PerformConversionPure");
-            var target = Transform.AvatarTransformService.PerformConversionPure(
+            var result = Transform.AvatarTransformService.PerformConversionPure(
                 unmodifiableRoot,
                 runVRCSDKPipeline,
                 runNDMF,
@@ -36,12 +36,18 @@ namespace ResoniteImportHelper.TransFront
             
             Debug.Log("Exporting model as glTF");
             var serialized = SerializationService.ExportToAssetFolder(
-                new SerializationConfiguration(target, unmodifiableRoot, generateIntermediateArtifact, rootAlloc)
+                new SerializationConfiguration(
+                    result.Processed,
+                    unmodifiableRoot,
+                    generateIntermediateArtifact,
+                    result.Materials,
+                    rootAlloc
+                )
             );
             
             Debug.Log("done");
             // we can remove target because it is cloned in either way.
-            Object.DestroyImmediate(target, false);
+            Object.DestroyImmediate(result.Processed, false);
             Profiler.EndSample();
             return serialized;
         }

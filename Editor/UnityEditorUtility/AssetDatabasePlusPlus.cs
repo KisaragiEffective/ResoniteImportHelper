@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ResoniteImportHelper.Marker;
 using UnityEditor;
 using UnityEngine;
 using GUID = UnityEditor.GUID;
@@ -54,13 +55,14 @@ namespace ResoniteImportHelper.UnityEditorUtility
 
     internal class DelayedReference<T> where T : Object
     {
-        private readonly string _guid;
+        [NotPublicAPI]
+        public string Guid { get; }
         
         internal DelayedReference(string referenceGuid)
         {
-            this._guid = referenceGuid;
+            this.Guid = referenceGuid;
         }
 
-        internal T LoadFromAssetDatabase() => AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(_guid));
+        internal T LoadFromAssetDatabase() => AssetDatabase.LoadAssetAtPath<T>(AssetDatabase.GUIDToAssetPath(Guid));
     }
 }

@@ -1,0 +1,18 @@
+{
+    "name": "ResoniteImportHelper.Generic.Collections",
+    "rootNamespace": "global::ResoniteImportHelper.Generic.Collections",
+    "references": [
+        "GUID:da758e96819041b2b57ad6379d1c0c58"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

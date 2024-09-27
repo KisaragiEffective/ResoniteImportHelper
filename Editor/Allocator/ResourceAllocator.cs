@@ -1,8 +1,10 @@
 using System.IO;
 using ResoniteImportHelper.Marker;
+using ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Allocator
 {
@@ -21,7 +23,7 @@ namespace ResoniteImportHelper.Allocator
         }
 
         [NotPublicAPI]
-        public T Save<T>(T obj, string name) where T : Object
+        private T Save<T>(T obj, string name) where T : Object
         {
             var basePath = BasePath + "/" + name;
             Debug.Log($"Allocating persistent asset: {typeof(T)} on {basePath}");
@@ -38,7 +40,7 @@ namespace ResoniteImportHelper.Allocator
             if (obj is Texture2D _tex)
             {
                 Profiler.BeginSample("Allocate Texture2D");
-                var tex = MaybeDuplicateTexture(_tex); 
+                var tex = TextureUtility.MaybeDuplicateTexture(_tex); 
                 var path = $"{basePath}.png";
                 Profiler.BeginSample("Encode To PNG");
                 var fw = tex.EncodeToPNG();
@@ -76,49 +78,29 @@ namespace ResoniteImportHelper.Allocator
         }
 
         /// <summary>
-        /// ファイルを不定の名前でセーブする。ファイル名を制御したい時は<see cref="Save{T}(T,string)"/>を使うこと。
+        /// 与えられたアセットを不定の名前で永続化する。
         /// </summary>
         /// <param name="obj"></param>
+        /// <param name="name"></param>
         /// <typeparam name="T"></typeparam>
         /// <exception cref="UnityException">すでにアセットとして存在するものをシリアライズしようとした時。</exception>
         /// <returns></returns>
         [NotPublicAPI]
-        public T Save<T>(T obj) where T : Object
+        public T SaveAmbiguously<T>(T obj, string? name = null) where T : Object
         {
-            return this.Save(obj, GUID.Generate().ToString());
+            return this.Save(obj, name ?? GUID.Generate().ToString());
         }
-        
+
         /// <summary>
-        /// see: <a href="https://discussions.unity.com/t/848617/2">Unity forum</a>
+        /// メモリ上に存在するオブジェクトを不定の名前で永続化する。
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="toBeSerialized"></param>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        private static Texture2D MaybeDuplicateTexture(Texture2D source)
+        [NotPublicAPI]
+        public T Save<T>(InMemory<T> toBeSerialized) where T : Object
         {
-            if (source.isReadable)
-            {
-                return source;
-            }
-            
-            Profiler.BeginSample("MaybeDuplicateTexture");
-            var renderTex = RenderTexture.GetTemporary(
-                source.width,
-                source.height,
-                0,
-                RenderTextureFormat.Default,
-                RenderTextureReadWrite.Linear);
-
-            Graphics.Blit(source, renderTex);
-            var previous = RenderTexture.active;
-            RenderTexture.active = renderTex;
-            var readableTexture = new Texture2D(source.width, source.height);
-            readableTexture.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
-            readableTexture.Apply();
-            RenderTexture.active = previous;
-            RenderTexture.ReleaseTemporary(renderTex);
-            Profiler.EndSample();
-
-            return readableTexture;
+            return this.Save(toBeSerialized.InMemoryValue, GUID.Generate().ToString());
         }
     }
 }

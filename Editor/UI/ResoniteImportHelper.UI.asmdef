@@ -1,38 +1,44 @@
 {
-  "name": "ResoniteImportHelper.UI",
-  "rootNamespace": "global::ResoniteImportHelper.UI",
-  "references": [
-    "GUID:25b168161f934b66b6d3142f4bf8d0ec",
-    "GUID:9412ec19daea43d8a5d4b2f0c5a7c8ad",
-    "GUID:08f7d5d837f24395ac29a9f672e5edf5",
-    "GUID:ff74dcc47a4647d68fe8716871e0d67e",
-    "GUID:7ee18fb5d06b4dfaa3155e082bab4fad"
-  ],
-  "includePlatforms": [
-    "Editor"
-  ],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": false,
-  "defineConstraints": [],
-  "versionDefines": [
-    {
-      "name": "nadena.dev.ndmf",
-      "define": "RIH_HAS_NDMF",
-      "expression": ""
-    },
-    {
-      "name": "com.vrchat.avatars",
-      "expression": "3.5.0",
-      "define": "RIH_HAS_VRCSDK3A"
-    },
-    {
-      "name": "com.vrmc.gltf",
-      "expression": "0.125.0",
-      "define": "RIH_HAS_UNI_GLTF"
-    }
-  ],
-  "noEngineReferences": false
+    "name": "ResoniteImportHelper.UI",
+    "rootNamespace": "global::ResoniteImportHelper.UI",
+    "references": [
+        "GUID:25b168161f934b66b6d3142f4bf8d0ec",
+        "GUID:9412ec19daea43d8a5d4b2f0c5a7c8ad",
+        "GUID:08f7d5d837f24395ac29a9f672e5edf5",
+        "GUID:ff74dcc47a4647d68fe8716871e0d67e",
+        "GUID:7ee18fb5d06b4dfaa3155e082bab4fad",
+        "GUID:659deed5be6e418bb44e9137b9bc4dab"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "nadena.dev.ndmf",
+            "expression": "",
+            "define": "RIH_HAS_NDMF"
+        },
+        {
+            "name": "com.vrchat.avatars",
+            "expression": "3.5.0",
+            "define": "RIH_HAS_VRCSDK3A"
+        },
+        {
+            "name": "com.vrmc.gltf",
+            "expression": "[0.125.0,0.125.0]",
+            "define": "RIH_HAS_UNI_GLTF"
+        },
+        {
+            "name": "com.vrmc.gltf",
+            "expression": "",
+            "define": "RIH_HAS_UNI_GLTF_ANY"
+        }
+    ],
+    "noEngineReferences": false
 }

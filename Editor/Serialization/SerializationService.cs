@@ -1,13 +1,14 @@
-using System;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Backlink.Component;
 using ResoniteImportHelper.UnityEditorUtility;
 using MeshUtility = ResoniteImportHelper.UnityEditorUtility.MeshUtility;
+#if RIH_HAS_UNI_GLTF
 using UniGLTF;
+#else
+using ExportingGltfData = System.Object;
+#endif
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -18,6 +19,7 @@ namespace ResoniteImportHelper.Serialization
     {
         private static ExportingGltfData ConstructGltfOnMemory(GameObject target, bool containsVertexColors)
         {
+            #if RIH_HAS_UNI_GLTF
             Profiler.BeginSample("ConstructGltfOnMemory");
             var data = new ExportingGltfData();
             {
@@ -43,6 +45,9 @@ namespace ResoniteImportHelper.Serialization
             Profiler.EndSample();
 
             return data;
+            #else
+            throw new Exception("assertion error");
+#endif
         }
         
         internal static ExportInformation ExportToAssetFolder(SerializationConfiguration config)
@@ -67,9 +72,12 @@ namespace ResoniteImportHelper.Serialization
             Debug.Log("backlink: started");
             TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
+
+            Debug.Log("PostGLTF: done. reloading");
+            AssetDatabase.Refresh();
             
             Profiler.EndSample();
-            return new ExportInformation(serialized, containsVertexColors);
+            return new ExportInformation(serialized.LoadFromAssetDatabase(), containsVertexColors);
         }
 
         private static void SerializeIntermediateArtifact(GameObject processedModifiableRoot, ResourceAllocator allocator)
@@ -149,8 +157,8 @@ namespace ResoniteImportHelper.Serialization
         /// <param name="temporary"></param>
         /// <param name="containsVertexColors"></param>
         /// <param name="runIdentifier"></param>
-        /// <returns>Serialized object.</returns>
-        private static GameObject ExportGltfToAssetFolder(
+        /// <returns>Lazily-loaded glTF as a <see cref="GameObject"/>.</returns>
+        private static DelayedReference<GameObject> ExportGltfToAssetFolder(
             GameObject temporary,
             bool containsVertexColors,
             ResourceAllocator allocator,
@@ -205,12 +213,8 @@ namespace ResoniteImportHelper.Serialization
                 
             }
             
-            Profiler.BeginSample("load");
-            var x = AssetDatabase.LoadAssetAtPath<GameObject>(assetsRelPath);
             Profiler.EndSample();
-            
-            Profiler.EndSample();
-            return x;
+            return new DelayedReference<GameObject>(AssetDatabase.AssetPathToGUID(assetsRelPath));
 #else
             throw new Exception("assertion error: UniGLTF is not installed on the project.");
 #endif

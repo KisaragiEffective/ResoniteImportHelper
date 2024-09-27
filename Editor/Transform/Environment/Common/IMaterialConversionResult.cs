@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Marker;
 using UnityEngine;
 
@@ -15,9 +15,8 @@ namespace ResoniteImportHelper.Transform.Environment.Common
         /// <param name="disposableMaterialVariants"><see cref="DisposableMaterialVariants"/>で破棄される可能性がある<see cref="Material"/></param>
         /// <returns></returns>
         internal static IMaterialConversionResult NotModified(
-            Material from,
-            IEnumerable<Material>? disposableMaterialVariants
-        ) => disposableMaterialVariants == null ? new NotModifiedTag(from) : new NotModifiedTag(from, disposableMaterialVariants);
+            Material from
+        ) => new NotModifiedTag(from);
 
         /// <summary>
         /// 変換されたことを示す<see cref="IMaterialConversionResult"/>を返す。
@@ -28,17 +27,10 @@ namespace ResoniteImportHelper.Transform.Environment.Common
         /// <returns></returns>
         internal static IMaterialConversionResult Modified(
             Material from,
-            Material to,
-            IEnumerable<Material>? disposableMaterialVariants
-        ) => disposableMaterialVariants == null ? new ModifiedTag(from, to) : new ModifiedTag(from, to, disposableMaterialVariants);
+            Material to
+        ) => new ModifiedTag(from, to);
 
-        /// <summary>
-        /// Materialの変換後に処理後にまとめて破壊しても良い<see cref="Material"/> Variantを列挙する。
-        /// このメソッドは呼び出しごとに同じ集合を返さなければならないが、その順序は問われない。
-        /// </summary>
-        /// <returns></returns>
-        [NotPublicAPI]
-        public IEnumerable<Material> DisposableMaterialVariants();
+        public InMemory<Material>? AllocatedConvertedMaterial();
 
         [NotPublicAPI]
         public Material GetInput();
@@ -52,22 +44,14 @@ namespace ResoniteImportHelper.Transform.Environment.Common
         internal sealed class NotModifiedTag: IMaterialConversionResult
         {
             private readonly Material _from;
-            private readonly IEnumerable<Material> _disposableMaterialVariants;
 
             internal NotModifiedTag(Material from)
             {
                 this._from = from;
-                this._disposableMaterialVariants = Enumerable.Empty<Material>();
-            }
-
-            internal NotModifiedTag(Material from, IEnumerable<Material> disposableMaterialVariants)
-            {
-                this._from = from;
-                this._disposableMaterialVariants = disposableMaterialVariants;
             }
 
             [NotPublicAPI]
-            public IEnumerable<Material> DisposableMaterialVariants() => _disposableMaterialVariants;
+            public InMemory<Material>? AllocatedConvertedMaterial() => null;
 
             [NotPublicAPI]
             public Material GetInput() => _from;
@@ -83,24 +67,20 @@ namespace ResoniteImportHelper.Transform.Environment.Common
         {
             private readonly Material _from;
             private readonly Material _to;
-            private readonly IEnumerable<Material> _disposableMaterialVariants;
 
             internal ModifiedTag(Material from, Material to)
             {
                 this._from = from;
                 this._to = to;
-                this._disposableMaterialVariants = Enumerable.Empty<Material>();
             }
             
             internal ModifiedTag(Material from, Material to, IEnumerable<Material> disposableMaterialVariants)
             {
                 this._from = from;
                 this._to = to;
-                this._disposableMaterialVariants = disposableMaterialVariants;
             }
 
-            [NotPublicAPI]
-            public IEnumerable<Material> DisposableMaterialVariants() => _disposableMaterialVariants;
+            public InMemory<Material>? AllocatedConvertedMaterial() => new InMemory<Material>(this._to);
 
             [NotPublicAPI]
             public Material GetInput() => _from;
