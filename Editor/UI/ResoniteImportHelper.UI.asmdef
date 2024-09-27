@@ -31,7 +31,7 @@
         },
         {
             "name": "com.vrmc.gltf",
-            "expression": "[0.125.0,0.125.0]",
+            "expression": "[0.125.0]",
             "define": "RIH_HAS_UNI_GLTF"
         },
         {
