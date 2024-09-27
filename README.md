@@ -99,10 +99,16 @@ RIH recognizes [HUMANOID][UNITY-AVATAR] bones from [ANIMATOR COMPONENT]. Please 
 If it is made for VRChat, and has [VRChat Avatar Descriptor], additional logic applies:
 * If [UNITY-AVATAR] does not have left eye bone or right eye bone, RIH pulls them from the Descriptor. \
   ![Describing figure](./Doc~/EyeBoneFallbackFromVRChatAvatarDescriptor.png)
+
 #### false-negative NOIK
 * If your avatar is not treated as [HUMANOID][UNITY-AVATAR], then RIH does not flag any bone [NOIK].
   * If your avatar is actually humanoid, please configure as being from [RIG-TAB].
   * This is technical limitation, because RIH can't determine which bone should be used as IK bone.
+
+#### NOIK is not respected
+It may be a known issue on Resonite side.
+
+There is a report for hand bones, see https://github.com/Yellow-Dog-Man/Resonite-Issues/issues/1031 for more information.
 
 #### semi-transparent texture is exported as opaque texture
 This is implemented in release [0.1.13](https://github.com/KisaragiEffective/ResoniteImportHelper/releases/tag/0.1.13).
