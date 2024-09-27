@@ -76,21 +76,41 @@ Snippet after `#` specifies revision to be installed. By this configuration, you
 9. Click the processed avatar field. By doing, the Project tab focused to it.
 10. Drag it to the Hierarchy. You can check if it does not look unexpectedly.
 11. Press "Open in file system". File explorer will be pop up on top of screen.
-12. Find a file ending with `.gltf` in the directory and drop it onto Resonite window.
-13. Make sure every material keeps their looks.
-14. Implement workaround or find alternative solution. The following Unity and Platform-specific components cannot be exported because glTF lacks corresponding concept:
-    * **Animation**. Workaround: Configure ProtoFlux to toggle properties.
-    * **Expression Menu**. Workaround: Set up [Context Menu](https://wiki.resonite.com/Category:Components:Radiant_UI:Context_Menu) to achieve similar effect.
-    * Any Renderer that is not a SkinnedMeshRenderer nor a MeshRenderer.
-    * Unity Constraints and VRC Constraints. Workaround: re-implement similar logic by Driving Slot's position, rotation, or scale.
-    * FinalIK.
-    * Dynamic Bone and VRC PhysBone. Workaround: Configure Dynamic Bone in Resonite.
-    * VRC Contact.
-    * VRC HeadChop.
-    * VRC SpatialAudioSource.
-    * VRC Station.
-    * Particle System.
-    * Rigidbody.
+12. Find a file ending with `.gltf` in the directory.
+
+## Import
+You drop the outcome onto Resonite window.
+
+You can choose several options on import. I do not write it here because it is off-topic from RIH usage. But please make sure every material keeps their looks to avoid reworking.
+
+Finally, implement workaround or find alternative solution.
+The following Unity and Platform-specific components cannot be exported because glTF lacks corresponding concept:
+* **Animation**.
+    * Workaround: Configure ProtoFlux to toggle properties.
+* **Expression Menu**.
+    * Workaround: Set up [Context Menu](https://wiki.resonite.com/Category:Components:Radiant_UI:Context_Menu) to achieve similar effect.
+* Any Renderer that is not a SkinnedMeshRenderer nor a MeshRenderer.
+    * Example: [Trail Renderer](https://docs.unity3d.com/2022.3/Documentation/Manual/class-TrailRenderer.html).
+* Unity Constraints and VRC Constraints.
+    * Workaround: re-implement similar logic by in-game Component and ProtoFlux nodes (thanks to Aetoriz's [post](https://misskey.resonite.love/notes/9ynqyi16tj)):
+        * Look At Constraint and Aim Constraint map to [LookAt component][Component:LookAt].
+        * Parent Constraint maps to [VirtualParent component][Component:VirtualParent].
+        * Position Constraint and Rotation Constraint map to [CopyGlobalTransform component][Component:CopyGlobalTransform].
+        * Scale Constraint maps to [CopyGlobalScale component][Component:CopyGlobalScale].
+* FinalIK.
+* Dynamic Bone and VRC PhysBone.
+    * Workaround: Configure Dynamic Bone in Resonite.
+* VRC Contact.
+* VRC HeadChop.
+* VRC SpatialAudioSource.
+* VRC Station.
+* Particle System.
+* Rigidbody.
+
+[Component:LookAt]: https://wiki.resonite.com/Component:LookAt
+[Component:VirtualParent]: https://wiki.resonite.com/Component:VirtualParent
+[Component:CopyGlobalTransform]: https://wiki.resonite.com/Component:CopyGlobalTransform
+[Component:CopyGlobalScale]: https://wiki.resonite.com/Component:CopyGlobalScale
 
 ### Trouble shooting
 #### false-positive NOIK
