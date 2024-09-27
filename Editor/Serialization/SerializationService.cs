@@ -33,11 +33,11 @@ namespace ResoniteImportHelper.Serialization
                 Profiler.BeginSample(".ctor");
                 using var exporter = new gltfExporter(data, exportSettings);
                 Profiler.EndSample();
-                
+
                 Profiler.BeginSample("Prepare");
                 exporter.Prepare(target);
                 Profiler.EndSample();
-                
+
                 Profiler.BeginSample("Export");
                 exporter.Export();
                 Profiler.EndSample();
@@ -49,11 +49,11 @@ namespace ResoniteImportHelper.Serialization
             throw new Exception("assertion error");
 #endif
         }
-        
+
         internal static ExportInformation ExportToAssetFolder(SerializationConfiguration config)
         {
             Profiler.BeginSample("ExportToAssetFolder");
-            
+
             var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             if (config.GenerateIntermediateArtifact)
@@ -68,14 +68,14 @@ namespace ResoniteImportHelper.Serialization
                 return t.Any(c => c.r != 255 && c.g != 255 && c.b != 255 && c.a != 255);
             });
 
-            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, config.Allocator, false);
+            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, config.Allocator, true);
             Debug.Log("backlink: started");
             TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
 
             Debug.Log("PostGLTF: done. reloading");
             AssetDatabase.Refresh();
-            
+
             Profiler.EndSample();
             return new ExportInformation(serialized.LoadFromAssetDatabase(), containsVertexColors);
         }
@@ -85,15 +85,15 @@ namespace ResoniteImportHelper.Serialization
             var path = allocator.BasePath + "/intermediate.prefab";
             PrefabUtility.SaveAsPrefabAsset(processedModifiableRoot, path);
         }
-        
+
         // ReSharper disable once InconsistentNaming
         private static void TryCreateBacklink(GameObject original, ResourceAllocator allocator)
         {
             // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
             var serializedLocalModificationPath = allocator.BasePath + "/serialized_local_modification.prefab";
-            
+
             Profiler.BeginSample("TryCreateBacklink");
-            
+
             var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
             if (source == null)
             {
@@ -117,7 +117,7 @@ namespace ResoniteImportHelper.Serialization
                     null => "null",
                     var other => other,
                 };
-                
+
                 Debug.Log($"backlink: path to Prefab: {path}");
             }
 
@@ -152,11 +152,13 @@ namespace ResoniteImportHelper.Serialization
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="temporary"></param>
         /// <param name="containsVertexColors"></param>
         /// <param name="runIdentifier"></param>
+        /// <param name="allocator"></param>
+        /// <param name="alignInitialMorphValues"></param>
         /// <returns>Lazily-loaded glTF as a <see cref="GameObject"/>.</returns>
         private static DelayedReference<GameObject> ExportGltfToAssetFolder(
             GameObject temporary,
@@ -199,7 +201,7 @@ namespace ResoniteImportHelper.Serialization
             // SPDX-SnippetEnd
             #endregion
             Profiler.EndSample();
-            
+
             Profiler.BeginSample("Import and Refresh");
             var assetsRelPath = $"Assets/{gltfAssetRelativePath}";
             {
@@ -208,11 +210,15 @@ namespace ResoniteImportHelper.Serialization
             }
             Profiler.EndSample();
 
-            if (alignInitialMorphValues)
             {
-                
+                var postGltf = new PostGltfService(File.ReadAllText(assetsRelPath));
+
+                if (alignInitialMorphValues)
+                {
+                    postGltf.AlignInitialMorphValues(temporary);
+                }
             }
-            
+
             Profiler.EndSample();
             return new DelayedReference<GameObject>(AssetDatabase.AssetPathToGUID(assetsRelPath));
 #else
