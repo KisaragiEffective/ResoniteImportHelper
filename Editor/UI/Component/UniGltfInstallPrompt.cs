@@ -1,6 +1,4 @@
-using ResoniteImportHelper.Bootstrap.Logic;
 using ResoniteImportHelper.UI.Localize;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace ResoniteImportHelper.UI.Component
