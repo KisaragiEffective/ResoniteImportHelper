@@ -12,7 +12,7 @@
   "repository": {
     "url": "https://github.com/KisaragiEffective/ResoniteImportHelper"
   },
-  "dependencies": {
+  "peerDependencies": {
     "com.vrmc.gltf": "0.125.0"
   },
   "keywords": ["resonite", "Resonite"],
