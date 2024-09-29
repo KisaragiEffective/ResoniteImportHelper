@@ -1,6 +1,10 @@
 # Resonite Import Helper
 Bake and Import.
 
+> [!WARNING]
+> This revision is pre-release!
+> You should not install this revision unless you know what you are doing and the purpose of this revision!
+
 ## Requirement and recommended tools
 * UniGLTF is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases).
 * Git is required to install. Download it from [gitforwindows.org](https://gitforwindows.org/).
@@ -47,9 +51,12 @@ After installed git, open your Project. Then:
 1. Go to `Window > Package Manager`
 2. Click `[+▼]`
 3. Select "Add package from Git URL"
-4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.14`
+4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.15-packaging.0`
 
 Snippet after `#` specifies revision to be installed. By this configuration, you specify latest tagged version. This is recommended style. Refer [Unity's manual](https://docs.unity3d.com/2022.3/Documentation/Manual/upm-git.html) to customize or install other version.
+
+> [!WARNING]
+> Again, this version of RIH is pre-release. Proceed if and only if you know what you are doing.
 
 > [!WARNING]
 > You may not want to refer un-tagged version. This is because doing so implies always fetch latest version, and it may have buggy code snippet.
