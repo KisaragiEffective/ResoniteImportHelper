@@ -1,6 +1,6 @@
 {
   "name": "io.github.kisaragieffective.resonite-import-helper",
-  "version": "0.1.15-packaging.0",
+  "version": "0.1.15-packaging.1",
   "description": "Helper around importing to Resonite",
   "displayName": "Resonite Import Helper",
   "unity": "2022.3",
@@ -13,7 +13,8 @@
     "url": "https://github.com/KisaragiEffective/ResoniteImportHelper"
   },
   "peerDependencies": {
-    "com.vrmc.gltf": "0.125.0"
+    "com.vrmc.gltf": "0.125.0",
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
   "keywords": ["resonite", "Resonite"],
   "license": "MIT"

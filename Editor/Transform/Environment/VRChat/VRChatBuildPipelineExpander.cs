@@ -5,10 +5,11 @@ using VRC.SDK3.Avatars.Components;
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
 using Object = UnityEngine.Object;
+using ResoniteImportHelper.Transform.Environment.Common;
 
 namespace ResoniteImportHelper.Transform.Environment.VRChat
 {
-    internal class VRChatBuildPipelineExpander : Common.IPlatformExpander
+    internal class VRChatBuildPipelineExpander : IPlatformExpander
     {
         public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot)
         {
@@ -23,7 +24,7 @@ namespace ResoniteImportHelper.Transform.Environment.VRChat
             VRCBuildPipelineCallbacks.OnPreprocessAvatar(cloned);
             return cloned;
 #else
-            throw new ResoniteImportHelper.Transform.Environment.Common.NotEnabledPlatformException();
+            throw new ResoniteImportHelper.Transform.Environment.Common.NonEnabledPlatformException();
 #endif
         }
     }
