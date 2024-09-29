@@ -33,11 +33,11 @@ namespace ResoniteImportHelper.Serialization
                 Profiler.BeginSample(".ctor");
                 using var exporter = new gltfExporter(data, exportSettings);
                 Profiler.EndSample();
-                
+
                 Profiler.BeginSample("Prepare");
                 exporter.Prepare(target);
                 Profiler.EndSample();
-                
+
                 Profiler.BeginSample("Export");
                 exporter.Export();
                 Profiler.EndSample();
@@ -46,14 +46,14 @@ namespace ResoniteImportHelper.Serialization
 
             return data;
             #else
-            throw new Exception("assertion error");
+            throw new System.Exception("assertion error");
 #endif
         }
-        
+
         internal static ExportInformation ExportToAssetFolder(SerializationConfiguration config)
         {
             Profiler.BeginSample("ExportToAssetFolder");
-            
+
             var target = config.ProcessingTemporaryObjectRoot;
             GameObjectRecurseUtility.EnableAllChildrenWithRenderers(target);
             if (config.GenerateIntermediateArtifact)
@@ -75,7 +75,7 @@ namespace ResoniteImportHelper.Serialization
 
             Debug.Log("PostGLTF: done. reloading");
             AssetDatabase.Refresh();
-            
+
             Profiler.EndSample();
             return new ExportInformation(serialized.LoadFromAssetDatabase(), containsVertexColors);
         }
@@ -85,15 +85,15 @@ namespace ResoniteImportHelper.Serialization
             var path = allocator.BasePath + "/intermediate.prefab";
             PrefabUtility.SaveAsPrefabAsset(processedModifiableRoot, path);
         }
-        
+
         // ReSharper disable once InconsistentNaming
         private static void TryCreateBacklink(GameObject original, ResourceAllocator allocator)
         {
             // SaveAsPrefabAssetは**/*.prefabじゃないと例外を吐く。知るかよ！
             var serializedLocalModificationPath = allocator.BasePath + "/serialized_local_modification.prefab";
-            
+
             Profiler.BeginSample("TryCreateBacklink");
-            
+
             var source = PrefabUtility.GetCorrespondingObjectFromSource(original);
             if (source == null)
             {
@@ -117,7 +117,7 @@ namespace ResoniteImportHelper.Serialization
                     null => "null",
                     var other => other,
                 };
-                
+
                 Debug.Log($"backlink: path to Prefab: {path}");
             }
 
@@ -152,7 +152,7 @@ namespace ResoniteImportHelper.Serialization
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="temporary"></param>
         /// <param name="containsVertexColors"></param>
@@ -194,7 +194,7 @@ namespace ResoniteImportHelper.Serialization
             // SPDX-SnippetEnd
             #endregion
             Profiler.EndSample();
-            
+
             Profiler.BeginSample("Import and Refresh");
             var assetsRelPath = $"Assets/{gltfAssetRelativePath}";
             {
