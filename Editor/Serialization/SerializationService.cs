@@ -206,7 +206,7 @@ namespace ResoniteImportHelper.Serialization
             Profiler.EndSample();
             return new DelayedReference<GameObject>(AssetDatabase.AssetPathToGUID(assetsRelPath));
 #else
-            throw new Exception("assertion error: UniGLTF is not installed on the project.");
+            throw new System.Exception("assertion error: UniGLTF is not installed on the project.");
 #endif
         }
     }
