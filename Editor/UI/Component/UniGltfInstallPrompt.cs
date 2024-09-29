@@ -1,4 +1,8 @@
 using JetBrains.Annotations;
+#if !RIH_HAS_UNI_GLTF
+using ResoniteImportHelper.Bootstrap.Logic;
+using Application = UnityEngine.Application;
+#endif
 using ResoniteImportHelper.UI.Localize;
 using UnityEngine.UIElements;
 
@@ -10,7 +14,7 @@ namespace ResoniteImportHelper.UI.Component
         {
 #if !RIH_HAS_UNI_GLTF
             var rootVisualElement = this;
-            
+
             var message =
 #if RIH_HAS_UNI_GLTF_ANY
                 lang.ConflictingVersionOfUniGLTFIsInstalled()
