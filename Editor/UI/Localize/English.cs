@@ -1,5 +1,3 @@
-using System;
-
 namespace ResoniteImportHelper.UI.Localize
 {
     internal sealed class English : ILocalizedTexts
@@ -25,6 +23,9 @@ namespace ResoniteImportHelper.UI.Localize
         public string OpenInstallationPageForUniGLTF() => "Open installation page";
 
         public string InstallUniGLTFAutomatically() => "install UniGLTF automatically";
+
+        public string ConflictingVersionOfUniGLTFIsInstalled() =>
+            "UniGLTF is installed, but its version does not match our requirement.";
 
         public string OpenInFileSystemLabel() => "Open in file system";
         public string ProcessedAvatarLabel() => "Processed avatar";

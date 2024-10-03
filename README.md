@@ -25,19 +25,42 @@ Following tools are optional. This tool can invoke their hooks.
 * Convert Animation: Always ignored. You may want to reconstruct them by Protoflux after importing.
 
 ## How to use and import
-1. Install UniGLTF. \
-    You may use one of:
-    * Install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0) page, or
-    * Let RIH download it: ![UI](./Doc~/AutomatedInstallationUI.png)
-2. Install this package via Package Manager.
-    1. Go to `Window > Package Manager`
-    2. Click `[+▼]`
-    3. Select "Add package from Git URL"
-    4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.12`
-3. Go to `Tools > Resonite Import Helper`: \
+> [!TIP]
+> You may want to refer [article](https://dinosaur-fossil.hatenablog.com/entry/2024/09/11/215603) written in Japanese by Yoshi, community member.
+
+### Install
+#### UniGLTF
+As described above, you have to install UniGLTF before starting.
+RIH can download and configure it automatically, so you may skip this step:
+
+![Bootstrapper UI](./Doc~/AutomatedInstallationUI.png)
+
+This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0) page.
+
+#### RIH itself
+Install this package via Package Manager.
+
+As of writing, installing RIH requires Git to be installed. Other install method may be supported in the future.
+Obtain Git installer from [gitforwindows.org](https://gitforwindows.org/) (or alternative proper and favorite method) if you do not have one.
+
+After installed git, open your Project. Then:
+1. Go to `Window > Package Manager`
+2. Click `[+▼]`
+3. Select "Add package from Git URL"
+4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.14`
+
+Snippet after `#` specifies revision to be installed. By this configuration, you specify latest tagged version. This is recommended style. Refer [Unity's manual](https://docs.unity3d.com/2022.3/Documentation/Manual/upm-git.html) to customize or install other version.
+
+> [!WARNING]
+> You may not want to refer un-tagged version. This is because doing so implies always fetch latest version, and it may have buggy code snippet.
+> Tagged versions are slightly more stable.
+
+### Convert
+1. Go to `Tools > Resonite Import Helper`: \
     ![UI visual](./Doc~/r1.png)
-4. Set processing avatar.
-5. Configure "Export settings" if necessary. \
+2. Change language to Japanese if you prefer it.
+3. Set avatar to be processed.
+4. Configure "Export settings" if necessary. \
     Depending on your installation, following checkbox may change their state:
     * Invoke VRChat SDK preprocessor: Calls VRChat SDK preprocessor. \
       Implies "NDMF Manual Bake".
@@ -45,12 +68,29 @@ Following tools are optional. This tool can invoke their hooks.
       This option cannot be used when the target does not have "VRC Avatar Descriptor".
     * NDMF Manual Bake: Calls NDMF Manual Bake. \
       This is useful when you are importing non-VRChat avatar.
-6. Press "Start".
-7. It will be processed. Usually this will take a few seconds.
-8. The processed avatar appears on its field:\
+5. Press "Start".
+6. It will be processed. Usually this will take a few seconds.
+7. The processed avatar appears on its field:\
     ![UI visual](./Doc~/r2.png)
-9. Press "Open in file system".
-10. Drag `model.gltf` in the filesystem and drop it onto Resonite window.
+8. Focus onto "Project" tab.
+9. Click the processed avatar field. By doing, the Project tab focused to it.
+10. Drag it to the Hierarchy. You can check if it does not look unexpectedly.
+11. Press "Open in file system". File explorer will be pop up on top of screen.
+12. Find a file ending with `.gltf` in the directory and drop it onto Resonite window.
+13. Make sure every material keeps their looks.
+14. Implement workaround or find alternative solution. The following Unity and Platform-specific components cannot be exported because glTF lacks corresponding concept:
+    * **Animation**. Workaround: Configure ProtoFlux to toggle properties.
+    * **Expression Menu**. Workaround: Set up [Context Menu](https://wiki.resonite.com/Category:Components:Radiant_UI:Context_Menu) to achieve similar effect.
+    * Any Renderer that is not a SkinnedMeshRenderer nor a MeshRenderer.
+    * Unity Constraints and VRC Constraints. Workaround: re-implement similar logic by Driving Slot's position, rotation, or scale.
+    * FinalIK.
+    * Dynamic Bone and VRC PhysBone. Workaround: Configure Dynamic Bone in Resonite.
+    * VRC Contact.
+    * VRC HeadChop.
+    * VRC SpatialAudioSource.
+    * VRC Station.
+    * Particle System.
+    * Rigidbody.
 
 ### Trouble shooting
 #### false-positive NOIK
@@ -59,21 +99,52 @@ RIH recognizes [HUMANOID][UNITY-AVATAR] bones from [ANIMATOR COMPONENT]. Please 
 If it is made for VRChat, and has [VRChat Avatar Descriptor], additional logic applies:
 * If [UNITY-AVATAR] does not have left eye bone or right eye bone, RIH pulls them from the Descriptor. \
   ![Describing figure](./Doc~/EyeBoneFallbackFromVRChatAvatarDescriptor.png)
+
 #### false-negative NOIK
 * If your avatar is not treated as [HUMANOID][UNITY-AVATAR], then RIH does not flag any bone [NOIK].
   * If your avatar is actually humanoid, please configure as being from [RIG-TAB].
   * This is technical limitation, because RIH can't determine which bone should be used as IK bone.
 
-#### semi-transparent texture is exported as opaque texture
-This is [known bug](https://github.com/KisaragiEffective/ResoniteImportHelper/issues/50).
+#### NOIK is not respected
+It may be a known issue on Resonite side.
 
-workaround: re-assign Texture on Resonite or UnityEditor.
+There is a report for hand bones, see https://github.com/Yellow-Dog-Man/Resonite-Issues/issues/1031 for more information.
+
+#### semi-transparent texture is exported as opaque texture
+This is implemented in release [0.1.13](https://github.com/KisaragiEffective/ResoniteImportHelper/releases/tag/0.1.13).
+
+Please report bug if it does not solve your case.
 
 [UNITY-AVATAR]: https://docs.unity3d.com/2022.3/Documentation/Manual/ConfiguringtheAvatar.html
 [RIG-TAB]: https://docs.unity3d.com/2022.3/Documentation/Manual/FBXImporter-Rig.html
 [ANIMATOR COMPONENT]: https://docs.unity3d.com/2022.3/Documentation/Manual/class-Animator.html
 [NOIK]: https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Ignoring_Bones
 [VRChat Avatar Descriptor]: https://creators.vrchat.com/avatars/creating-your-first-avatar#step-5---adding-an-avatar-descriptor
+
+#### Converted model looks like far from original, what went wrong?
+Typically, this is caused by Custom Shaders.
+
+> [!NOTE]
+> Definition: Custom Shader \
+> Any Shader on Unity *except* Unity's Standard Shader is considered as Custom Shader. \
+> This including, but not limited to lilToon, Poiyomi, and UTS.
+
+By default (and most case), following property are kept:
+* Albedo and its transparency
+* Normal map
+
+Please let me know if that's not true.
+
+Supporting around Custom Shader-specific properties in is poor. 
+
+However please remember that it will **never** be considered if you do not let me know.
+
+Plus if you enabled "Bake lilToon's configuration into Texture" (behind Experimental Settings), Albedo is going to have those:
+* Toon Correction
+* 2nd / 3rd Main Texture
+* Alpha Mask
+
+It is not possible to cover all Custom Shaders. Because you may write one.
 
 ## Folder structure
 There are a few file in the containing folder.

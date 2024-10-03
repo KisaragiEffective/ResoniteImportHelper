@@ -19,7 +19,7 @@ using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform.Environment.LilToon
 {
-    internal sealed class LilToonHandler: ISameShaderMaterialTransformPass
+    internal sealed class LilToonHandler: ISameShaderMaterialTransformPass, ICustomShaderLowerPass
     {
         private static ResourceAllocator currentAllocator;
         
@@ -39,24 +39,28 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Debug.LogWarning("This project does not have supported version of lilToon, skipping this IPostExpansionTransformer");
             return;
 #endif
-            var disposableMaterials = new List<Material>();
             Profiler.BeginSample("LilToonHandler.PerformInlineTransform");
             Profiler.BeginSample("Inline transform");
+            
+            Profiler.BeginSample("MuteDialog");
+            // Harmonyのパッチが遅いので一度だけやる
+            var h = MuteDialogIfPossible();
+            Profiler.EndSample();
+            
             foreach (var renderer in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
                          .Select(o => 
                              o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr : null
                          ).Where(o => o != null))
             {
                 var conversionResults = renderer.sharedMaterials.Select(RewriteInline).ToList();
-                renderer.sharedMaterials = conversionResults.Select(r => r.GetOutcome()).ToArray();
-                
-                disposableMaterials.AddRange(conversionResults.SelectMany(r => r.DisposableMaterialVariants()));
+                renderer.sharedMaterials = conversionResults.Select(r =>
+                {
+                    var x = r.AllocatedConvertedMaterial();
+                    return x != null ? currentAllocator.Save(x.Value) : r.GetOutcome();
+                }).ToArray();
             }
-            Profiler.EndSample();
-
-            Profiler.BeginSample("Garbage collection");
-            AssetDatabase.DeleteAssets(disposableMaterials.Select(AssetDatabase.GetAssetPath).ToArray(),
-                new List<string>());
+            
+            UnmuteDialog(h);
             Profiler.EndSample();
             
             Profiler.EndSample();
@@ -64,12 +68,14 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 
         private static bool UsesLilToonShader(Material m) => LilToonShaderFamily.Instance.Contains(m.shader);
 
+        private static bool _isInspectorInitialized = false;
+        private static MethodInfo _bakeMethod = null;
+        
         private static void PerformBakeTexture(Material m)
         {
             Profiler.BeginSample("LilToonHandler.PerformBakeTexture");
             const int all = 0;
             // Debug.Log("bake");
-            var h = MuteDialogIfPossible();
 #if RIH_HAS_LILTOON
             #region avoid texture overwrite
             {
@@ -77,14 +83,16 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 var props = MaterialEditor.GetMaterialProperties(new Object[] { m });
                 foreach (var prop in props.Where(prop => prop.type == MaterialProperty.PropType.Texture).Where(prop => prop.textureValue != null))
                 {
-                    var x = currentAllocator.Save(prop.textureValue);
+                    var x = currentAllocator.SaveAmbiguously(prop.textureValue);
                     prop.textureValue = x;
                 }
                 Profiler.EndSample();
             }
             #endregion
-            var inspector = (new global::lilToon.lilToonInspector());
-            var inty = inspector.GetType();
+            Profiler.BeginSample(".ctor");
+            var inspector = new lilToonInspector();
+            Profiler.EndSample();
+            var inspectorType = inspector.GetType()!;
             // TODO: 例外ケースのダイアログがアレなので一部を切り貼りするべき？
 
             #region initialization for lilInspector
@@ -92,7 +100,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             {
                 Profiler.BeginSample("LilToonHandler.LilInspectorInitializationStub");
                 var props = MaterialEditor.GetMaterialProperties(new Object[] { m });
-                var apMethod = inty.GetMethod("AllProperties", BindingFlags.Instance | BindingFlags.NonPublic);
+                var apMethod = inspectorType.GetMethod("AllProperties", BindingFlags.Instance | BindingFlags.NonPublic);
                 var lmpProxies = (object[]) apMethod!.Invoke(inspector, Array.Empty<object>());
                 var lmpType = lmpProxies.GetType().GetElementType();
                 var findPropMethod = lmpType!.GetMethod("FindProperty", BindingFlags.Instance | BindingFlags.Public);
@@ -105,22 +113,17 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             {
                 Profiler.BeginSample("LilToonHandler.Reflect-TextureBake");
                 
-                Profiler.BeginSample("type");
-                var ty = inspector.GetType()!;
-                Profiler.EndSample();
-                
                 Profiler.BeginSample("method");
-                var method = ty!.GetMethod("TextureBake", BindingFlags.Instance | BindingFlags.NonPublic);
+                _bakeMethod ??= inspectorType!.GetMethod("TextureBake", BindingFlags.Instance | BindingFlags.NonPublic);
                 Profiler.EndSample();
                 
                 Profiler.BeginSample("invoke");
-                method!.Invoke(inspector, new object[] { m, all });
+                _bakeMethod!.Invoke(inspector, new object[] { m, all });
                 Profiler.EndSample();
                 
                 Profiler.EndSample();
             }
 #endif
-            UnmuteDialog(h);
             Profiler.EndSample();
             // Debug.Log("bake done");
         }
@@ -144,25 +147,44 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Debug.Log("Harmony is unavailable. Auto-muting dialog does not work.");
             return null;
 #else
+            Profiler.BeginSample("Harmony .ctor");
             var h = new HarmonyLib.Harmony(
                 "io.github.kisaragieffective.resonite-import-helper.liltoon.headless-bake");
-
+            Profiler.EndSample();
+            
+            Profiler.BeginSample("Mute warnings");
+            Profiler.BeginSample("Get Method");
             var warningDialogMethod = typeof(EditorUtility)
                 .GetMethod(nameof(EditorUtility.DisplayDialog), new[] { typeof(string), typeof(string), typeof(string) });
+            Profiler.EndSample();
             
+            Profiler.BeginSample("Construct method");
+            var prefix =
+                new HarmonyLib.HarmonyMethod(typeof(LilToonHandler), nameof(SkipDisplayDialogFromLilInspector));
+            Profiler.EndSample();
+            
+            Profiler.BeginSample("Patch");
             h.Patch(
                 warningDialogMethod, 
-                prefix: new HarmonyLib.HarmonyMethod(typeof(LilToonHandler), nameof(SkipDisplayDialogFromLilInspector))
+                prefix
             );
+            Profiler.EndSample();
+            Profiler.EndSample();
 
+            Profiler.BeginSample("Mute file destination dialog");
+            Profiler.BeginSample("Get Method");
             var bakeMethod = typeof(lilTextureUtils)
                 .GetMethod("SaveTextureToPng", BindingFlags.NonPublic | BindingFlags.Static,
                     null, new[] { typeof(Material), typeof(Texture2D), typeof(string), typeof(string) }, Array.Empty<ParameterModifier>());
-
+            Profiler.EndSample();
+            
+            Profiler.BeginSample("Patch");
             h.Patch(
                 bakeMethod,
                 prefix: new HarmonyLib.HarmonyMethod(typeof(LilToonHandler), nameof(SkipSaveDestinationDialog))
             );
+            Profiler.EndSample();
+            Profiler.EndSample();
             
             return h;
 #endif
@@ -241,7 +263,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 Profiler.BeginSample("Post");
             
                 Profiler.BeginSample("Allocation");
-                var persistent = currentAllocator.Save(tex);
+                var persistent = currentAllocator.SaveAmbiguously(tex);
                 Profiler.EndSample();
             
                 Profiler.BeginSample("Log computation");
@@ -275,25 +297,41 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         }
         #endregion
 
+        private readonly Dictionary<Material, IMaterialConversionResult> _conversionCache = new();
+        
         [NotPublicAPI]
         public IMaterialConversionResult RewriteInline(Material material)
+        {
+            if (_conversionCache.TryGetValue(material, out var value))
+            {
+                return value;
+            }
+
+            var v = RewriteInline0(material);
+            _conversionCache.Add(material, v);
+            
+            return v;
+        }
+        
+        private static IMaterialConversionResult RewriteInline0(Material material)
         {
             Profiler.BeginSample("LilToonHandler.RewriteInline");
             Debug.Log($"try rewrite: {material} ({AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material))})");
             
-            if (!UsesLilToonShader(material)) return IMaterialConversionResult.NotModified(material, null);
-            var variant = currentAllocator.Save(MaterialUtility.CreateVariant(material));
+            if (!UsesLilToonShader(material)) return IMaterialConversionResult.NotModified(material);
+            
+            var variant = MaterialUtility.CreateVariant(material);
             PerformBakeTexture(variant);
 
             IMaterialConversionResult ret;
             if (MaterialUtility.HasAnyOverride(variant))
             {
                 Debug.Log("this iteration produces override.");
-                ret = IMaterialConversionResult.Modified(material, variant, null);
+                ret = IMaterialConversionResult.Modified(material, variant);
             }
             else
             {
-                ret = IMaterialConversionResult.NotModified(material, Single(variant));
+                ret = IMaterialConversionResult.NotModified(material);
             }
 
             Profiler.EndSample();
@@ -303,6 +341,64 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         private static IEnumerable<T> Single<T>(T obj)
         {
             yield return obj;
+        }
+
+        private static readonly int BumpMap = Shader.PropertyToID("_BumpMap");
+        private static readonly int StandardShaderMixtureMode = Shader.PropertyToID("_Mode");
+        private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
+
+        [NotPublicAPI]
+        public ISealedLoweredMaterialReference LowerInline(Material m)
+        {
+            if (!UsesLilToonShader(m)) return new NonConvertedMaterial(m);
+            
+            var standardMaterial = new Material(Shader.Find("Standard"))
+            {
+                mainTexture = m.mainTexture,
+                mainTextureScale = m.mainTextureScale,
+                mainTextureOffset = m.mainTextureOffset,
+                color = m.color
+            };
+
+            LoweredRenderMode mode;
+            var mainTexture = m.mainTexture;
+            if (mainTexture != null)
+            {
+                Debug.Log($"typeof mainTexture: {mainTexture.GetType()}");
+                var importer = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(mainTexture));
+                Debug.Log($"typeof importer: {importer.GetType()}");
+            
+                if (importer is TextureImporter ti)
+                {
+                    var hasAlpha = ti.alphaSource == TextureImporterAlphaSource.FromInput;
+                    var isNonOpaqueShader = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(m.shader)) !=
+                                            "efa77a80ca0344749b4f19fdd5891cbe";
+                    Debug.Log($"Test for {mainTexture}: import: {hasAlpha}, isNonOpaque: {isNonOpaqueShader}");
+                    var givenAlpha = hasAlpha && isNonOpaqueShader;
+                    mode = givenAlpha ? LoweredRenderMode.Blend : LoweredRenderMode.Opaque;
+                
+                    standardMaterial.SetOverrideTag("RenderType", givenAlpha ? "Transparent" : "");
+                    if (givenAlpha)
+                    {
+                        standardMaterial.renderQueue = 3000;
+                    }
+                }
+                else
+                {
+                    mode = LoweredRenderMode.Blend;
+                    standardMaterial.SetOverrideTag("RenderType", "Transparent");
+                    standardMaterial.renderQueue = 3000;
+                }
+            }
+            else
+            {
+                mode = LoweredRenderMode.Opaque;
+            }
+            
+            // set NormalMap
+            standardMaterial.SetTexture(BumpMap, m.GetTexture(BumpMap));
+            
+            return new LoweredMaterialReference(new InMemory<Material>(standardMaterial), mode);
         }
     }
 }

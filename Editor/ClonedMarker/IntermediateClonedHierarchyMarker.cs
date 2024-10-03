@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using ResoniteImportHelper.Marker;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace ResoniteImportHelper.ClonedMarker
 {

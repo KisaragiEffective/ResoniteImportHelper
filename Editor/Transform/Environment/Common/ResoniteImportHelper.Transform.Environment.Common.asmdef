@@ -3,7 +3,8 @@
   "rootNamespace": "global::ResoniteImportHelper.Transform.Environment.Common",
   "references": [
     "GUID:da758e96819041b2b57ad6379d1c0c58",
-    "GUID:041f840041904fa4965ea30baa9487a6"
+    "GUID:041f840041904fa4965ea30baa9487a6",
+    "GUID:2d6737347877424fbda09747226d3718"
   ],
   "includePlatforms": [
     "Editor"
