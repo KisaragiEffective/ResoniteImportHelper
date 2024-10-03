@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Linq;
 using ResoniteImportHelper.Backlink.Component;

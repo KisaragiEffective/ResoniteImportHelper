@@ -1,3 +1,4 @@
+#nullable enable
 namespace ResoniteImportHelper.UI.Localize
 {
     internal sealed class Japanese : ILocalizedTexts

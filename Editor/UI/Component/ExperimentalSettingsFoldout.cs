@@ -1,3 +1,4 @@
+#nullable enable
 using ResoniteImportHelper.UI.Localize;
 using UnityEngine.UIElements;
 

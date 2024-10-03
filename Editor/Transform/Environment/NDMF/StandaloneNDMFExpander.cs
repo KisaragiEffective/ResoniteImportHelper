@@ -1,3 +1,4 @@
+#nullable enable
 #if RIH_HAS_NDMF
 using nadena.dev.ndmf;
 #endif

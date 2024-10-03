@@ -1,3 +1,4 @@
+#nullable enable
 using JetBrains.Annotations;
 #if !RIH_HAS_UNI_GLTF
 using ResoniteImportHelper.Bootstrap.Logic;

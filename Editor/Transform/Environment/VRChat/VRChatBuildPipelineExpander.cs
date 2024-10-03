@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using UnityEngine;
 #if RIH_HAS_VRCSDK3A
