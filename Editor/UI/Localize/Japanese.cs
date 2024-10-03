@@ -17,6 +17,7 @@ namespace ResoniteImportHelper.UI.Localize
         public string OpenInstallationPageForUniGLTF() => "UniGLTFのインストールページを開く";
 
         public string InstallUniGLTFAutomatically() => "自動的にUniGLTFをインストールする";
+        public string ConflictingVersionOfUniGLTFIsInstalled() => "UniGLTFはインストールされていますが、指定されたバージョンにマッチしません！";
 
         public string OpenInFileSystemLabel() => "エクスプローラーで開く";
 

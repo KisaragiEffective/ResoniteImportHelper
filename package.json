@@ -12,8 +12,11 @@
   "repository": {
     "url": "https://github.com/KisaragiEffective/ResoniteImportHelper"
   },
-  "dependencies": {
+  "peerDependencies": {
     "com.vrmc.gltf": "0.125.0"
+  },
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
   },
   "keywords": ["resonite", "Resonite"],
   "license": "MIT"

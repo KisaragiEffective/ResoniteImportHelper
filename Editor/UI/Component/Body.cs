@@ -112,26 +112,7 @@ StackTrace:");
 #endif
             rootVisualElement.Add(run);
             rootVisualElement.Add(new HorizontalLine());
-#if !RIH_HAS_UNI_GLTF
-            {
-                rootVisualElement.Add(
-                    new HelpBox(lang.UniGLTFIsNotInstalled(), HelpBoxMessageType.Error)
-                );
-                {
-                    var button = new Button(() =>
-                    {
-                        Application.OpenURL("https://github.com/vrm-c/UniVRM/releases");
-                    });
-                    button.Add(new Label(lang.OpenInstallationPageForUniGLTF()));
-                    rootVisualElement.Add(button);
-                }
-                {
-                    var button = new Button(PackageManagerProxy.InstallUniGLTF);
-                    button.Add(new Label(lang.InstallUniGLTFAutomatically()));
-                    rootVisualElement.Add(button);
-                }
-            }
-#endif
+            rootVisualElement.Add(new UniGltfInstallPrompt(lang));
             rootVisualElement.Add(destination);
             {
                 var button = new Button(() =>

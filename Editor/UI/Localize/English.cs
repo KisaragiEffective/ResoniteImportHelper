@@ -24,6 +24,9 @@ namespace ResoniteImportHelper.UI.Localize
 
         public string InstallUniGLTFAutomatically() => "install UniGLTF automatically";
 
+        public string ConflictingVersionOfUniGLTFIsInstalled() =>
+            "UniGLTF is installed, but its version does not match our requirement.";
+
         public string OpenInFileSystemLabel() => "Open in file system";
         public string ProcessedAvatarLabel() => "Processed avatar";
 
