@@ -1,3 +1,4 @@
+#nullable enable
 using System.Diagnostics.CodeAnalysis;
 
 namespace ResoniteImportHelper.UI.Localize

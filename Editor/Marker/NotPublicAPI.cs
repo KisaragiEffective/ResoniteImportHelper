@@ -1,3 +1,4 @@
+#nullable enable
 namespace ResoniteImportHelper.Marker
 {
     [NotPublicAPI]

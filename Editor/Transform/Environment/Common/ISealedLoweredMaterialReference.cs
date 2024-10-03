@@ -1,3 +1,4 @@
+#nullable enable
 using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.Marker;
 using UnityEngine;

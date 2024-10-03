@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Linq;
 using Newtonsoft.Json;
@@ -12,11 +13,7 @@ namespace ResoniteImportHelper.Serialization
 
         internal PostGltfService(string json)
         {
-            this._dynamicBinding = JsonConvert.DeserializeObject(json);
-            if (_dynamicBinding == null)
-            {
-                throw new Exception("Invalid JSON for PostGltfService");
-            }
+            _dynamicBinding = JsonConvert.DeserializeObject(json) ?? throw new Exception("Invalid JSON for PostGltfService");
         }
 
         internal void AlignInitialMorphValues(GameObject source)

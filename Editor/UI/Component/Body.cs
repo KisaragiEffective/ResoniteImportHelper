@@ -1,3 +1,4 @@
+#nullable enable
 using System.Linq;
 using ResoniteImportHelper.Lint.Pass;
 using ResoniteImportHelper.TransFront;
