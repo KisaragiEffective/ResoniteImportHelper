@@ -1,4 +1,26 @@
 # 変更履歴
+## 0.1.15 (2024-10-03)
+* chore: SkinnedMeshRendererのシェイプキーの値の初期値をエクスポートする準備
+  * 問題は完全に解決されたわけではありません。
+  * 経緯は[issue #109](https://github.com/KisaragiEffective/ResoniteImportHelper/issues/109) で追うことができます
+* docs: Constraints関連のワークアラウンドを更新
+* chore: `TiedBakeSourceDescriptor` にアイコンが設定されました
+
+## 0.1.15-packaging.2 (2024-09-29)
+* build: ビルドが失敗するのを解消
+
+## 0.1.15-packaging.1 (2024-09-29)
+* build: 非VRChat環境でビルドが失敗するのを解消
+
+## 0.1.15-packaging.0 (2024-09-29)
+* docs: 0.1.13で実装された機能についての注意書きを調整
+* chore: ブートストラップ機能でバージョンが違う場合に警告を出すように
+    * UniGLTF 0.125.0以外はサポートされていません。
+* chore: editorconfigを導入
+* chore: Assembly Definitionの冗長な記述を簡略化
+* chore: UniGLTFをインストールせずにRIHをインストールできるようにパッケージマニフェストをごまかす
+    * これは「RIHの動作にUniGLTFを必要としなくなった」という意味では**ありません**。
+
 ## 0.1.14 (2024-09-27)
 * perf: マテリアルの変換が高速に
 * docs: 関係ない警告をREADMEから除去
