@@ -68,7 +68,7 @@ namespace ResoniteImportHelper.Serialization
                 return t.Any(c => c.r != 255 && c.g != 255 && c.b != 255 && c.a != 255);
             });
 
-            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, config.Allocator);
+            var serialized = ExportGltfToAssetFolder(target, containsVertexColors, config.Allocator, true);
             Debug.Log("backlink: started");
             TryCreateBacklink(config.OriginalMaybePackedObject, config.Allocator);
             Debug.Log("backlink: end");
@@ -157,8 +157,15 @@ namespace ResoniteImportHelper.Serialization
         /// <param name="temporary"></param>
         /// <param name="containsVertexColors"></param>
         /// <param name="runIdentifier"></param>
+        /// <param name="allocator"></param>
+        /// <param name="alignInitialMorphValues"></param>
         /// <returns>Lazily-loaded glTF as a <see cref="GameObject"/>.</returns>
-        private static DelayedReference<GameObject> ExportGltfToAssetFolder(GameObject temporary, bool containsVertexColors, ResourceAllocator allocator)
+        private static DelayedReference<GameObject> ExportGltfToAssetFolder(
+            GameObject temporary,
+            bool containsVertexColors,
+            ResourceAllocator allocator,
+            bool alignInitialMorphValues
+        )
         {
             Profiler.BeginSample("ExportGltfToAssetFolder");
 #if RIH_HAS_UNI_GLTF
@@ -202,6 +209,15 @@ namespace ResoniteImportHelper.Serialization
                 AssetDatabase.Refresh();
             }
             Profiler.EndSample();
+
+            {
+                var postGltf = new PostGltfService(File.ReadAllText(assetsRelPath));
+
+                if (alignInitialMorphValues)
+                {
+                    postGltf.AlignInitialMorphValues(temporary);
+                }
+            }
 
             Profiler.EndSample();
             return new DelayedReference<GameObject>(AssetDatabase.AssetPathToGUID(assetsRelPath));
