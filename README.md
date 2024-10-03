@@ -47,7 +47,7 @@ After installed git, open your Project. Then:
 1. Go to `Window > Package Manager`
 2. Click `[+▼]`
 3. Select "Add package from Git URL"
-4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.14`
+4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.15`
 
 Snippet after `#` specifies revision to be installed. By this configuration, you specify latest tagged version. This is recommended style. Refer [Unity's manual](https://docs.unity3d.com/2022.3/Documentation/Manual/upm-git.html) to customize or install other version.
 
@@ -155,7 +155,7 @@ By default (and most case), following property are kept:
 
 Please let me know if that's not true.
 
-Supporting around Custom Shader-specific properties in is poor. 
+Supporting around Custom Shader-specific properties in is poor.
 
 However please remember that it will **never** be considered if you do not let me know.
 
