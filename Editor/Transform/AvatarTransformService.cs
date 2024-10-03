@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using JetBrains.Annotations;
 using ResoniteImportHelper.Allocator;
 using ResoniteImportHelper.ClonedMarker;
 using ResoniteImportHelper.Generic.Collections;
@@ -107,8 +106,7 @@ namespace ResoniteImportHelper.Transform
             return new InPlaceConvertResult(materialMap);
         }
 
-        [CanBeNull]
-        private static Animator FindRigSetting(GameObject root) =>
+        private static Animator? FindRigSetting(GameObject root) =>
             root.TryGetComponent<Animator>(out var a) ? a : null;
 
         /// <summary>
