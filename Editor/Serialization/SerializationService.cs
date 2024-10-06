@@ -122,7 +122,23 @@ namespace ResoniteImportHelper.Serialization
                 Debug.Log($"backlink: path to Prefab: {path}");
             }
 
-            var hasLocalOverrides = PrefabUtility.HasPrefabInstanceAnyOverrides(original, false);
+            bool hasLocalOverrides;
+
+            {
+                var oldRootPosition = original.transform.position;
+                // 原点にないとPosition Constraintなどの座標を参照するコンポーネントの値が
+                // 演算誤差によって本来の設定とは異なるためオーバーライドしたとして扱われてしまう
+                original.transform.position = Vector3.zero;
+                /*
+                TODO: もうちょっとうまくやる。
+                例えば位置を戻しただけではPos. ConstraintのOffsetをオーバーライドしたという
+                勘違いは治らない。
+                */
+                hasLocalOverrides = PrefabUtility.HasPrefabInstanceAnyOverrides(original, false);
+                // 検査が済んだら戻す
+                original.transform.position = oldRootPosition;
+            }
+
             GameObject parent;
             if (hasLocalOverrides)
             {
