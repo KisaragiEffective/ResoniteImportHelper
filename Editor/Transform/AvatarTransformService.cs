@@ -249,6 +249,14 @@ namespace ResoniteImportHelper.Transform
             GameObject armatureRoot;
             {
                 var hips = rig.GetBoneTransform(HumanBodyBones.Hips);
+                if (hips == null)
+                {
+                    // 普通はAvatarがUnityによって生成されるのでそれに従えばいいが、何らかの事情によってHipsが存在しない時は
+                    // その親も取得できないのでNoIKを諦める。なぜならば、そのような状態のアバターは
+                    // [アーマチュアのルートまたはアバターのルート]及び[ルートの直下に展開されたレンダラーを持つ複数のGameObject]
+                    // のみ持つと考えられ、このコードを書いた時点で思いつくケースではNoIKフラグを建てる必要性がないからである。
+                    return;
+                }
                 var candidate = hips.parent;
                 armatureRoot = candidate == root.transform ? hips.gameObject : candidate.gameObject;
             }
