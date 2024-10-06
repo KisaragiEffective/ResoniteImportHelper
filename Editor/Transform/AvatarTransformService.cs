@@ -38,7 +38,7 @@ namespace ResoniteImportHelper.Transform
 
             Object.DestroyImmediate(intermediateMarker);
 
-            return new Result(target, c.Materials);
+            return new Result(target, c);
         }
 
         private static GameObject Expand(
@@ -70,17 +70,8 @@ namespace ResoniteImportHelper.Transform
                 handler.PerformEnvironmentDependantShallowCopy(localUnmodifiableRoot);
         }
 
-        internal sealed class InPlaceConvertResult
-        {
-            internal readonly MultipleUnorderedDictionary<LoweredRenderMode, Material> Materials;
-
-            internal InPlaceConvertResult(MultipleUnorderedDictionary<LoweredRenderMode, Material> materials)
-            {
-                Materials = materials;
-            }
-        }
-
-        private static InPlaceConvertResult InPlaceConvert(GameObject target, bool bakeTexture, ResourceAllocator alloc)
+        private static MultipleUnorderedDictionary<LoweredRenderMode, Material>
+            InPlaceConvert(GameObject target, bool bakeTexture, ResourceAllocator alloc)
         {
             var rig = FindRigSetting(target);
             if (rig == null)
@@ -103,7 +94,7 @@ namespace ResoniteImportHelper.Transform
 
             var materialMap = LowerShader(target, alloc);
 
-            return new InPlaceConvertResult(materialMap);
+            return materialMap;
         }
 
         private static Animator? FindRigSetting(GameObject root) =>
