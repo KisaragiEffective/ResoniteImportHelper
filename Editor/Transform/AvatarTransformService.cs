@@ -337,13 +337,10 @@ namespace ResoniteImportHelper.Transform
                         (acc, currentMaterial) =>
                         {
                             var aj = currentMaterial.GetAllocationJob();
-                            if (aj != null)
-                            {
-                                var m = allocator.Save(aj.Value);
+                            var m = aj != null ? allocator.Save(aj.Value) : currentMaterial.GetMaybeConvertedMaterial();
 
-                                acc.Materials[acc.Counter] = m;
-                                acc.Map.Append(currentMaterial.GetComputedRenderMode(), m);
-                            }
+                            acc.Materials[acc.Counter] = m;
+                            acc.Map.Append(currentMaterial.GetComputedRenderMode(), m);
 
                             return (acc.Materials, acc.Map, acc.Counter + 1);
                         }
