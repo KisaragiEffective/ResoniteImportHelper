@@ -19,11 +19,11 @@ namespace ResoniteImportHelper.UI.Component
     internal sealed class Body : VisualElement
     {
         private LocaleSelector.LocaleKind _currentLanguage;
-        
+
         internal Body(LocaleSelector ls)
         {
             var lang = ls.GetLanguage();
-            
+
             RenderTo(this, lang);
             ls.PullDown.RegisterValueChangedCallback(ev =>
             {
@@ -55,7 +55,7 @@ namespace ResoniteImportHelper.UI.Component
             exportSettingFoldout.Add(doNDMFManualBake);
             var experimentalSettingsFoldout = CreateExperimentalSettingsFoldout(lang);
             exportSettingFoldout.Add(experimentalSettingsFoldout);
-            
+
             var destination = new ObjectField(lang.ProcessedAvatarLabel())
             {
                 objectType = typeof(GameObject),
@@ -69,7 +69,7 @@ namespace ResoniteImportHelper.UI.Component
                 {
                     style = { display = DisplayStyle.None }
                 };
-            
+
             var run = new Button(() =>
             {
                 var result = Entry.PerformConversion(
@@ -91,7 +91,7 @@ namespace ResoniteImportHelper.UI.Component
                 {
                     var m = diagnostic.CustomizedShaderUsedMaterial;
                     var o = diagnostic.ReferencedRenderer;
-                    
+
                     Debug.Log($@"custom shader warning: {diagnostic.Message()}
 Material: {m}
 GameObject: {o.gameObject}
@@ -124,15 +124,15 @@ StackTrace:");
                 {
                     button.SetEnabled(ev.newValue != null);
                 });
-                
+
                 button.Add(new Label(lang.OpenInFileSystemLabel()));
                 button.SetEnabled(false);
                 rootVisualElement.Add(button);
             }
-            
+
             rootVisualElement.Add(modelContainsVertexColorNote);
         }
-        
+
         private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField, ILocalizedTexts lang)
         {
             var ret = new Toggle(lang.InvokeVRCSDKPreprocessorLabel()) { value = HasVRCSDK3A, tooltip = lang.InvokeVRCSDKPreprocessorTooltip() };
@@ -158,7 +158,7 @@ StackTrace:");
         {
             return new ExperimentalSettingsFoldout(lang);
         }
-        
+
         // ReSharper disable once InconsistentNaming
         private static Toggle CreateNDMFManualBakeCheckbox(Toggle v, ILocalizedTexts lang)
         {
@@ -180,7 +180,7 @@ StackTrace:");
                     (true, true) => false,
                     (true, false) => false,
                     (false, true) => true,
-                    (false, false) => true,
+                    (false, false) => false,
                 };
         }
     }
