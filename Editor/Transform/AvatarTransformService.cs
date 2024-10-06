@@ -123,9 +123,9 @@ namespace ResoniteImportHelper.Transform
             void RewriteIfSet(HumanBodyBones hbb, string newName)
             {
                 var b = rig.GetBoneTransform(hbb);
+#if RIH_HAS_VRCSDK3A
                 if (b == null)
                 {
-#if RIH_HAS_VRCSDK3A
                     // 一部アバターはAnimatorではなくVRC-ADのみに目のボーンをアサインしていることがあるので気をつける
                     if (hbb is not (HumanBodyBones.LeftEye or HumanBodyBones.RightEye)) return;
 
@@ -139,14 +139,14 @@ namespace ResoniteImportHelper.Transform
                     var right = eyeConfiguration.rightEye;
 
                     b = hbb is HumanBodyBones.LeftEye ? left : right;
-                    if (b == null)
-                    {
-                        Debug.Log($"RewriteIfSet: {hbb.ToString()} is not set on Animator or VRC-AD");
-                        return;
-                    }
-
                     Debug.Log($"RewriteIfSet: fallback from VRC Avatar Descriptor: {hbb.ToString()} = {b.name}");
+                }
 #endif
+
+                if (b == null)
+                {
+                    Debug.Log($"RewriteIfSet: {hbb.ToString()} is not set on Animator or VRC-AD");
+                    return;
                 }
 
                 b.gameObject.name = newName;
@@ -249,6 +249,14 @@ namespace ResoniteImportHelper.Transform
             GameObject armatureRoot;
             {
                 var hips = rig.GetBoneTransform(HumanBodyBones.Hips);
+                if (hips == null)
+                {
+                    // 普通はAvatarがUnityによって生成されるのでそれに従えばいいが、何らかの事情によってHipsが存在しない時は
+                    // その親も取得できないのでNoIKを諦める。なぜならば、そのような状態のアバターは
+                    // [アーマチュアのルートまたはアバターのルート]及び[ルートの直下に展開されたレンダラーを持つ複数のGameObject]
+                    // のみ持つと考えられ、このコードを書いた時点で思いつくケースではNoIKフラグを建てる必要性がないからである。
+                    return;
+                }
                 var candidate = hips.parent;
                 armatureRoot = candidate == root.transform ? hips.gameObject : candidate.gameObject;
             }
