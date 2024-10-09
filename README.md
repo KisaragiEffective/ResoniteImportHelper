@@ -43,7 +43,12 @@ Install this package via Package Manager.
 As of writing, installing RIH requires Git to be installed. Other install method may be supported in the future.
 Obtain Git installer from [gitforwindows.org](https://gitforwindows.org/) (or alternative proper and favorite method) if you do not have one.
 
-After installed git, open your Project. Then:
+After installed git, open your Project.
+
+> [!TIP]
+> You do not have to create separate project. RIH is designed to be non-destructive.
+
+On your project, do following:
 1. Go to `Window > Package Manager`
 2. Click `[+▼]`
 3. Select "Add package from Git URL"
