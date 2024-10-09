@@ -61,6 +61,30 @@ Snippet after `#` specifies revision to be installed. By this configuration, you
 > Tagged versions are slightly more stable.
 
 ### Convert
+
+> [!WARNING]
+> The target avatar shall not have Missing Material on any renderer. \
+> This is not supported: Those Material Slots will be ignored and be treated as the missing slot does not exist.
+> Example:
+> 
+> | # of order | Assigned Material |
+> |:----------:|:-----------------:|
+> |     1      |        Foo        |
+> |     2      |     *Missing*     |
+> |     3      |        Bar        |
+>
+> is treated as following:
+>
+> | # of order | Assigned Material |
+> |:----------:|:-----------------:|
+> |     1      |        Foo        |
+> |     2      |        Bar        |
+> 
+
+> [!WARNING]
+> The target avatar shall not have Missing Script. This may supported in the future, but is not supported at this time.
+> See [issue 168](https://github.com/KisaragiEffective/ResoniteImportHelper/issues/168) to learn why.
+
 1. Go to `Tools > Resonite Import Helper`: \
     ![UI visual](./Doc~/r1.png)
 2. Change language to Japanese if you prefer it.
