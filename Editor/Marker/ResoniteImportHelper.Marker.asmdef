@@ -1,7 +1,9 @@
 {
   "name": "ResoniteImportHelper.Marker",
   "rootNamespace": "global::ResoniteImportHelper.Marker",
-  "references": [],
+  "references": [
+    "GUID:537b972107da49b88743a2eb3d496a88"
+  ],
   "includePlatforms": [
     "Editor"
   ],

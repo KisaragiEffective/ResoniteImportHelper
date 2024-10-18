@@ -8,6 +8,7 @@ trim_trailing_whitespace = true
 [*.cs]
 charset = utf-8
 csharp_new_line_before_open_brace = all
+dotnet_diagnostic.UNT0014.severity = error
 
 [*.asmdef]
 charset = utf-8

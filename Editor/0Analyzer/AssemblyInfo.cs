@@ -1,0 +1,1 @@
+// This assembly is dummy!
