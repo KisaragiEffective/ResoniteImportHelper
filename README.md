@@ -16,9 +16,9 @@ Following tools are optional. This tool can invoke their hooks.
 ### Does
 * Flag non-Rig bone as [`<NoIK>`][NOIK]
 * Rename bones to be [Rig-detector friendly](https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK#Bone_Requirements)
-* Serialize processed avatar as glTF format
-* Call VRChat Avatar Build hooks
-* Call NDMF plugins
+* Serialize processed avatar as [glTF](https://www.khronos.org/gltf/) format
+* Call [VRChat Avatar Build hooks](https://creators.vrchat.com/sdk/build-pipeline-callbacks-and-interfaces/)
+* Call [NDMF](https://ndmf.nadena.dev/) plugins
 
 ### Does not
 * Convert Material: Always exported as Standard Shader. This is technical limitation on UniGLTF. You may import them as XiexeToonShader (or any suitable built-in Shader).
