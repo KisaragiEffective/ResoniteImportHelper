@@ -70,8 +70,8 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         private static bool UsesLilToonShader(Material m) => LilToonShaderFamily.Instance.Contains(m.shader);
 
         private static bool _isInspectorInitialized = false;
-        private static MethodInfo _bakeMethod = null;
-        
+        private static MethodInfo? _bakeMethod;
+
         private static void PerformBakeTexture(Material m)
         {
             Profiler.BeginSample("LilToonHandler.PerformBakeTexture");
@@ -93,7 +93,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             Profiler.BeginSample(".ctor");
             var inspector = new lilToonInspector();
             Profiler.EndSample();
-            var inspectorType = inspector.GetType()!;
+            var inspectorType = inspector.GetType();
             // TODO: 例外ケースのダイアログがアレなので一部を切り貼りするべき？
 
             #region initialization for lilInspector
@@ -115,7 +115,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
                 Profiler.BeginSample("LilToonHandler.Reflect-TextureBake");
                 
                 Profiler.BeginSample("method");
-                _bakeMethod ??= inspectorType!.GetMethod("TextureBake", BindingFlags.Instance | BindingFlags.NonPublic);
+                _bakeMethod ??= inspectorType.GetMethod("TextureBake", BindingFlags.Instance | BindingFlags.NonPublic);
                 Profiler.EndSample();
                 
                 Profiler.BeginSample("invoke");
