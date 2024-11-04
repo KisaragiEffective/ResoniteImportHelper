@@ -14,7 +14,8 @@ namespace ResoniteImportHelper.UnityEditorUtility
             Debug.Log($"create material variant for {parent.name}");
             return new Material(parent)
             {
-                parent = parent
+                parent = parent,
+                name = parent.name
             };
         }
 
@@ -113,7 +114,8 @@ namespace ResoniteImportHelper.UnityEditorUtility
                 mainTexture = m.mainTexture,
                 mainTextureScale = m.mainTextureScale,
                 mainTextureOffset = m.mainTextureOffset,
-                color = m.color
+                color = m.color,
+                name = m.name,
             };
         }
     }

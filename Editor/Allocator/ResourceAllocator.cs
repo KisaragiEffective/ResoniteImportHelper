@@ -13,7 +13,7 @@ namespace ResoniteImportHelper.Allocator
     public class ResourceAllocator
     {
         private readonly string rootFolderGuid;
-        
+
         [NotPublicAPI]
         public string BasePath => AssetDatabase.GUIDToAssetPath(rootFolderGuid);
 
@@ -36,23 +36,23 @@ namespace ResoniteImportHelper.Allocator
                     return obj;
                 }
             }
-            
+
             T persistent;
             if (obj is Texture2D _tex)
             {
                 Profiler.BeginSample("Allocate Texture2D");
-                var tex = TextureUtility.MaybeDuplicateTexture(_tex); 
+                var tex = TextureUtility.MaybeDuplicateTexture(_tex);
                 var path = $"{basePath}.png";
                 Profiler.BeginSample("Encode To PNG");
                 var fw = tex.EncodeToPNG();
                 Profiler.EndSample();
                 var fullyQualifiedPath = $"{Application.dataPath}/../{path}";
                 Debug.Log($"Note: Allocator saves given Texture2D as PNG file. This is non-avoidable behavior.\nDestination path: {fullyQualifiedPath}");
-                
+
                 Profiler.BeginSample("Synchronous write");
                 File.WriteAllBytes(fullyQualifiedPath, fw);
                 Profiler.EndSample();
-                
+
                 Profiler.BeginSample("Tell Unity");
                 AssetDatabase.ImportAsset(path);
                 Profiler.EndSample();
@@ -65,8 +65,8 @@ namespace ResoniteImportHelper.Allocator
             {
                 Profiler.BeginSample("Allocate general asset");
                 var path = $"{basePath}.asset";
-                AssetDatabase.CreateAsset(obj, path);
-            
+                AssetDatabase.CreateAsset(obj, AssetDatabase.GenerateUniqueAssetPath(path));
+
                 persistent = AssetDatabase.LoadAssetAtPath<T>(path);
             }
 
@@ -89,7 +89,7 @@ namespace ResoniteImportHelper.Allocator
         [NotPublicAPI]
         public T SaveAmbiguously<T>(T obj, string? name = null) where T : Object
         {
-            return this.Save(obj, name ?? GUID.Generate().ToString());
+            return this.Save(obj, name ?? obj.name);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace ResoniteImportHelper.Allocator
         [NotPublicAPI]
         public T Save<T>(InMemory<T> toBeSerialized) where T : Object
         {
-            return this.Save(toBeSerialized.InMemoryValue, GUID.Generate().ToString());
+            return this.Save(toBeSerialized.InMemoryValue, toBeSerialized.InMemoryValue.name);
         }
     }
 }
