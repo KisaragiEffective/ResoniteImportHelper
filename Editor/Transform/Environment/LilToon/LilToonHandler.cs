@@ -353,13 +353,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         {
             if (!UsesLilToonShader(m)) return new NonConvertedMaterial(m);
 
-            var standardMaterial = new Material(ShaderUtility.GetStandardShaderReliably())
-            {
-                mainTexture = m.mainTexture,
-                mainTextureScale = m.mainTextureScale,
-                mainTextureOffset = m.mainTextureOffset,
-                color = m.color
-            };
+            var standardMaterial = MaterialUtility.CreateSimilarStandardMaterialFromCustomizedOne(m);
 
             LoweredRenderMode mode;
             var mainTexture = m.mainTexture;
