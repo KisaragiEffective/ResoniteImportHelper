@@ -16,7 +16,7 @@ namespace ResoniteImportHelper.UnityEditorUtility
         /// 与えられたオブジェクトがUnityEngineに組み込みのアセットかどうか確かめる。
         /// <br />
         /// 注意: 与えられたオブジェクトが組み込みの場合、それらのGUIDはZero-filledなのでGUIDによって識別することは不可能である。
-        /// そのため、<see cref="UnityEngine.Object.name"/> で判別すること。
+        /// そのため、<see cref="UnityEngine.Object.name"/> や <see cref="ShaderUtility.GetStandardShaderReliably"/> など他の手段でで判別すること。
         /// </summary>
         /// <param name="obj">検査するオブジェクト</param>
         /// <returns>組み込みなら<c>true</c>、そうでなければ<c>false</c>。</returns>
@@ -31,7 +31,7 @@ namespace ResoniteImportHelper.UnityEditorUtility
             var parentDirectory = Directory.GetParent(path);
             var unityRelativePath = ExtractProjectRelativePathFromAbsolutePath(parentDirectory!.FullName);
             // Debug.Log($"getting {unityRelativePath}");
-            
+
             return AssetDatabase.GUIDFromAssetPath(unityRelativePath);
         }
 
@@ -58,7 +58,7 @@ namespace ResoniteImportHelper.UnityEditorUtility
     {
         [NotPublicAPI]
         public string Guid { get; }
-        
+
         internal DelayedReference(string referenceGuid)
         {
             this.Guid = referenceGuid;

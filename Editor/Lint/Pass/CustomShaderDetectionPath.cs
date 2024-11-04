@@ -37,7 +37,7 @@ namespace ResoniteImportHelper.Lint.Pass
         {
             var shader = m.shader;
             // Debug.Log(shader);
-            return !AssetDatabasePlusPlus.IsUnityEngineBuiltinObject(shader) || shader.name != "Standard";
+            return !AssetDatabasePlusPlus.IsUnityEngineBuiltinObject(shader) || shader == ShaderUtility.GetStandardShaderReliably();
         }
     }
 }
