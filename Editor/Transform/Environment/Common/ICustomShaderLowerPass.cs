@@ -43,6 +43,7 @@ namespace ResoniteImportHelper.Transform.Environment.Common
         /// </list>
         /// </summary>
         /// <param name="m"></param>
+        /// <seealso cref="ResoniteImportHelper.UnityEditorUtility.MaterialUtility.CreateSimilarStandardMaterialFromCustomizedOne"/>
         /// <returns></returns>
         [NotPublicAPI]
         public ISealedLoweredMaterialReference LowerInline(Material m);

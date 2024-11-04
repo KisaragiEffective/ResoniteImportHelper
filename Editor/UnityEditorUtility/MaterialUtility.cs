@@ -34,7 +34,7 @@ namespace ResoniteImportHelper.UnityEditorUtility
             {
                 return false;
             }
-            
+
             // シェーダーは同じなのでプロパティの集合も同じ
             var parent = variant.parent;
 
@@ -75,20 +75,20 @@ namespace ResoniteImportHelper.UnityEditorUtility
         private static object GetPropertyValue(Material material, MaterialProperty mp)
         {
             var name = mp.name;
-            
+
             var x = (mp.type, mp.hasMixedValue) switch
             {
                 (MaterialProperty.PropType.Color, true) => material.GetColorArray(name),
-                (MaterialProperty.PropType.Color, false) => material.GetColor(name),            
+                (MaterialProperty.PropType.Color, false) => material.GetColor(name),
                 (MaterialProperty.PropType.Vector, true) => material.GetVectorArray(name),
-                (MaterialProperty.PropType.Vector, false) => material.GetVector(name),          
-                (MaterialProperty.PropType.Float, true) => material.GetFloatArray(name),            
-                (MaterialProperty.PropType.Float, false) => material.GetFloat(name),            
-                (MaterialProperty.PropType.Range, true) => ImpossibleCombination(),            
-                (MaterialProperty.PropType.Range, false) => mp.rangeLimits,            
-                (MaterialProperty.PropType.Texture, true) => ImpossibleCombination(),        
-                (MaterialProperty.PropType.Texture, false) => material.GetTexture(name),        
-                (MaterialProperty.PropType.Int, true) => ImpossibleCombination(),                
+                (MaterialProperty.PropType.Vector, false) => material.GetVector(name),
+                (MaterialProperty.PropType.Float, true) => material.GetFloatArray(name),
+                (MaterialProperty.PropType.Float, false) => material.GetFloat(name),
+                (MaterialProperty.PropType.Range, true) => ImpossibleCombination(),
+                (MaterialProperty.PropType.Range, false) => mp.rangeLimits,
+                (MaterialProperty.PropType.Texture, true) => ImpossibleCombination(),
+                (MaterialProperty.PropType.Texture, false) => material.GetTexture(name),
+                (MaterialProperty.PropType.Int, true) => ImpossibleCombination(),
                 (MaterialProperty.PropType.Int, false) => material.GetInt(name),
                 _ => throw new ArgumentOutOfRangeException()
             };
@@ -99,6 +99,22 @@ namespace ResoniteImportHelper.UnityEditorUtility
             {
                 throw new ArgumentOutOfRangeException(nameof(mp));
             }
+        }
+
+        /// <summary>
+        /// メインテクスチャの参照とそのオフセット及びスケールに加えてtint colorを新しいStandard Shaderマテリアルにコピーする。
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        internal static Material CreateSimilarStandardMaterialFromCustomizedOne(Material m)
+        {
+            return new Material(ShaderUtility.GetStandardShaderReliably())
+            {
+                mainTexture = m.mainTexture,
+                mainTextureScale = m.mainTextureScale,
+                mainTextureOffset = m.mainTextureOffset,
+                color = m.color
+            };
         }
     }
 }
