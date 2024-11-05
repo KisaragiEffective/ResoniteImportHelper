@@ -20,7 +20,7 @@ using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Transform.Environment.LilToon
 {
-    internal sealed class LilToonHandler: ISameShaderMaterialTransformPass, ICustomShaderLowerPass
+    internal sealed class LilToonHandler: IMaterialTextureBakePass, ICustomShaderLowerPass
     {
         private static ResourceAllocator currentAllocator;
 
@@ -34,7 +34,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 #warning lilToon 2.0.0 is under develop and this Transformer may not able to work or be compiled correctly.
 #warning This is not supported yet. Please downgrade lilToon to 1.x series.
 #endif
-        internal void PerformInlineTransform(GameObject modifiableRoot)
+        internal void BakeTextureFront(GameObject modifiableRoot)
         {
 #if !RIH_HAS_LILTOON
             Debug.LogWarning("This project does not have supported version of lilToon, skipping this IPostExpansionTransformer");
@@ -48,12 +48,9 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             var h = MuteDialogIfPossible();
             Profiler.EndSample();
 
-            foreach (var renderer in GameObjectRecurseUtility.GetChildrenRecursive(modifiableRoot)
-                         .Select(o =>
-                             o.TryGetComponent(out SkinnedMeshRenderer smr) ? smr : null
-                         ).Where(o => o != null))
+            foreach (var renderer in RendererUtility.GetConvertibleRenderersInChildren(modifiableRoot))
             {
-                var conversionResults = renderer.sharedMaterials.Select(RewriteInline).ToList();
+                var conversionResults = renderer.sharedMaterials.Select(BakeTextureWithCache).ToList();
                 renderer.sharedMaterials = conversionResults.Select(r =>
                 {
                     var x = r.AllocatedConvertedMaterial();
@@ -298,23 +295,23 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         }
         #endregion
 
-        private readonly Dictionary<Material, IMaterialConversionResult> _conversionCache = new();
+        private readonly Dictionary<Material, IMaterialConversionResult> _bakedMaterialCache = new();
 
         [NotPublicAPI]
-        public IMaterialConversionResult RewriteInline(Material material)
+        public IMaterialConversionResult BakeTextureWithCache(Material material)
         {
-            if (_conversionCache.TryGetValue(material, out var value))
+            if (_bakedMaterialCache.TryGetValue(material, out var baked))
             {
-                return value;
+                return baked;
             }
 
-            var v = RewriteInline0(material);
-            _conversionCache.Add(material, v);
+            var v = BakeTextureInline(material);
+            _bakedMaterialCache.Add(material, v);
 
             return v;
         }
 
-        private static IMaterialConversionResult RewriteInline0(Material material)
+        private static IMaterialConversionResult BakeTextureInline(Material material)
         {
             Profiler.BeginSample("LilToonHandler.RewriteInline");
             Debug.Log($"try rewrite: {material} ({AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(material))})");

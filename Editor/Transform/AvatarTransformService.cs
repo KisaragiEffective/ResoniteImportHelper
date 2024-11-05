@@ -262,7 +262,7 @@ namespace ResoniteImportHelper.Transform
 
         private static void BakeTexture(GameObject root, ResourceAllocator allocator)
         {
-            new LilToonHandler(allocator).PerformInlineTransform(root);
+            new LilToonHandler(allocator).BakeTextureFront(root);
         }
 
         /// <summary>
