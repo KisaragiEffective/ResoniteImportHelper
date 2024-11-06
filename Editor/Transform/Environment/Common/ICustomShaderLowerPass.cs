@@ -1,5 +1,4 @@
 #nullable enable
-using ResoniteImportHelper.Marker;
 using UnityEngine;
 
 namespace ResoniteImportHelper.Transform.Environment.Common
@@ -45,7 +44,6 @@ namespace ResoniteImportHelper.Transform.Environment.Common
         /// <param name="m"></param>
         /// <seealso cref="ResoniteImportHelper.UnityEditorUtility.MaterialUtility.CreateSimilarStandardMaterialFromCustomizedOne"/>
         /// <returns></returns>
-        [NotPublicAPI]
         public ISealedLoweredMaterialReference LowerInline(Material m);
     }
 }

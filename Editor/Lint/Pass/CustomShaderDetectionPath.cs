@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ResoniteImportHelper.Lint.Diagnostic;
-using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.UnityEditorUtility;
 using UnityEngine;
 
@@ -10,7 +9,6 @@ namespace ResoniteImportHelper.Lint.Pass
 {
     internal class CustomShaderDetectionPath : ILintPass<CustomShaderDiagnostic>
     {
-        [NotPublicAPI]
         public IEnumerable<CustomShaderDiagnostic> Check(GameObject unmodifiableRoot)
         {
             return GameObjectRecurseUtility

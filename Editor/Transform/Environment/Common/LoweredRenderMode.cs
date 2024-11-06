@@ -1,9 +1,6 @@
 #nullable enable
-using ResoniteImportHelper.Marker;
-
 namespace ResoniteImportHelper.Transform.Environment.Common
 {
-    [NotPublicAPI]
     public enum LoweredRenderMode
     {
         /// <summary>

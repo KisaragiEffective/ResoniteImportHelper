@@ -1,5 +1,4 @@
 #nullable enable
-using ResoniteImportHelper.Marker;
 using UnityEngine;
 
 namespace ResoniteImportHelper.Transform.Environment.Common
@@ -10,7 +9,6 @@ namespace ResoniteImportHelper.Transform.Environment.Common
     /// </summary>
     internal interface IMaterialTextureBakePass
     {
-        [NotPublicAPI]
         public IMaterialConversionResult BakeTextureWithCache(Material material);
     }
 }

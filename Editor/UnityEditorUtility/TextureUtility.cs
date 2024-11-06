@@ -5,7 +5,6 @@ using UnityEngine.Profiling;
 
 namespace ResoniteImportHelper.UnityEditorUtility
 {
-    [NotPublicAPI]
     public static class TextureUtility
     {
         /// <summary>
@@ -13,14 +12,13 @@ namespace ResoniteImportHelper.UnityEditorUtility
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
-        [NotPublicAPI]
         public static Texture2D MaybeDuplicateTexture(Texture2D source)
         {
             if (source.isReadable)
             {
                 return source;
             }
-            
+
             Profiler.BeginSample("MaybeDuplicateTexture");
             var renderTex = RenderTexture.GetTemporary(
                 source.width,

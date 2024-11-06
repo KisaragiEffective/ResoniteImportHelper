@@ -4,14 +4,12 @@ using UnityEngine;
 
 namespace ResoniteImportHelper.UnityEditorUtility
 {
-    [NotPublicAPI]
     public static class ShaderUtility
     {
         /// <summary>
         /// Standard シェーダーを確実に取得する。
         /// </summary>
         /// <returns></returns>
-        [NotPublicAPI]
         public static Shader GetStandardShaderReliably()
         {
             // `Shader.Find("Standard")`はShaderLabで"Standard"というシェーダーが定義されていた場合にシャドウされてしまう。

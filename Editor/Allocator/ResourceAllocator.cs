@@ -1,6 +1,5 @@
 #nullable enable
 using System.IO;
-using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
@@ -9,21 +8,17 @@ using Object = UnityEngine.Object;
 
 namespace ResoniteImportHelper.Allocator
 {
-    [NotPublicAPI]
     public class ResourceAllocator
     {
         private readonly string rootFolderGuid;
 
-        [NotPublicAPI]
         public string BasePath => AssetDatabase.GUIDToAssetPath(rootFolderGuid);
 
-        [NotPublicAPI]
         public ResourceAllocator(string guid)
         {
             this.rootFolderGuid = guid;
         }
 
-        [NotPublicAPI]
         private T Save<T>(T obj, string name) where T : Object
         {
             var basePath = BasePath + "/" + name;
@@ -86,7 +81,6 @@ namespace ResoniteImportHelper.Allocator
         /// <typeparam name="T"></typeparam>
         /// <exception cref="UnityException">すでにアセットとして存在するものをシリアライズしようとした時。</exception>
         /// <returns></returns>
-        [NotPublicAPI]
         public T SaveAmbiguously<T>(T obj, string? name = null) where T : Object
         {
             return this.Save(obj, name ?? obj.name);
@@ -98,7 +92,6 @@ namespace ResoniteImportHelper.Allocator
         /// <param name="toBeSerialized"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        [NotPublicAPI]
         public T Save<T>(InMemory<T> toBeSerialized) where T : Object
         {
             return this.Save(toBeSerialized.InMemoryValue, toBeSerialized.InMemoryValue.name);
