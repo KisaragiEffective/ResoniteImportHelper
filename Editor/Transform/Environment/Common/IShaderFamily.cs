@@ -1,5 +1,4 @@
 #nullable enable
-using ResoniteImportHelper.Marker;
 using UnityEngine;
 
 namespace ResoniteImportHelper.Transform.Environment.Common
@@ -9,10 +8,8 @@ namespace ResoniteImportHelper.Transform.Environment.Common
     /// </summary>
     internal interface IShaderFamily
     {
-        [NotPublicAPI]
         public bool Contains(Shader shader);
 
-        [NotPublicAPI]
         internal sealed bool Contains(Material material) => this.Contains(material.shader);
     }
 }

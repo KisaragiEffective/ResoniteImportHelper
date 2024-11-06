@@ -1,5 +1,4 @@
 #nullable enable
-using ResoniteImportHelper.Marker;
 using UnityEngine;
 
 namespace ResoniteImportHelper.Lint.Diagnostic
@@ -14,8 +13,6 @@ namespace ResoniteImportHelper.Lint.Diagnostic
             CustomizedShaderUsedMaterial = customizedShaderUsedMaterial;
             ReferencedRenderer = referencedRenderer;
         }
-        
-        [NotPublicAPI]
         public string Message()
         {
             return "Resonite does not support Custom Shader";

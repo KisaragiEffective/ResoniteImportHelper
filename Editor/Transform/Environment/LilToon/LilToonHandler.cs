@@ -9,7 +9,6 @@ using JetBrains.Annotations;
 using lilToon;
 #endif
 using ResoniteImportHelper.Allocator;
-using ResoniteImportHelper.Marker;
 using ResoniteImportHelper.Transform.Environment.Common;
 using ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
@@ -297,7 +296,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
 
         private readonly Dictionary<Material, IMaterialConversionResult> _bakedMaterialCache = new();
 
-        [NotPublicAPI]
         public IMaterialConversionResult BakeTextureWithCache(Material material)
         {
             if (_bakedMaterialCache.TryGetValue(material, out var baked))
@@ -345,7 +343,6 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
         private static readonly int StandardShaderMixtureMode = Shader.PropertyToID("_Mode");
         private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
 
-        [NotPublicAPI]
         public ISealedLoweredMaterialReference LowerInline(Material m)
         {
             if (!UsesLilToonShader(m)) return new NonConvertedMaterial(m);
