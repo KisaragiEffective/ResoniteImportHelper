@@ -242,4 +242,6 @@ VRChat and all related names are trademarks or registered trademarks of VRChat, 
 
 「VRM」は一般社団法人ＶＲＭコンソーシアムの商標又は登録商標です。 (登録6365806)
 
+「resonite」は Yellow Dog Man Studios s.r.o. の商標または登録商標として出願または認可されています。([国際登録1748918](https://www.j-platpat.inpit.go.jp/c1801/TR/JP-1748918-20230601/49/ja))
+
 Developer nor commiter may NOT be associated with above organizations.
