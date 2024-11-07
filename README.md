@@ -66,7 +66,7 @@ Snippet after `#` specifies revision to be installed. By this configuration, you
 > The target avatar shall not have Missing Material on any renderer. \
 > This is not supported: Those Material Slots will be ignored and be treated as the missing slot does not exist.
 > Example:
-> 
+>
 > | # of order | Assigned Material |
 > |:----------:|:-----------------:|
 > |     1      |        Foo        |
@@ -79,7 +79,7 @@ Snippet after `#` specifies revision to be installed. By this configuration, you
 > |:----------:|:-----------------:|
 > |     1      |        Foo        |
 > |     2      |        Bar        |
-> 
+>
 
 > [!WARNING]
 > The target avatar shall not have Missing Script. This may supported in the future, but is not supported at this time.
@@ -223,10 +223,10 @@ In addition to "Semantic Versioning 2.0.0", following rules applied:
       * UI changes are made
 
 Those are not counted as Public API:
-* Any C# members (class, method, property, field, etc.) that:
-  * cannot be accessed from outside the codebase without reflection and patching.
+* Any C# members (class, method, property, field, etc.) that applicable to either:
+  * cannot be accessed from outside the codebase without reflection and patching
     * This includes `private`, `internal`, `private protected`, and `file` members.
-  * marked with `[NotPublicAPI]`.
+  * not marked with `[StableAPI]`
 * Folder structure.
 * Backlink component and its members.
 
@@ -241,5 +241,7 @@ Unity, the Unity logo, and all related names, logos, product and service names, 
 VRChat and all related names are trademarks or registered trademarks of VRChat, Inc. (https://trademarks.justia.com/864/50/vrchat-86450229.html)
 
 「VRM」は一般社団法人ＶＲＭコンソーシアムの商標又は登録商標です。 (登録6365806)
+
+「resonite」は Yellow Dog Man Studios s.r.o. の商標または登録商標として出願または認可されています。([国際登録1748918](https://www.j-platpat.inpit.go.jp/c1801/TR/JP-1748918-20230601/49/ja))
 
 Developer nor commiter may NOT be associated with above organizations.

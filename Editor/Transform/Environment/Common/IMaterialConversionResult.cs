@@ -1,7 +1,6 @@
 #nullable enable
 using System.Collections.Generic;
 using ResoniteImportHelper.Allocator;
-using ResoniteImportHelper.Marker;
 using UnityEngine;
 
 #nullable enable
@@ -33,13 +32,10 @@ namespace ResoniteImportHelper.Transform.Environment.Common
 
         public InMemory<Material>? AllocatedConvertedMaterial();
 
-        [NotPublicAPI]
         public Material GetInput();
 
-        [NotPublicAPI]
         public Material GetOutcome();
 
-        [NotPublicAPI]
         public bool HasModified();
 
         internal sealed class NotModifiedTag: IMaterialConversionResult
@@ -51,19 +47,15 @@ namespace ResoniteImportHelper.Transform.Environment.Common
                 this._from = from;
             }
 
-            [NotPublicAPI]
             public InMemory<Material>? AllocatedConvertedMaterial() => null;
 
-            [NotPublicAPI]
             public Material GetInput() => _from;
 
-            [NotPublicAPI]
             public Material GetOutcome() => _from;
 
-            [NotPublicAPI]
             public bool HasModified() => false;
         }
-        
+
         internal sealed class ModifiedTag: IMaterialConversionResult
         {
             private readonly Material _from;
@@ -74,7 +66,7 @@ namespace ResoniteImportHelper.Transform.Environment.Common
                 this._from = from;
                 this._to = to;
             }
-            
+
             internal ModifiedTag(Material from, Material to, IEnumerable<Material> disposableMaterialVariants)
             {
                 this._from = from;
@@ -83,13 +75,9 @@ namespace ResoniteImportHelper.Transform.Environment.Common
 
             public InMemory<Material>? AllocatedConvertedMaterial() => new InMemory<Material>(this._to);
 
-            [NotPublicAPI]
             public Material GetInput() => _from;
 
-            [NotPublicAPI]
             public Material GetOutcome() => _to;
-            
-            [NotPublicAPI]
             public bool HasModified() => true;
         }
     }

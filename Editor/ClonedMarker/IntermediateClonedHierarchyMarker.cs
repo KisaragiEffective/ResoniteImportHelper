@@ -1,11 +1,9 @@
 #nullable enable
 #if UNITY_EDITOR
-using ResoniteImportHelper.Marker;
 using UnityEngine;
 
 namespace ResoniteImportHelper.ClonedMarker
 {
-    [NotPublicAPI]
     [DisallowMultipleComponent]
     public sealed class IntermediateClonedHierarchyMarker : MonoBehaviour
     {
@@ -15,7 +13,6 @@ namespace ResoniteImportHelper.ClonedMarker
         [SerializeField]
         internal bool automaticallyAdded;
 
-        [NotPublicAPI]
         public static IntermediateClonedHierarchyMarker Construct(GameObject destination, GameObject original)
         {
             var x = destination.AddComponent<IntermediateClonedHierarchyMarker>();
@@ -23,7 +20,7 @@ namespace ResoniteImportHelper.ClonedMarker
             x.automaticallyAdded = true;
 
             return x;
-        } 
+        }
     }
 }
 #endif
