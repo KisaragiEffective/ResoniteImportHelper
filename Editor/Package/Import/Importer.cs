@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
-using ResoniteImportHelper.Editor.Package.Import.Stub;
-using ResoniteImportHelper.Package.Import.Deserialize.Bitmap;
-using ResoniteImportHelper.Package.Import.Deserialize.Mesh;
 using ResoniteImportHelper.Package.Import.Deserialize.Metadata;
 using UnityEditor.AssetImporters;
 using UnityEngine;
@@ -38,65 +36,27 @@ namespace ResoniteImportHelper.Package.Import
                 var recordManifest = ReadZipArchiveContentAsUtf8Sequence(mainRecordEntry);
                 Debug.Log($"root decoded: {recordManifest}");
 
-                var manifests = JsonConvert.DeserializeObject<PartialDescriptor>(recordManifest)!.AssetManifest;
+                var pd = JsonConvert.DeserializeObject<PartialDescriptor>(recordManifest);
+                if (pd is null)
+                {
+                    throw new FormatException("Failed to deserialize descriptor");
+                }
+
+                var manifests = pd.AssetManifest;
 
                 var metadataArchiveEntries = zipArchive.Entries.Where(a => a.FullName.StartsWith("Metadata/")).ToList();
                 var mainArchiveEntries = zipArchive.Entries.Where(a => a.FullName.StartsWith("Assets/")).ToList();
 
-                foreach (var manifest in manifests)
+                var mainDataTreeEntry =
+                    mainArchiveEntries.SingleOrDefault(e => e.Name == pd.AssetUri.Replace("packdb:///", ""));
+
+                if (mainDataTreeEntry is null)
                 {
-                    var hash = manifest.Hash;
-                    // 拡張子を推定できないのでStartsWithでごまかす
-                    var correspondingMetadataEntry = metadataArchiveEntries.SingleOrDefault(x => x.FullName.StartsWith($"Metadata/{hash}"));
-
-                    if (correspondingMetadataEntry == null)
-                    {
-                        throw new FormatException($"ResonitePackage must contain Metadata for hash({hash}), but it's missing.");
-                    }
-
-                    var correspondingAssetEntry = mainArchiveEntries.SingleOrDefault(e => e.Name == hash);
-                    if (correspondingAssetEntry == null)
-                    {
-                        throw new FormatException($"ResonitePackage must contain Asset for hash({hash}), but it's missing.");
-                    }
-
-                    Debug.Log($"extension is {correspondingMetadataEntry.Name.Split('.').Last()}");
-
-                    var metaStr = ReadZipArchiveContentAsUtf8Sequence(correspondingMetadataEntry);
-
-                    if (TryReadAs(metaStr, out MeshMetadata? meshMetadata))
-                    {
-                        var m = new Mesh();
-
-                        // TODO: configure
-                        m.bounds = new Bounds();
-                        m.name = hash;
-
-                        ctx.AddObjectToAsset(hash, m);
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                    } else if (TryReadAs(metaStr, out BitmapMetadata bitmapMetadata))
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                    {
-                        var t = new Texture2D((int) bitmapMetadata!.Width, (int) bitmapMetadata.Height);
-
-                        t.LoadImage(ReadZipArchiveContent(correspondingAssetEntry));
-
-                        var toAdd = new GameObject($"TextureHolder_{hash}")
-                        {
-                            transform =
-                            {
-                                parent = root.transform
-                            }
-                        };
-
-                        var c = toAdd.AddComponent<StaticTexture2D>();
-                        c.texture = t;
-
-                        ctx.AddObjectToAsset(hash, toAdd);
-                    }
-
-                    Debug.Log($"meta for hash({hash}): \n{metaStr}");
+                    throw new FormatException($"Failed to find main DataTreeDirectory: {pd.AssetUri} is not contained by the package.");
                 }
+
+                var mainDataTree = ReadZipArchiveContent(mainDataTreeEntry);
+
             }
         }
 
@@ -139,6 +99,8 @@ namespace ResoniteImportHelper.Package.Import
         [Serializable]
         internal sealed class PartialDescriptor
         {
+            [JsonProperty("assetUri")]
+            internal string AssetUri;
             [JsonProperty("assetManifest")]
             internal List<AssetStatistic> AssetManifest;
         }
