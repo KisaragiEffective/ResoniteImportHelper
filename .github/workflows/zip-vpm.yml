@@ -34,11 +34,11 @@ jobs:
       run: |
         # sha256sumを使うと加工が非直感的だし、ここでスクリプト言語や外部バイナリを持ち出すと遅い。
         # PowerShell Coreを起動して回避。
-        echo (Get-FileHash ./vpm-src.zip -Algorithm SHA256).Hash > vpm-src.zip.sha256
+        echo (Get-FileHash ./vpm-src.zip -Algorithm SHA256).Hash > vpm-src.zip.sha256sum
       shell: pwsh
     - name: Upload files
       run: |
         gh release upload ${{github.event.release.tag_name}} vpm-src.zip
-        gh release upload ${{github.event.release.tag_name}} vpm-src.zip.sha256
+        gh release upload ${{github.event.release.tag_name}} vpm-src.zip.sha256sum
       env:
         GH_TOKEN: ${{ github.token }}
