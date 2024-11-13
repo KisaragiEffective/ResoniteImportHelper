@@ -1,5 +1,21 @@
 # 変更履歴
 
+## 0.1.17 (2024-11-14)
+* docs: 同じプロジェクトに入れても壊れないことを明記
+* docs: Missing Scriptをサポート対象から除外
+* docs: Missing Shaderをサポート対象から除外
+* chore: Microsoft.Unity.Analyzersを導入
+* docs: UniGLTFのバージョンを明記
+* docs: glTFやNDMFなどへのリンクを追加
+* refactor: コンパイル時の警告を一部解決
+* fix: 限定された条件下でStandardシェーダーの割当に失敗する現象を修正
+* refactor: ロジックをユーティリティクラスへ移動
+* feat: **マテリアルの名前を元の名前に近い名前で保存するように**
+* refactor: インターフェースを再定義
+* refactor: APIの安定性を再定義
+* docs: Resoniteが日本において商標の候補として審査されていることを追記
+* chore: VRChat Package Manager互換のリリース経路を整備
+
 ## 0.1.16 (2024-10-06)
 * fix: lilToon以外のMaterialが保存されず、glTFの読み込み時に例外が発生していた問題を修正
 * fix: スタンドアロン環境で目のボーンを検知する際に例外が出ないように
