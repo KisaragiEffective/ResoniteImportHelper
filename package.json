@@ -1,6 +1,6 @@
 {
   "name": "io.github.kisaragieffective.resonite-import-helper",
-  "version": "0.1.16",
+  "version": "0.1.17-pre.0",
   "description": "Helper around importing to Resonite",
   "displayName": "Resonite Import Helper",
   "unity": "2022.3",
