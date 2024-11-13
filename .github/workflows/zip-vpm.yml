@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: ${{ github.inputs.tag }}
+        ref: ${{ inputs.tag }}
         
     - name: Add commit hash to the manifest
       run: |
@@ -46,7 +46,7 @@ jobs:
       shell: pwsh
     - name: Upload files
       run: |
-        gh release upload ${{ github.event.release.tag_name || github.inputs.tag }} vpm-src.zip
-        gh release upload ${{ github.event.release.tag_name || github.inputs.tag }} vpm-src.zip.sha256sum
+        gh release upload ${{ github.event.release.tag_name || inputs.tag }} vpm-src.zip
+        gh release upload ${{ github.event.release.tag_name || inputs.tag }} vpm-src.zip.sha256sum
       env:
         GH_TOKEN: ${{ github.token }}
