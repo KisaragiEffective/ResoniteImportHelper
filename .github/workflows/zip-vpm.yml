@@ -2,7 +2,8 @@ name: Package in VPM-compatible format
 
 on:
   release:
-    - published
+    types:
+      - published
 
 permissions:
   contents: write
