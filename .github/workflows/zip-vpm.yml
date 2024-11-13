@@ -1,0 +1,27 @@
+name: Package in VPM-compatible format
+
+on:
+  release:
+    - published
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Zip
+      run: |
+        zip -r vpm-src.zip .
+    - name: Compute SHA256
+      run: |
+        echo (Get-FileHash ./vpm-src.zip -Algorithm SHA256).Hash > vpm-src.zip.sha256
+      shell: pwsh
+    - name: Upload files
+      run: |
+        gh release upload ${{github.event.release.tag_name}} vpm-src.zip
+        gh release upload ${{github.event.release.tag_name}} vpm-src.zip.sha256
