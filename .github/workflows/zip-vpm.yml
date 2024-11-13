@@ -20,9 +20,9 @@ jobs:
         zip -r vpm-src.zip .
     - name: Compute SHA256
       run: |
-        echo (Get-FileHash ./vpm-src.zip -Algorithm SHA256).Hash > vpm-src.zip.sha256
+        echo (Get-FileHash ./vpm-src.zip -Algorithm SHA256).Hash > vpm-src.zip.sha256sum
       shell: pwsh
     - name: Upload files
       run: |
         gh release upload ${{github.event.release.tag_name}} vpm-src.zip
-        gh release upload ${{github.event.release.tag_name}} vpm-src.zip.sha256
+        gh release upload ${{github.event.release.tag_name}} vpm-src.zip.sha256sum
