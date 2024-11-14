@@ -41,7 +41,7 @@ jobs:
       run: |
         # sha256sumを使うと加工が非直感的だし、ここでスクリプト言語や外部バイナリを持ち出すと遅い。
         # PowerShell Coreを起動して回避。
-        echo (Get-FileHash ./vpm-src.zip -Algorithm SHA256).Hash > vpm-src.zip.sha256sum
+        echo (Get-FileHash ./vpm-src.zip -Algorithm SHA256).Hash.ToLower() > vpm-src.zip.sha256sum
       shell: pwsh
     - name: Upload files
       run: |
