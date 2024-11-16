@@ -1,4 +1,5 @@
 #nullable enable
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -23,7 +24,7 @@ namespace ResoniteImportHelper.Bootstrap.Logic
         private const string UnmanagedArchiveInstallSource =
             "https://github.com/vrm-c/UniVRM/releases/download/v0.128.0/VRM-0.128.0_264a.unitypackage";
 
-        private static HttpClient _httpClient;
+        private static HttpClient? _httpClient;
         // ReSharper disable once InconsistentNaming
         public static void InstallUniGLTF()
         {
@@ -37,8 +38,13 @@ namespace ResoniteImportHelper.Bootstrap.Logic
                 var json = File.ReadAllText(lowLevelPath);
                 var depUrl = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/UniGLTF#v{SupportedUniGLTFVersion}";
                 // this implements dynamic field selector.
-                dynamic jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                jsonObj!["dependencies"]["com.vrmc.gltf"] = depUrl;
+                dynamic? jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                if (jsonObj is null)
+                {
+                    throw new Exception("Unity's package manifest is corrupted");
+                }
+
+                jsonObj["dependencies"]["com.vrmc.gltf"] = depUrl;
                 string outcome =
                     Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText(lowLevelPath, outcome);
@@ -49,7 +55,7 @@ namespace ResoniteImportHelper.Bootstrap.Logic
             {
                 Debug.Log("Bootstrap: using UnityPackage.");
 
-                _httpClient ??= new System.Net.Http.HttpClient();
+                _httpClient ??= new HttpClient();
                 string path;
                 {
                     var t = Task.Run(DownloadUnmanagedArchive);
@@ -97,7 +103,7 @@ namespace ResoniteImportHelper.Bootstrap.Logic
 
         private static async Task<string> DownloadUnmanagedArchive()
         {
-            var r = await _httpClient.GetAsync(UnmanagedArchiveInstallSource);
+            var r = await _httpClient!.GetAsync(UnmanagedArchiveInstallSource);
             var content = r.Content;
 
             var temp = Path.GetTempFileName();
