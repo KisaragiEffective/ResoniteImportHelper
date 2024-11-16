@@ -13,7 +13,7 @@
     "url": "https://github.com/KisaragiEffective/ResoniteImportHelper"
   },
   "peerDependencies": {
-    "com.vrmc.gltf": "0.125.0"
+    "com.vrmc.gltf": "0.126.0"
   },
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.1"
