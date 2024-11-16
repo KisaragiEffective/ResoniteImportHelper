@@ -18,10 +18,10 @@ namespace ResoniteImportHelper.Bootstrap.Logic
     public static class PackageManagerProxy
     {
         // ReSharper disable once InconsistentNaming
-        private const string SupportedUniGLTFVersion = "0.126.0";
+        private const string SupportedUniGLTFVersion = "0.127.0";
 
         private const string UnmanagedArchiveInstallSource =
-            "https://github.com/vrm-c/UniVRM/releases/download/v0.126.0/VRM-0.126.0_14f3.unitypackage";
+            "https://github.com/vrm-c/UniVRM/releases/download/v0.127.0/VRM-0.127.0_d320.unitypackage";
 
         private static HttpClient _httpClient;
         // ReSharper disable once InconsistentNaming
