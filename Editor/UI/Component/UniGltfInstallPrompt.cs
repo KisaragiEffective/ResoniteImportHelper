@@ -29,7 +29,7 @@ namespace ResoniteImportHelper.UI.Component
             {
                 var button = new Button(() =>
                 {
-                    Application.OpenURL("https://github.com/vrm-c/UniVRM/releases/tag/v0.127.0");
+                    Application.OpenURL("https://github.com/vrm-c/UniVRM/releases/tag/v0.128.0");
                 });
                 button.Add(new Label(lang.OpenInstallationPageForUniGLTF()));
                 rootVisualElement.Add(button);
