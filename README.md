@@ -2,7 +2,7 @@
 Bake and Import.
 
 ## Requirement and recommended tools
-* UniGLTF 0.127.0 is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases/tag/v0.127.0).
+* UniGLTF 0.128.0 is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases/tag/v0.128.0).
 * Git or VPM-compatible client is required to install.
     * Git: Download it from [git-scm.com](https://git-scm.com/downloads)
     * VPM-compatible client: You may use [ALCOM](https://vcc.docs.vrchat.com/guides/getting-started) or [VRChat Creator Companion](https://vcc.docs.vrchat.com/guides/getting-started).
@@ -37,7 +37,7 @@ RIH can download and configure it automatically, so you may skip this step:
 
 ![Bootstrapper UI](./Doc~/AutomatedInstallationUI.png)
 
-This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.127.0) page.
+This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.128.0) page.
 
 #### RIH itself
 Install can be done either:
@@ -80,7 +80,7 @@ You might have to wait a moment. After that, find an item with name of "Resonite
 I recommend to use latest non-pre-release version. As of writing, it is `0.1.17`, so please specify `0.1.17` from a pull-down.
 
 > [!WARNING]
-> For advanced users: pre-release is not suitable for your production environment! 
+> For advanced users: pre-release is not suitable for your production environment!
 
 > [!WARNING]
 > Please take **back up Your Projects**, as always.
