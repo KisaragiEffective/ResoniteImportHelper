@@ -2,7 +2,7 @@
 Bake and Import.
 
 ## Requirement and recommended tools
-* UniGLTF 0.125.0 is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0).
+* UniGLTF 0.126.0 is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases/tag/v0.126.0).
 * Git or VPM-compatible client is required to install.
     * Git: Download it from [git-scm.com](https://git-scm.com/downloads)
     * VPM-compatible client: You may use [ALCOM](https://vcc.docs.vrchat.com/guides/getting-started) or [VRChat Creator Companion](https://vcc.docs.vrchat.com/guides/getting-started).
@@ -37,7 +37,7 @@ RIH can download and configure it automatically, so you may skip this step:
 
 ![Bootstrapper UI](./Doc~/AutomatedInstallationUI.png)
 
-This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0) page.
+This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.126.0) page.
 
 #### RIH itself
 Install can be done either:
