@@ -23,7 +23,7 @@
   "versionDefines": [
     {
       "name": "com.vrmc.gltf",
-      "expression": "0.125.0",
+      "expression": "0.126.0",
       "define": "RIH_HAS_UNI_GLTF"
     }
   ],

@@ -2,7 +2,7 @@
 Bake and Import.
 
 ## Requirement and recommended tools
-* UniGLTF 0.125.0 is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0).
+* UniGLTF 0.126.0 is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases/tag/v0.126.0).
 * Git is required to install. Download it from [gitforwindows.org](https://gitforwindows.org/).
 * Unity® is required to be 2022.3 series. Older or newer series may work, but it will **NOT** be supported.
 
@@ -35,7 +35,7 @@ RIH can download and configure it automatically, so you may skip this step:
 
 ![Bootstrapper UI](./Doc~/AutomatedInstallationUI.png)
 
-This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0) page.
+This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.126.0) page.
 
 #### RIH itself
 Install this package via Package Manager.
