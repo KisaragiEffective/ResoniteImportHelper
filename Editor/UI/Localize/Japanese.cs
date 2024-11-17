@@ -50,5 +50,10 @@ namespace ResoniteImportHelper.UI.Localize
 
         public string ExperimentalSetting_GenerateIntermediateArtifactTooltip() =>
             "チェックを入れると、デバッグのために中間アーティファクトを生成します。中間アーティファクトはglTFと同じディレクトリに生成されます。";
+
+        public string ExperimentalSetting_ApplyRootScale() => "ルートのスケールをアーマチュアに適用する";
+
+        public string ExperimentalSetting_ApplyRootScaleTip() =>
+            "チェックを入れると、ルートに設定されているスケールをアーマチュアのスケールに乗算し、ルートのスケールを(1, 1, 1)にします。";
     }
 }

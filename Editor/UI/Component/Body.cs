@@ -77,6 +77,7 @@ namespace ResoniteImportHelper.UI.Component
                     doRunVRCSDK3APreprocessors.value,
                     doNDMFManualBake.value,
                     experimentalSettingsFoldout.BakeShadersConfigurationIntoTextures.value,
+                    experimentalSettingsFoldout.ApplyRootScale.value,
                     experimentalSettingsFoldout.GenerateIntermediateArtifact.value
                 );
                 destination.value = result.SerializedObject;
