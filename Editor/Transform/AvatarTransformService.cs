@@ -124,6 +124,8 @@ namespace ResoniteImportHelper.Transform
             armatureScale.x *= rootScale.x;
             armatureScale.y *= rootScale.y;
             armatureScale.z *= rootScale.z;
+            // コピーなので再代入が必要
+            armatureRoot.transform.localScale = armatureScale;
 
             root.transform.localScale = Vector3.one;
         }
