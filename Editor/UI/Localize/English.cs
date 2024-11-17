@@ -36,7 +36,7 @@ namespace ResoniteImportHelper.UI.Localize
         public string InvokeVRCSDKPreprocessorLabel() => "Invoke VRChat SDK Preprocessor";
 
         public string InvokeVRCSDKPreprocessorTooltip() => "Do you want NDMF or VRCFury to run?";
-        
+
         public string NDMFManualBakeLabel() => "NDMF Manual Bake";
 
         public string NDMFManualBakeTooltip() => "Do you want NDMF to run?";
@@ -54,5 +54,10 @@ namespace ResoniteImportHelper.UI.Localize
 
         public string ExperimentalSetting_GenerateIntermediateArtifactTooltip() =>
             "Do you want to intermediate artifacts to debug?\nIt will be persisted under the same directory.";
+
+        public string ExperimentalSetting_ApplyRootScale() => "Apply root scale to Armature";
+
+        public string ExperimentalSetting_ApplyRootScaleTip() =>
+            "Do you want to multiply Armature scale by root scale?";
     }
 }

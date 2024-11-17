@@ -19,6 +19,7 @@ namespace ResoniteImportHelper.TransFront
             // ReSharper disable once InconsistentNaming
             bool runNDMF,
             bool bakeTexture,
+            bool applyRootScale,
             bool generateIntermediateArtifact
         )
         {
@@ -31,10 +32,11 @@ namespace ResoniteImportHelper.TransFront
                 runVRCSDKPipeline,
                 runNDMF,
                 bakeTexture,
+                applyRootScale,
                 rootAlloc
             );
             Profiler.EndSample();
-            
+
             Debug.Log("Exporting model as glTF");
             var serialized = SerializationService.ExportToAssetFolder(
                 new SerializationConfiguration(
@@ -45,16 +47,16 @@ namespace ResoniteImportHelper.TransFront
                     rootAlloc
                 )
             );
-            
+
             Debug.Log("done");
             // we can remove target because it is cloned in either way.
             Object.DestroyImmediate(result.Processed, false);
             Profiler.EndSample();
             return serialized;
         }
-        
+
         private const string DestinationFolder = "ZZZ_TemporalAsset";
-        
+
         private static string InitializeTemporalAssetDataDirectory(string secondaryDirectoryName)
         {
             #region sanity check

@@ -25,6 +25,7 @@ namespace ResoniteImportHelper.Transform
             // ReSharper disable once InconsistentNaming
             bool runNDMF,
             bool bakeTexture,
+            bool applyRootScale,
             ResourceAllocator alloc
         )
         {
@@ -34,7 +35,7 @@ namespace ResoniteImportHelper.Transform
 
             var intermediateMarker = IntermediateClonedHierarchyMarker.Construct(target, unmodifiableRoot);
 
-            var c = InPlaceConvert(target, bakeTexture, alloc);
+            var c = InPlaceConvert(target, bakeTexture, applyRootScale, alloc);
 
             Object.DestroyImmediate(intermediateMarker);
 
@@ -71,7 +72,7 @@ namespace ResoniteImportHelper.Transform
         }
 
         private static MultipleUnorderedDictionary<LoweredRenderMode, Material>
-            InPlaceConvert(GameObject target, bool bakeTexture, ResourceAllocator alloc)
+            InPlaceConvert(GameObject target, bool bakeTexture, bool applyRootScale, ResourceAllocator alloc)
         {
             var rig = FindRigSetting(target);
             if (rig == null)
@@ -82,6 +83,17 @@ namespace ResoniteImportHelper.Transform
 
             Debug.Log("Automated NoIK processor");
             ModifyArmature(target, rig);
+
+            if (applyRootScale)
+            {
+                Debug.Log("ApplyRootScale: invoked");
+                ApplyRootScaleToArmatureRoot(target.transform, rig.GetBoneTransform(HumanBodyBones.Hips).parent);
+            }
+            else
+            {
+                Debug.Log("ApplyRootScale: skipped");
+            }
+
             Debug.Log("maybe bake texture");
             if (bakeTexture)
             {
@@ -99,6 +111,22 @@ namespace ResoniteImportHelper.Transform
 
         private static Animator? FindRigSetting(GameObject root) =>
             root.TryGetComponent<Animator>(out var a) ? a : null;
+
+        /// <summary>
+        /// multiply armature scale by root scale, then reset root scale to the identity scale.
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="armatureRoot"></param>
+        private static void ApplyRootScaleToArmatureRoot(UnityEngine.Transform root, UnityEngine.Transform armatureRoot)
+        {
+            var armatureScale = armatureRoot.transform.localScale;
+            var rootScale = root.transform.localScale;
+            armatureScale.x *= rootScale.x;
+            armatureScale.y *= rootScale.y;
+            armatureScale.z *= rootScale.z;
+
+            root.transform.localScale = Vector3.one;
+        }
 
         /// <summary>
         /// See also: <a href="https://wiki.resonite.com/Humanoid_Rig_Requirements_for_IK">Wiki</a>
