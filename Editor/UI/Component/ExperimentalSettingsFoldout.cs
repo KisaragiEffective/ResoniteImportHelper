@@ -10,6 +10,8 @@ namespace ResoniteImportHelper.UI
 
         internal readonly Toggle GenerateIntermediateArtifact;
 
+        internal readonly Toggle ApplyRootScale;
+
         internal ExperimentalSettingsFoldout(ILocalizedTexts lang)
         {
             this.value = false;
@@ -17,7 +19,7 @@ namespace ResoniteImportHelper.UI
             this.Add(
                 new HelpBox(lang.ExperimentalSettingsAreNeverSupported(), HelpBoxMessageType.Warning)
             );
-            
+
             BakeShadersConfigurationIntoTextures = new Toggle(lang.ExperimentalSetting_BakeLilToonLabel())
             {
                 tooltip = lang.ExperimentalSetting_BakeLilToonTooltip()
@@ -28,8 +30,15 @@ namespace ResoniteImportHelper.UI
             {
                 tooltip = lang.ExperimentalSetting_GenerateIntermediateArtifactTooltip()
             };
-            
+
             this.Add(GenerateIntermediateArtifact);
+
+            ApplyRootScale = new Toggle(lang.ExperimentalSetting_ApplyRootScale())
+            {
+                tooltip = lang.ExperimentalSetting_ApplyRootScaleTip()
+            };
+
+            this.Add(ApplyRootScale);
         }
 
     }

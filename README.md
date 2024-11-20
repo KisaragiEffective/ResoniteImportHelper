@@ -2,7 +2,7 @@
 Bake and Import.
 
 ## Requirement and recommended tools
-* UniGLTF 0.128.0 is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases/tag/v0.128.0).
+* UniGLTF 0.128.0 is required to run. Download it from their [GitHub repository][unigltf-release].
 * Git or VPM-compatible client is required to install.
     * Git: Download it from [git-scm.com](https://git-scm.com/downloads)
     * VPM-compatible client: You may use [ALCOM](https://vcc.docs.vrchat.com/guides/getting-started) or [VRChat Creator Companion](https://vcc.docs.vrchat.com/guides/getting-started).
@@ -14,6 +14,7 @@ Following tools are optional. This tool can invoke their hooks.
   * AAO: Avatar Optimizer ([Download](https://vpm.anatawa12.com/avatar-optimizer/en/))
   * Modular Avatar ([Download](https://modular-avatar.nadena.dev/))
 
+[unigltf-release]: https://github.com/vrm-c/UniVRM/releases/tag/v0.128.0
 ## What this does and does not
 ### Does
 * Flag non-Rig bone as [`<NoIK>`][NOIK]
@@ -37,7 +38,7 @@ RIH can download and configure it automatically, so you may skip this step:
 
 ![Bootstrapper UI](./Doc~/AutomatedInstallationUI.png)
 
-This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.128.0) page.
+This method is equivalent to install from their [GitHub release][unigltf-release] page.
 
 #### RIH itself
 Install can be done either:
