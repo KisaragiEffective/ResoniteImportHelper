@@ -148,7 +148,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             var h = new HarmonyLib.Harmony(
                 "io.github.kisaragieffective.resonite-import-helper.liltoon.headless-bake");
             Profiler.EndSample();
-
+#if RIH_HAS_LILTOON
             Profiler.BeginSample("Mute warnings");
             Profiler.BeginSample("Get Method");
             var warningDialogMethod = typeof(EditorUtility)
@@ -182,9 +182,11 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             );
             Profiler.EndSample();
             Profiler.EndSample();
-
+#else
+            Debug.LogWarning("This project does not have lilToon as an Unity-managed package.");
+#endif // RIH_HAS_LILTOON
             return h;
-#endif
+#endif // RIH_HAS_HARMONY
         }
 
         private static bool SkipDisplayDialogFromLilInspector()
