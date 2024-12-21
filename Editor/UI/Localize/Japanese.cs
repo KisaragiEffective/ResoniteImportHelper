@@ -55,5 +55,8 @@ namespace ResoniteImportHelper.UI.Localize
 
         public string ExperimentalSetting_ApplyRootScaleTip() =>
             "チェックを入れると、ルートに設定されているスケールをアーマチュアのスケールに乗算し、ルートのスケールを(1, 1, 1)にします。";
+
+        public string OpenInAssetWindowLabel() => "Projectウィンドウで開く";
+        public string AppendToCurrentSceneLabel() => "現在のシーンに追加";
     }
 }
