@@ -59,5 +59,10 @@ namespace ResoniteImportHelper.UI.Localize
 
         public string ExperimentalSetting_ApplyRootScaleTip() =>
             "Do you want to multiply Armature scale by root scale?";
+
+        public string NonRigBoneRenameProcessDropdownLabel() => "<NoIK> marking policy";
+        public string NonRigBoneRenamePolicy_Always() => "Always";
+
+        public string NonRigBoneRenamePolicy_Never() => "Never";
     }
 }

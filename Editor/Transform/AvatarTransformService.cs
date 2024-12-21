@@ -26,6 +26,7 @@ namespace ResoniteImportHelper.Transform
             bool runNDMF,
             bool bakeTexture,
             bool applyRootScale,
+            bool renameNonRigBones,
             ResourceAllocator alloc
         )
         {
@@ -35,7 +36,7 @@ namespace ResoniteImportHelper.Transform
 
             var intermediateMarker = IntermediateClonedHierarchyMarker.Construct(target, unmodifiableRoot);
 
-            var c = InPlaceConvert(target, bakeTexture, applyRootScale, alloc);
+            var c = InPlaceConvert(target, bakeTexture, applyRootScale, renameNonRigBones, alloc);
 
             Object.DestroyImmediate(intermediateMarker);
 
@@ -72,7 +73,7 @@ namespace ResoniteImportHelper.Transform
         }
 
         private static MultipleUnorderedDictionary<LoweredRenderMode, Material>
-            InPlaceConvert(GameObject target, bool bakeTexture, bool applyRootScale, ResourceAllocator alloc)
+            InPlaceConvert(GameObject target, bool bakeTexture, bool applyRootScale, bool renameNonRigBones, ResourceAllocator alloc)
         {
             var rig = FindRigSetting(target);
             if (rig == null)
@@ -81,8 +82,15 @@ namespace ResoniteImportHelper.Transform
                     "specified object does not have Animator component. did you remove it, or is it violating humanoid standards?");
             }
 
-            Debug.Log("Automated NoIK processor");
-            ModifyArmature(target, rig);
+            if (renameNonRigBones)
+            {
+                Debug.Log("Automated NoIK processor: processing");
+                MarkNonRigBones(target, rig);
+            }
+            else
+            {
+                Debug.Log("Automated NoIK processor: skipping");
+            }
 
             if (applyRootScale)
             {
@@ -135,7 +143,7 @@ namespace ResoniteImportHelper.Transform
         /// </summary>
         /// <param name="root"></param>
         /// <param name="rig"></param>
-        private static void ModifyArmature(GameObject root, Animator rig)
+        private static void MarkNonRigBones(GameObject root, Animator rig)
         {
             if (!rig.isHuman) return;
 

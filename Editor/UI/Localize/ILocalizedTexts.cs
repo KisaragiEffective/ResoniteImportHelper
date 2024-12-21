@@ -1,4 +1,5 @@
 #nullable enable
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ResoniteImportHelper.UI.Localize
@@ -33,5 +34,8 @@ namespace ResoniteImportHelper.UI.Localize
         string ExperimentalSetting_GenerateIntermediateArtifactTooltip();
         string ExperimentalSetting_ApplyRootScale();
         string ExperimentalSetting_ApplyRootScaleTip();
+        string NonRigBoneRenameProcessDropdownLabel();
+        string NonRigBoneRenamePolicy_Always();
+        string NonRigBoneRenamePolicy_Never();
     }
 }

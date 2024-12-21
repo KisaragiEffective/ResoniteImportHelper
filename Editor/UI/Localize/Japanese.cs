@@ -55,5 +55,11 @@ namespace ResoniteImportHelper.UI.Localize
 
         public string ExperimentalSetting_ApplyRootScaleTip() =>
             "チェックを入れると、ルートに設定されているスケールをアーマチュアのスケールに乗算し、ルートのスケールを(1, 1, 1)にします。";
+
+        public string NonRigBoneRenameProcessDropdownLabel() => "<NoIK> の付与";
+
+        public string NonRigBoneRenamePolicy_Always() => "常に付与する";
+
+        public string NonRigBoneRenamePolicy_Never() => "常に付与しない";
     }
 }

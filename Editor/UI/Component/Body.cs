@@ -53,6 +53,8 @@ namespace ResoniteImportHelper.UI.Component
             // ReSharper disable once InconsistentNaming
             var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors, lang);
             exportSettingFoldout.Add(doNDMFManualBake);
+            var doNonRigBoneRename = CreateNonRigBoneRenameProcessDropdownLabel(lang);
+            exportSettingFoldout.Add(doNonRigBoneRename);
             var experimentalSettingsFoldout = CreateExperimentalSettingsFoldout(lang);
             exportSettingFoldout.Add(experimentalSettingsFoldout);
 
@@ -78,7 +80,8 @@ namespace ResoniteImportHelper.UI.Component
                     doNDMFManualBake.value,
                     experimentalSettingsFoldout.BakeShadersConfigurationIntoTextures.value,
                     experimentalSettingsFoldout.ApplyRootScale.value,
-                    experimentalSettingsFoldout.GenerateIntermediateArtifact.value
+                    experimentalSettingsFoldout.GenerateIntermediateArtifact.value,
+                    doNonRigBoneRename.DoRename()
                 );
                 destination.value = result.SerializedObject;
                 modelContainsVertexColorNote.style.display =
@@ -133,6 +136,8 @@ StackTrace:");
 
             rootVisualElement.Add(modelContainsVertexColorNote);
         }
+
+        private static NonRigBoneRenamePolicySelector CreateNonRigBoneRenameProcessDropdownLabel(ILocalizedTexts lang) => new(lang);
 
         private static Toggle CreatePreprocessorToggleCheckbox(ObjectField rootObjectField, ILocalizedTexts lang)
         {

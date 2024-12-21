@@ -20,7 +20,8 @@ namespace ResoniteImportHelper.TransFront
             bool runNDMF,
             bool bakeTexture,
             bool applyRootScale,
-            bool generateIntermediateArtifact
+            bool generateIntermediateArtifact,
+            bool renameNonRigBones
         )
         {
             Profiler.BeginSample("PerformConversion");
@@ -33,6 +34,7 @@ namespace ResoniteImportHelper.TransFront
                 runNDMF,
                 bakeTexture,
                 applyRootScale,
+                renameNonRigBones,
                 rootAlloc
             );
             Profiler.EndSample();
