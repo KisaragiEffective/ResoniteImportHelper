@@ -59,5 +59,9 @@ namespace ResoniteImportHelper.UI.Localize
 
         public string ExperimentalSetting_ApplyRootScaleTip() =>
             "Do you want to multiply Armature scale by root scale?";
+
+        public string OpenInAssetWindowLabel() => "Open in Project window";
+
+        public string AppendToCurrentSceneLabel() => "Append to current Scene";
     }
 }

@@ -33,5 +33,7 @@ namespace ResoniteImportHelper.UI.Localize
         string ExperimentalSetting_GenerateIntermediateArtifactTooltip();
         string ExperimentalSetting_ApplyRootScale();
         string ExperimentalSetting_ApplyRootScaleTip();
+        string OpenInAssetWindowLabel();
+        string AppendToCurrentSceneLabel();
     }
 }
