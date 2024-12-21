@@ -22,6 +22,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         ref: ${{ inputs.tag }}
+        persist-credentials: false
     - name: Add commit hash to the manifest
       run: |
         # moreutils はおそらく追加されない上インストールすると遅いので使わない
@@ -45,7 +46,8 @@ jobs:
       shell: pwsh
     - name: Upload files
       run: |
-        gh release upload ${{ github.event.release.tag_name || inputs.tag }} vpm-src.zip
-        gh release upload ${{ github.event.release.tag_name || inputs.tag }} vpm-src.zip.sha256sum
+        gh release upload "$TAG" vpm-src.zip
+        gh release upload "$TAG" vpm-src.zip.sha256sum
       env:
         GH_TOKEN: ${{ github.token }}
+        TAG: ${{ github.event.release.tag_name || inputs.tag }}
