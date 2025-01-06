@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: actionlint
-        uses: reviewdog/action-actionlint@v1.60.0
+        uses: reviewdog/action-actionlint@v1.62.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
