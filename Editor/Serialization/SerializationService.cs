@@ -28,7 +28,9 @@ namespace ResoniteImportHelper.Serialization
                 {
                     // https://github.com/KisaragiEffective/ResoniteImportHelper/issues/29
                     DivideVertexBuffer = false,
-                    ExportVertexColor = containsVertexColors
+                    ExportVertexColor = containsVertexColors,
+                    // https://github.com/KisaragiEffective/ResoniteImportHelper/issues/242
+                    InverseAxis = Axes.X
                 };
 
                 Profiler.BeginSample(".ctor");
