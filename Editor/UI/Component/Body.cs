@@ -160,7 +160,8 @@ StackTrace:");
             {
                 var button = new Button(() =>
                 {
-                    PrefabUtility.InstantiatePrefab(destination.value);
+                    var appendedObject = PrefabUtility.InstantiatePrefab(destination.value);
+                    (appendedObject as GameObject)!.transform.Rotate(Vector3.up, 180.0F);
                 });
                 destination.RegisterValueChangedCallback(ev =>
                 {
