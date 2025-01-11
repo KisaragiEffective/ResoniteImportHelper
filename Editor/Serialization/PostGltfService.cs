@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
-namespace ResoniteImportHelper.Serialization
+namespace KisaragiMarine.ResoniteImportHelper.Serialization
 {
     internal sealed class PostGltfService
     {

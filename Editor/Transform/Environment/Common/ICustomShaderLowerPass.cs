@@ -1,7 +1,7 @@
 #nullable enable
 using UnityEngine;
 
-namespace ResoniteImportHelper.Transform.Environment.Common
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common
 {
     /// <summary>
     /// カスタムシェーダーをUniGLTFが認識できるシェーダーへ変換する。

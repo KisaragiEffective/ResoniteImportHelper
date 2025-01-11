@@ -11,7 +11,7 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace ResoniteImportHelper.Bootstrap.Logic
+namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
 {
     /// <summary>
     /// <see cref="UnityEditor.PackageManager.Client" /> を模倣するプロキシ。<br />

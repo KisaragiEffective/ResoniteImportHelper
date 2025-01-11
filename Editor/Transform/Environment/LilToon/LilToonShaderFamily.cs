@@ -1,8 +1,8 @@
 #nullable enable
-using ResoniteImportHelper.Transform.Environment.Common;
+using KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common;
 using UnityEngine;
 
-namespace ResoniteImportHelper.Transform.Environment.LilToon
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.LilToon
 {
     internal sealed class LilToonShaderFamily: IShaderFamily
     {

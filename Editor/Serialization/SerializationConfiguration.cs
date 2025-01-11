@@ -1,10 +1,10 @@
 #nullable enable
-using ResoniteImportHelper.Allocator;
-using ResoniteImportHelper.Generic.Collections;
-using ResoniteImportHelper.Transform.Environment.Common;
+using KisaragiMarine.ResoniteImportHelper.Allocator;
+using KisaragiMarine.ResoniteImportHelper.Generic.Collections;
+using KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common;
 using UnityEngine;
 
-namespace ResoniteImportHelper.Serialization
+namespace KisaragiMarine.ResoniteImportHelper.Serialization
 {
     internal class SerializationConfiguration
     {

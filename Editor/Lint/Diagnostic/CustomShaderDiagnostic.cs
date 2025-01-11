@@ -1,7 +1,7 @@
 #nullable enable
 using UnityEngine;
 
-namespace ResoniteImportHelper.Lint.Diagnostic
+namespace KisaragiMarine.ResoniteImportHelper.Lint.Diagnostic
 {
     internal class CustomShaderDiagnostic : IDiagnostic
     {

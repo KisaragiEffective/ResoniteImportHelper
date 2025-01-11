@@ -3,18 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ResoniteImportHelper.Allocator;
-using ResoniteImportHelper.ClonedMarker;
-using ResoniteImportHelper.Generic.Collections;
-using ResoniteImportHelper.Transform.Environment.Common;
-using ResoniteImportHelper.Transform.Environment.LilToon;
-using ResoniteImportHelper.UnityEditorUtility;
+using KisaragiMarine.ResoniteImportHelper.Allocator;
+using KisaragiMarine.ResoniteImportHelper.ClonedMarker;
+using KisaragiMarine.ResoniteImportHelper.Generic.Collections;
+using KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common;
+using KisaragiMarine.ResoniteImportHelper.Transform.Environment.LilToon;
+using KisaragiMarine.ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Object = UnityEngine.Object;
 
-namespace ResoniteImportHelper.Transform
+namespace KisaragiMarine.ResoniteImportHelper.Transform
 {
     internal static class AvatarTransformService
     {

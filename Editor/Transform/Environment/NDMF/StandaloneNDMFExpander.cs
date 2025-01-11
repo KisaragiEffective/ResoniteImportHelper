@@ -2,10 +2,10 @@
 #if RIH_HAS_NDMF
 using nadena.dev.ndmf;
 #endif
-using ResoniteImportHelper.Transform.Environment.Common;
+using KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common;
 using UnityEngine;
 
-namespace ResoniteImportHelper.Transform.Environment.NDMF
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.NDMF
 {
     // ReSharper disable once InconsistentNaming
     internal class StandaloneNDMFExpander: IPlatformExpander

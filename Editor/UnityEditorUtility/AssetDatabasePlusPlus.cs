@@ -7,7 +7,7 @@ using UnityEngine;
 using GUID = UnityEditor.GUID;
 using Object = UnityEngine.Object;
 
-namespace ResoniteImportHelper.UnityEditorUtility
+namespace KisaragiMarine.ResoniteImportHelper.UnityEditorUtility
 {
     internal static class AssetDatabasePlusPlus
     {

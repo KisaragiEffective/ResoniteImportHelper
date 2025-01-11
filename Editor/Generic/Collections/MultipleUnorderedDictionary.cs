@@ -1,7 +1,7 @@
 #nullable enable
 using System.Collections.Generic;
 
-namespace ResoniteImportHelper.Generic.Collections
+namespace KisaragiMarine.ResoniteImportHelper.Generic.Collections
 {
     public sealed class MultipleUnorderedDictionary<TKey, TValue> : Dictionary<TKey, HashSet<TValue>>
     {

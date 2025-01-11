@@ -1,13 +1,13 @@
 #nullable enable
 using JetBrains.Annotations;
 #if !RIH_HAS_UNI_GLTF
-using ResoniteImportHelper.Bootstrap.Logic;
+using KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic;
 using Application = UnityEngine.Application;
 #endif
-using ResoniteImportHelper.UI.Localize;
+using KisaragiMarine.ResoniteImportHelper.UI.Localize;
 using UnityEngine.UIElements;
 
-namespace ResoniteImportHelper.UI.Component
+namespace KisaragiMarine.ResoniteImportHelper.UI.Component
 {
     internal sealed class UniGltfInstallPrompt: VisualElement
     {

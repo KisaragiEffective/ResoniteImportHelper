@@ -1,5 +1,5 @@
 #nullable enable
-namespace ResoniteImportHelper.Allocator
+namespace KisaragiMarine.ResoniteImportHelper.Allocator
 {
     public readonly struct InMemory<T>
     {

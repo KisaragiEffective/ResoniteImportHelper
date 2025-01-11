@@ -1,5 +1,5 @@
 #nullable enable
-namespace ResoniteImportHelper.UI.Localize
+namespace KisaragiMarine.ResoniteImportHelper.UI.Localize
 {
     internal sealed class English : ILocalizedTexts
     {

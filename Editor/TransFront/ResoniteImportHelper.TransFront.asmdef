@@ -1,6 +1,6 @@
 {
   "name": "ResoniteImportHelper.TransFront",
-  "rootNamespace": "global::ResoniteImportHelper.TransFront",
+  "rootNamespace": "global::KisaragiMarine.ResoniteImportHelper.TransFront",
   "references": [
     "GUID:9412ec19daea43d8a5d4b2f0c5a7c8ad",
     "GUID:ff74dcc47a4647d68fe8716871e0d67e",

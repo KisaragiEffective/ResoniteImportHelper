@@ -1,6 +1,6 @@
 {
   "name": "ResoniteImportHelper.Transform.Environment.VRChat",
-  "rootNamespace": "global::ResoniteImportHelper.Transform.Environment.VRChat",
+  "rootNamespace": "global::KisaragiMarine.ResoniteImportHelper.Transform.Environment.VRChat",
   "references": [
     "GUID:0694516e4ae346d2b14de667ae2b82ba",
     "GUID:537b972107da49b88743a2eb3d496a88"

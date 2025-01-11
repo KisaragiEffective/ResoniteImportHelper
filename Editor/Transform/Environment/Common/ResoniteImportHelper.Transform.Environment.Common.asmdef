@@ -1,6 +1,6 @@
 {
   "name": "ResoniteImportHelper.Transform.Environment.Common",
-  "rootNamespace": "global::ResoniteImportHelper.Transform.Environment.Common",
+  "rootNamespace": "global::KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common",
   "references": [
     "GUID:da758e96819041b2b57ad6379d1c0c58",
     "GUID:041f840041904fa4965ea30baa9487a6",

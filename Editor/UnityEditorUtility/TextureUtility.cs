@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace ResoniteImportHelper.UnityEditorUtility
+namespace KisaragiMarine.ResoniteImportHelper.UnityEditorUtility
 {
     public static class TextureUtility
     {

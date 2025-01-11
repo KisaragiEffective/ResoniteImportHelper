@@ -1,9 +1,9 @@
 #nullable enable
 using System.Linq;
 using System.Reflection;
-using ResoniteImportHelper.Lint.Pass;
-using ResoniteImportHelper.TransFront;
-using ResoniteImportHelper.UI.Localize;
+using KisaragiMarine.ResoniteImportHelper.Lint.Pass;
+using KisaragiMarine.ResoniteImportHelper.TransFront;
+using KisaragiMarine.ResoniteImportHelper.UI.Localize;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -11,11 +11,11 @@ using UnityEngine.UIElements;
 #if RIH_HAS_VRCSDK3A
 using VRC.SDK3.Avatars.Components;
 #endif
-using static ResoniteImportHelper.UI.ExternalServiceStatus;
+using static KisaragiMarine.ResoniteImportHelper.UI.ExternalServiceStatus;
 using Button = UnityEngine.UIElements.Button;
 using Toggle = UnityEngine.UIElements.Toggle;
 
-namespace ResoniteImportHelper.UI.Component
+namespace KisaragiMarine.ResoniteImportHelper.UI.Component
 {
     internal sealed class Body : VisualElement
     {

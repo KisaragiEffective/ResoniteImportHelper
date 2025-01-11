@@ -5,7 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace ResoniteImportHelper.ClonedMarker
+namespace KisaragiMarine.ResoniteImportHelper.ClonedMarker
 {
     [CustomEditor(typeof(IntermediateClonedHierarchyMarker))]
     internal sealed class IntermediateClonedHierarchyMarkerEditor: UnityEditor.Editor
@@ -43,9 +43,9 @@ namespace ResoniteImportHelper.ClonedMarker
                 b.Add(new Label("Open bug tracker"));
                 root.Add(b);
             }
-            
+
             root.Add(new ObjectField("Original avatar") { value = TypedTarget().original });
-            
+
             return root;
         }
 

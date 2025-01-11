@@ -2,13 +2,13 @@
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using ResoniteImportHelper.Serialization;
+using KisaragiMarine.ResoniteImportHelper.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Object = UnityEngine.Object;
 
-namespace ResoniteImportHelper.TransFront
+namespace KisaragiMarine.ResoniteImportHelper.TransFront
 {
     internal static class Entry
     {

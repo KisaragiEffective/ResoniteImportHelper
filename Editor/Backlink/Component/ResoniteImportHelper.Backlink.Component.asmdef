@@ -1,6 +1,6 @@
 {
   "name": "ResoniteImportHelper.Backlink.Component",
-  "rootNamespace": "global::ResoniteImportHelper.Backlink.Component",
+  "rootNamespace": "global::KisaragiMarine.ResoniteImportHelper.Backlink.Component",
   "references": [
     "GUID:537b972107da49b88743a2eb3d496a88"
   ],

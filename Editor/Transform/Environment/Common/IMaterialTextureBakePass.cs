@@ -1,7 +1,7 @@
 #nullable enable
 using UnityEngine;
 
-namespace ResoniteImportHelper.Transform.Environment.Common
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common
 {
     /// <summary>
     /// <see cref="Material.shader"/> を変更せずに<see cref="Material"/>が参照するテクスチャを
