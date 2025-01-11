@@ -132,6 +132,7 @@ I recommend to use latest non-pre-release version. As of writing, it is `0.1.17`
 10. Drag it to the Hierarchy. You can check if it does not look unexpectedly.
 11. Press "Open in file system". File explorer will be pop up on top of screen.
 12. Find a file ending with `.gltf` in the directory.
+13. The glTF will be loaded into the world. Its forward direction is negative Z if you are feeding a VRC-ready avatar and you do not modify root rotation.
 
 ## Import
 You drop the outcome onto Resonite window.
