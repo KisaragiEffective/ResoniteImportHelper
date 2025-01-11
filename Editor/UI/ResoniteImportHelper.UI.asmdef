@@ -1,6 +1,6 @@
 {
     "name": "ResoniteImportHelper.UI",
-    "rootNamespace": "global::ResoniteImportHelper.UI",
+    "rootNamespace": "global::KisaragiMarine.ResoniteImportHelper.UI",
     "references": [
         "GUID:25b168161f934b66b6d3142f4bf8d0ec",
         "GUID:9412ec19daea43d8a5d4b2f0c5a7c8ad",

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ResoniteImportHelper.Lint
+namespace KisaragiMarine.ResoniteImportHelper.Lint
 {
     internal interface ILintPass<out TDiagnostic> where TDiagnostic: IDiagnostic
     {

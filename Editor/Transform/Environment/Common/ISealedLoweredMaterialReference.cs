@@ -1,8 +1,8 @@
 #nullable enable
-using ResoniteImportHelper.Allocator;
+using KisaragiMarine.ResoniteImportHelper.Allocator;
 using UnityEngine;
 
-namespace ResoniteImportHelper.Transform.Environment.Common
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common
 {
     internal interface ISealedLoweredMaterialReference
     {

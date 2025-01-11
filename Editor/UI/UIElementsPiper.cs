@@ -1,7 +1,7 @@
 #nullable enable
 using UnityEngine.UIElements;
 
-namespace ResoniteImportHelper.UI
+namespace KisaragiMarine.ResoniteImportHelper.UI
 {
     internal static class UIElementsPiper
     {

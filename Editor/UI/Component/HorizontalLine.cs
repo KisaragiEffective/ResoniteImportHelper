@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace ResoniteImportHelper.UI
+namespace KisaragiMarine.ResoniteImportHelper.UI
 {
     internal sealed class HorizontalLine : VisualElement
     {

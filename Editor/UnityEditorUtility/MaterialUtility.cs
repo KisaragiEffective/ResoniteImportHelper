@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace ResoniteImportHelper.UnityEditorUtility
+namespace KisaragiMarine.ResoniteImportHelper.UnityEditorUtility
 {
     internal static class MaterialUtility
     {

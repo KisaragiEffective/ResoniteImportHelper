@@ -1,8 +1,8 @@
 #nullable enable
-using ResoniteImportHelper.UI.Localize;
+using KisaragiMarine.ResoniteImportHelper.UI.Localize;
 using UnityEngine.UIElements;
 
-namespace ResoniteImportHelper.UI
+namespace KisaragiMarine.ResoniteImportHelper.UI
 {
     internal sealed class ExperimentalSettingsFoldout: Foldout
     {

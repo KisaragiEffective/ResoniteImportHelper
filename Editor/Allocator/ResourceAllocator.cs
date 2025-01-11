@@ -1,12 +1,12 @@
 #nullable enable
 using System.IO;
-using ResoniteImportHelper.UnityEditorUtility;
+using KisaragiMarine.ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Object = UnityEngine.Object;
 
-namespace ResoniteImportHelper.Allocator
+namespace KisaragiMarine.ResoniteImportHelper.Allocator
 {
     public class ResourceAllocator
     {

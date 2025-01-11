@@ -1,5 +1,5 @@
 #nullable enable
-namespace ResoniteImportHelper.UI
+namespace KisaragiMarine.ResoniteImportHelper.UI
 {
     internal static class ExternalServiceStatus
     {
@@ -10,7 +10,7 @@ namespace ResoniteImportHelper.UI
             false
 #endif
             ;
-        internal const bool HasNDMF = 
+        internal const bool HasNDMF =
 #if RIH_HAS_NDMF
             true
 #else

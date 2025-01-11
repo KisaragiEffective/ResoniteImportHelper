@@ -8,16 +8,16 @@ using JetBrains.Annotations;
 #if RIH_HAS_LILTOON
 using lilToon;
 #endif
-using ResoniteImportHelper.Allocator;
-using ResoniteImportHelper.Transform.Environment.Common;
-using ResoniteImportHelper.UnityEditorUtility;
+using KisaragiMarine.ResoniteImportHelper.Allocator;
+using KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common;
+using KisaragiMarine.ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-namespace ResoniteImportHelper.Transform.Environment.LilToon
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.LilToon
 {
     internal sealed class LilToonHandler: IMaterialTextureBakePass, ICustomShaderLowerPass
     {

@@ -2,7 +2,7 @@
 #if UNITY_EDITOR
 using UnityEngine;
 
-namespace ResoniteImportHelper.ClonedMarker
+namespace KisaragiMarine.ResoniteImportHelper.ClonedMarker
 {
     [DisallowMultipleComponent]
     public sealed class IntermediateClonedHierarchyMarker : MonoBehaviour

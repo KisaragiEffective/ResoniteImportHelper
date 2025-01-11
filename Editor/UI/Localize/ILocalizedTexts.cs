@@ -1,7 +1,7 @@
 #nullable enable
 using System.Diagnostics.CodeAnalysis;
 
-namespace ResoniteImportHelper.UI.Localize
+namespace KisaragiMarine.ResoniteImportHelper.UI.Localize
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal interface ILocalizedTexts

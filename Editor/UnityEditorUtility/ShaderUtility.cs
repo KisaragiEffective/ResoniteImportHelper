@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace ResoniteImportHelper.UnityEditorUtility
+namespace KisaragiMarine.ResoniteImportHelper.UnityEditorUtility
 {
     public static class ShaderUtility
     {

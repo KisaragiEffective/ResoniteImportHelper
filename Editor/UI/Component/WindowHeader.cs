@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace ResoniteImportHelper.UI.Component
+namespace KisaragiMarine.ResoniteImportHelper.UI.Component
 {
     internal sealed class WindowHeader: VisualElement
     {
@@ -23,7 +23,7 @@ namespace ResoniteImportHelper.UI.Component
                     alignSelf = Align.Center, fontSize = new StyleLength(new Length(16, LengthUnit.Pixel))
                 }
             };
-            
+
             this.Add(title);
 
             var thisVersion = new TextElement
@@ -33,9 +33,9 @@ namespace ResoniteImportHelper.UI.Component
                     alignSelf = Align.Center
                 }
             };
-            
+
             this.Add(thisVersion);
-            
+
             var thisPackageOpt = PackageInfo
                 .GetAllRegisteredPackages()
                 .SingleOrDefault(p => p.name == "io.github.kisaragieffective.resonite-import-helper");
@@ -61,7 +61,7 @@ namespace ResoniteImportHelper.UI.Component
                 var declaredVersion = DetectCurrentUnmanagedInstallVersionFromPackageManifest(file);
                 var rawRevision = DetectCurrentUnmanagedInstallRevision(new DirectoryInfo(file).Parent!.FullName);
                 Debug.Log($"declaredVersion={declaredVersion ?? "null"}, rawRevision={rawRevision ?? "null"}");
-                        
+
                 AssignVersionInformation(in thisVersion, declaredVersion, rawRevision);
             }
         }
@@ -86,7 +86,7 @@ namespace ResoniteImportHelper.UI.Component
 
             return null;
         }
-        
+
         [CanBeNull]
         private static string DetectCurrentUnmanagedInstallRevision(string workingDirectory)
         {
@@ -109,7 +109,7 @@ namespace ResoniteImportHelper.UI.Component
                     Debug.LogError("Process could not be started");
                     return null;
                 }
-                
+
                 p.Start();
                 p.WaitForExit();
 
@@ -129,15 +129,15 @@ namespace ResoniteImportHelper.UI.Component
             var rev = gitRevision?[..Math.Min(gitRevision.Length, 12)];
 
             var givenRev = !string.IsNullOrEmpty(rev);
-            var revision = givenRev 
+            var revision = givenRev
                 ? $"<a href=\"https://github.com/KisaragiEffective/ResoniteImportHelper/tree/{rev}\">{rev}</a>"
                 : "???";
-            
+
             e.text = $"v. {installedVersion} (commit {revision})";
             e.enableRichText = givenRev;
         }
     }
-    
+
     [Serializable]
     internal struct PartialPackageManifest
     {

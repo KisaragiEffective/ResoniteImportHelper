@@ -1,6 +1,6 @@
 {
   "name": "ResoniteImportHelper.Transform.Environment.LilToon",
-  "rootNamespace": "global::ResoniteImportHelper.Transform.Environment.LilToon",
+  "rootNamespace": "global::KisaragiMarine.ResoniteImportHelper.Transform.Environment.LilToon",
   "references": [
     "GUID:e7f0f8dffe955d640bbc76d1d4f4986e",
     "GUID:0694516e4ae346d2b14de667ae2b82ba",
