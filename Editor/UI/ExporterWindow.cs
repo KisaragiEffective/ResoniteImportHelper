@@ -17,7 +17,7 @@ namespace KisaragiMarine.ResoniteImportHelper.UI {
         {
             rootVisualElement.Add(new WindowHeader());
             var localeSelector = new LocaleSelector();
-            var lang = localeSelector.GetLanguage();
+            // var sessionStrider = new SessionStrider();
 
             rootVisualElement.Add(localeSelector);
             rootVisualElement.Add(new HorizontalLine());

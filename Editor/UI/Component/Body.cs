@@ -4,6 +4,7 @@ using System.Reflection;
 using KisaragiMarine.ResoniteImportHelper.Lint.Pass;
 using KisaragiMarine.ResoniteImportHelper.TransFront;
 using KisaragiMarine.ResoniteImportHelper.UI.Localize;
+using KisaragiMarine.ResoniteImportHelper.UI.Session;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -45,15 +46,46 @@ namespace KisaragiMarine.ResoniteImportHelper.UI.Component
                 objectType = typeof(GameObject),
                 tooltip = lang.RootTooltip()
             };
+            {
+                var x = SessionStrider.OriginalObject.Get();
+                Debug.Log($"{x as object ?? "null"}");
+                if (x != null)
+                {
+                    rootObject.value = x;
+                }
+            }
+            rootObject.RegisterValueChangedCallback(e => SessionStrider.OriginalObject.Set(e.newValue as GameObject));
             rootVisualElement.Add(rootObject);
+
+
+
             var exportSettingFoldout = new Foldout { text = lang.ExportSetting() };
             rootVisualElement.Add(exportSettingFoldout);
+
             // ReSharper disable once InconsistentNaming
             var doRunVRCSDK3APreprocessors = CreatePreprocessorToggleCheckbox(rootObject, lang);
+            {
+                var x = SessionStrider.UseVRChatBuildPipelineCallbacks.Get();
+                doRunVRCSDK3APreprocessors.value = x;
+            }
+            doRunVRCSDK3APreprocessors.RegisterValueChangedCallback(e =>
+            {
+                SessionStrider.UseVRChatBuildPipelineCallbacks.Set(e.newValue);
+            });
             exportSettingFoldout.Add(doRunVRCSDK3APreprocessors);
             // ReSharper disable once InconsistentNaming
+
             var doNDMFManualBake = CreateNDMFManualBakeCheckbox(doRunVRCSDK3APreprocessors, lang);
+            {
+                var x = SessionStrider.PerformNdmfManualBake.Get();
+                doRunVRCSDK3APreprocessors.value = x;
+            }
+            doNDMFManualBake.RegisterValueChangedCallback(e =>
+            {
+                SessionStrider.PerformNdmfManualBake.Set(e.newValue);
+            });
             exportSettingFoldout.Add(doNDMFManualBake);
+
             var experimentalSettingsFoldout = CreateExperimentalSettingsFoldout(lang);
             exportSettingFoldout.Add(experimentalSettingsFoldout);
 
@@ -64,6 +96,18 @@ namespace KisaragiMarine.ResoniteImportHelper.UI.Component
             };
             destination.RegisterCallback<DragUpdatedEvent>(ev => ev.PreventDefault());
             destination.RegisterCallback<DragPerformEvent>(ev => ev.PreventDefault());
+            destination.RegisterValueChangedCallback(e =>
+            {
+                SessionStrider.SerializedObject.Set(e.newValue as GameObject);
+            });
+            {
+                var x = SessionStrider.SerializedObject.Get();
+                if (x != null)
+                {
+                    destination.value = x;
+                }
+            }
+
             var modelContainsVertexColorNote =
                 new HelpBox(lang.ModelContainsVertexColor(),
                     HelpBoxMessageType.Info)
