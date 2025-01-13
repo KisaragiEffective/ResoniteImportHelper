@@ -1,5 +1,13 @@
 # 変更履歴
 
+## 0.1.19 (2024-01-13)
+* docs: 一部の文書のマークアップが壊れているのを修正
+* docs: RIHを作った経緯を公開
+* feat: glTFへ変換したアバターをプロジェクトウィンドウで開くボタン、シーンに追加するボタンを追加
+* ci: zizmorによってエラーになるワークフローの記述を修正
+* fix: Resoniteによって正面になるように、Unity座標系上においてZ-をデフォルトのアバターの正面とするように
+* refactor: C#の名前空間を `ResoniteImportHelper` から `KisaragiMarine.ResoniteImportHelper` へ移動
+
 ## 0.1.18 (2024-11-29)
 * chore: リリースにプッシュされるVPM互換クライアント用のZIPファイルのパッケージマニフェストの `repository` フィールドがリリースのタグのHEADをパーマリンクで指すように
 * fix: VRChat SDKが入っているがlilToonが入っていない環境でコンパイルエラーが起こるのを修正
