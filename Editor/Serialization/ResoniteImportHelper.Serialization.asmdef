@@ -1,6 +1,6 @@
 {
   "name": "ResoniteImportHelper.Serialization",
-  "rootNamespace": "global::ResoniteImportHelper.Serialization",
+  "rootNamespace": "global::KisaragiMarine.ResoniteImportHelper.Serialization",
   "references": [
     "GUID:8d76e605759c3f64a957d63ef96ada7c",
     "GUID:25b168161f934b66b6d3142f4bf8d0ec",
@@ -23,7 +23,7 @@
   "versionDefines": [
     {
       "name": "com.vrmc.gltf",
-      "expression": "0.125.0",
+      "expression": "0.128.0",
       "define": "RIH_HAS_UNI_GLTF"
     }
   ],

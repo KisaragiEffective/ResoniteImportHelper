@@ -1,10 +1,10 @@
 #nullable enable
 using System.Collections.Generic;
-using ResoniteImportHelper.Allocator;
+using KisaragiMarine.ResoniteImportHelper.Allocator;
 using UnityEngine;
 
 #nullable enable
-namespace ResoniteImportHelper.Transform.Environment.Common
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common
 {
     internal interface IMaterialConversionResult
     {

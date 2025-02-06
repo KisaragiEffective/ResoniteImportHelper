@@ -1,11 +1,11 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
-using ResoniteImportHelper.Lint.Diagnostic;
-using ResoniteImportHelper.UnityEditorUtility;
+using KisaragiMarine.ResoniteImportHelper.Lint.Diagnostic;
+using KisaragiMarine.ResoniteImportHelper.UnityEditorUtility;
 using UnityEngine;
 
-namespace ResoniteImportHelper.Lint.Pass
+namespace KisaragiMarine.ResoniteImportHelper.Lint.Pass
 {
     internal class CustomShaderDetectionPath : ILintPass<CustomShaderDiagnostic>
     {

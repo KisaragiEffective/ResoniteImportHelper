@@ -1,10 +1,10 @@
 #nullable enable
 using System;
 using System.Linq;
-using ResoniteImportHelper.UI.Localize;
+using KisaragiMarine.ResoniteImportHelper.UI.Localize;
 using UnityEngine.UIElements;
 
-namespace ResoniteImportHelper.UI.Component
+namespace KisaragiMarine.ResoniteImportHelper.UI.Component
 {
     internal sealed class LocaleSelector : VisualElement
     {
@@ -20,7 +20,7 @@ namespace ResoniteImportHelper.UI.Component
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
-        
+
         internal LocaleSelector()
         {
             PullDown = new PopupField<LocaleKind>(Enum.GetValues(typeof(LocaleKind)).Cast<LocaleKind>().ToList(),

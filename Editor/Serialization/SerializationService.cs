@@ -1,10 +1,10 @@
 #nullable enable
 using System.IO;
 using System.Linq;
-using ResoniteImportHelper.Allocator;
-using ResoniteImportHelper.Backlink.Component;
-using ResoniteImportHelper.UnityEditorUtility;
-using MeshUtility = ResoniteImportHelper.UnityEditorUtility.MeshUtility;
+using KisaragiMarine.ResoniteImportHelper.Allocator;
+using KisaragiMarine.ResoniteImportHelper.Backlink.Component;
+using KisaragiMarine.ResoniteImportHelper.UnityEditorUtility;
+using MeshUtility = KisaragiMarine.ResoniteImportHelper.UnityEditorUtility.MeshUtility;
 #if RIH_HAS_UNI_GLTF
 using UniGLTF;
 #else
@@ -14,7 +14,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace ResoniteImportHelper.Serialization
+namespace KisaragiMarine.ResoniteImportHelper.Serialization
 {
     internal static class SerializationService
     {
@@ -28,7 +28,9 @@ namespace ResoniteImportHelper.Serialization
                 {
                     // https://github.com/KisaragiEffective/ResoniteImportHelper/issues/29
                     DivideVertexBuffer = false,
-                    ExportVertexColor = containsVertexColors
+                    ExportVertexColor = containsVertexColors,
+                    // https://github.com/KisaragiEffective/ResoniteImportHelper/issues/242
+                    InverseAxis = Axes.X
                 };
 
                 Profiler.BeginSample(".ctor");

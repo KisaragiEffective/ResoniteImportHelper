@@ -1,9 +1,9 @@
 #nullable enable
-using ResoniteImportHelper.UI.Component;
+using KisaragiMarine.ResoniteImportHelper.UI.Component;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace ResoniteImportHelper.UI {
+namespace KisaragiMarine.ResoniteImportHelper.UI {
     internal class ExporterWindow : EditorWindow
     {
         [MenuItem("Tools/Resonite Import Helper")]
@@ -18,7 +18,7 @@ namespace ResoniteImportHelper.UI {
             rootVisualElement.Add(new WindowHeader());
             var localeSelector = new LocaleSelector();
             var lang = localeSelector.GetLanguage();
-            
+
             rootVisualElement.Add(localeSelector);
             rootVisualElement.Add(new HorizontalLine());
             rootVisualElement.Add(new Body(localeSelector));

@@ -8,16 +8,16 @@ using JetBrains.Annotations;
 #if RIH_HAS_LILTOON
 using lilToon;
 #endif
-using ResoniteImportHelper.Allocator;
-using ResoniteImportHelper.Transform.Environment.Common;
-using ResoniteImportHelper.UnityEditorUtility;
+using KisaragiMarine.ResoniteImportHelper.Allocator;
+using KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common;
+using KisaragiMarine.ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Profiling;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-namespace ResoniteImportHelper.Transform.Environment.LilToon
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.LilToon
 {
     internal sealed class LilToonHandler: IMaterialTextureBakePass, ICustomShaderLowerPass
     {
@@ -148,7 +148,7 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             var h = new HarmonyLib.Harmony(
                 "io.github.kisaragieffective.resonite-import-helper.liltoon.headless-bake");
             Profiler.EndSample();
-
+#if RIH_HAS_LILTOON
             Profiler.BeginSample("Mute warnings");
             Profiler.BeginSample("Get Method");
             var warningDialogMethod = typeof(EditorUtility)
@@ -182,9 +182,11 @@ namespace ResoniteImportHelper.Transform.Environment.LilToon
             );
             Profiler.EndSample();
             Profiler.EndSample();
-
+#else
+            Debug.LogWarning("This project does not have lilToon as an Unity-managed package.");
+#endif // RIH_HAS_LILTOON
             return h;
-#endif
+#endif // RIH_HAS_HARMONY
         }
 
         private static bool SkipDisplayDialogFromLilInspector()

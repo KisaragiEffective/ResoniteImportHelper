@@ -1,5 +1,5 @@
 #nullable enable
-namespace ResoniteImportHelper.Transform.Environment.Common
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common
 {
     public enum LoweredRenderMode
     {

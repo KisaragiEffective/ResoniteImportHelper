@@ -1,13 +1,13 @@
 #nullable enable
 using JetBrains.Annotations;
 #if !RIH_HAS_UNI_GLTF
-using ResoniteImportHelper.Bootstrap.Logic;
+using KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic;
 using Application = UnityEngine.Application;
 #endif
-using ResoniteImportHelper.UI.Localize;
+using KisaragiMarine.ResoniteImportHelper.UI.Localize;
 using UnityEngine.UIElements;
 
-namespace ResoniteImportHelper.UI.Component
+namespace KisaragiMarine.ResoniteImportHelper.UI.Component
 {
     internal sealed class UniGltfInstallPrompt: VisualElement
     {
@@ -29,7 +29,7 @@ namespace ResoniteImportHelper.UI.Component
             {
                 var button = new Button(() =>
                 {
-                    Application.OpenURL("https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0");
+                    Application.OpenURL($"https://github.com/vrm-c/UniVRM/releases/tag/v{PackageManagerProxy.SupportedUniGLTFVersion}");
                 });
                 button.Add(new Label(lang.OpenInstallationPageForUniGLTF()));
                 rootVisualElement.Add(button);

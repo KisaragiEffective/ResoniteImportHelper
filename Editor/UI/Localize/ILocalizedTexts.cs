@@ -1,7 +1,7 @@
 #nullable enable
 using System.Diagnostics.CodeAnalysis;
 
-namespace ResoniteImportHelper.UI.Localize
+namespace KisaragiMarine.ResoniteImportHelper.UI.Localize
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     internal interface ILocalizedTexts
@@ -9,14 +9,14 @@ namespace ResoniteImportHelper.UI.Localize
         string Root();
         string RootTooltip();
         string ExportSetting();
-        
+
         string ModelContainsVertexColor();
         string Start();
         string UniGLTFIsNotInstalled();
         string OpenInstallationPageForUniGLTF();
         string InstallUniGLTFAutomatically();
         string ConflictingVersionOfUniGLTFIsInstalled();
-        
+
         string OpenInFileSystemLabel();
         string ProcessedAvatarLabel();
         string ProcessedAvatarTooltip();
@@ -24,12 +24,16 @@ namespace ResoniteImportHelper.UI.Localize
         string InvokeVRCSDKPreprocessorTooltip();
         string NDMFManualBakeLabel();
         string NDMFManualBakeTooltip();
-        
+
         string ExperimentalSettingRootLabel();
         string ExperimentalSettingsAreNeverSupported();
         string ExperimentalSetting_BakeLilToonLabel();
         string ExperimentalSetting_BakeLilToonTooltip();
         string ExperimentalSetting_GenerateIntermediateArtifactLabel();
         string ExperimentalSetting_GenerateIntermediateArtifactTooltip();
+        string ExperimentalSetting_ApplyRootScale();
+        string ExperimentalSetting_ApplyRootScaleTip();
+        string OpenInAssetWindowLabel();
+        string AppendToCurrentSceneLabel();
     }
 }

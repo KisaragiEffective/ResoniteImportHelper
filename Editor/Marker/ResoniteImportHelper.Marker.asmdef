@@ -1,6 +1,6 @@
 {
   "name": "ResoniteImportHelper.Marker",
-  "rootNamespace": "global::ResoniteImportHelper.Marker",
+  "rootNamespace": "global::KisaragiMarine.ResoniteImportHelper.Marker",
   "references": [
     "GUID:537b972107da49b88743a2eb3d496a88"
   ],

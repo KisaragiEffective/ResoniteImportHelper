@@ -1,12 +1,12 @@
 #nullable enable
 using System;
 using System.Linq;
-using ResoniteImportHelper.Backlink.Component;
-using ResoniteImportHelper.UnityEditorUtility;
+using KisaragiMarine.ResoniteImportHelper.Backlink.Component;
+using KisaragiMarine.ResoniteImportHelper.UnityEditorUtility;
 using UnityEditor;
 using UnityEngine;
 
-namespace ResoniteImportHelper.Serialization
+namespace KisaragiMarine.ResoniteImportHelper.Serialization
 {
     internal class ExportInformation
     {
@@ -29,7 +29,7 @@ namespace ResoniteImportHelper.Serialization
                 // stopgapとして設置
                 throw new Exception("programming error");
             }
-            
+
             return AssetDatabasePlusPlus
                 .FindSpecificAsset<TiedBakeSourceDescriptor>(new []{ path })
                 .Single()

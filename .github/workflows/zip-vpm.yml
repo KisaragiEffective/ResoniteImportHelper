@@ -1,0 +1,53 @@
+name: Package in VPM-compatible format
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.tag }}
+        persist-credentials: false
+    - name: Add commit hash to the manifest
+      run: |
+        # moreutils はおそらく追加されない上インストールすると遅いので使わない
+        # see also: https://github.com/actions/runner-images/issues/5498
+        jq --arg hash "$(git rev-parse HEAD)" '.repository.url = "https://github.com/KisaragiEffective/ResoniteImportHelper/tree/" + $hash' < package.json > package.json.tmp
+        mv package.json.tmp package.json
+    - name: Zip
+      run: |
+        # git のコミット履歴、GitHub用のファイル、Krita、Microsoft.Unity.AnalyzersはVPMパッケージのユーザーにとっては要らない。
+        # そのためvpm-src.zipから除外する。
+        zip -r vpm-src.zip . \
+          --exclude '.git/**' \
+          --exclude 'Doc~/Original/*' \
+          --exclude 'Editor/0Analyzer/Microsoft.Unity.Analyzers.*' \
+          --exclude '.github/**'
+    - name: Compute SHA256
+      run: |
+        # sha256sumを使うと加工が非直感的だし、ここでスクリプト言語や外部バイナリを持ち出すと遅い。
+        # PowerShell Coreを起動して回避。
+        echo (Get-FileHash ./vpm-src.zip -Algorithm SHA256).Hash.ToLower() > vpm-src.zip.sha256sum
+      shell: pwsh
+    - name: Upload files
+      run: |
+        gh release upload "$TAG" vpm-src.zip
+        gh release upload "$TAG" vpm-src.zip.sha256sum
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TAG: ${{ github.event.release.tag_name || inputs.tag }}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ResoniteImportHelper.UnityEditorUtility
+namespace KisaragiMarine.ResoniteImportHelper.UnityEditorUtility
 {
     internal static class RendererUtility
     {

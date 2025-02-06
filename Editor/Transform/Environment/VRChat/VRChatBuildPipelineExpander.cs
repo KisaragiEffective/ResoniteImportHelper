@@ -6,9 +6,9 @@ using VRC.SDK3.Avatars.Components;
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
 using Object = UnityEngine.Object;
-using ResoniteImportHelper.Transform.Environment.Common;
+using KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common;
 
-namespace ResoniteImportHelper.Transform.Environment.VRChat
+namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.VRChat
 {
     internal class VRChatBuildPipelineExpander : IPlatformExpander
     {

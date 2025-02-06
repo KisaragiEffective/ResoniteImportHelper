@@ -1,8 +1,9 @@
 #nullable enable
 using System.Linq;
-using ResoniteImportHelper.Lint.Pass;
-using ResoniteImportHelper.TransFront;
-using ResoniteImportHelper.UI.Localize;
+using System.Reflection;
+using KisaragiMarine.ResoniteImportHelper.Lint.Pass;
+using KisaragiMarine.ResoniteImportHelper.TransFront;
+using KisaragiMarine.ResoniteImportHelper.UI.Localize;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -10,11 +11,11 @@ using UnityEngine.UIElements;
 #if RIH_HAS_VRCSDK3A
 using VRC.SDK3.Avatars.Components;
 #endif
-using static ResoniteImportHelper.UI.ExternalServiceStatus;
+using static KisaragiMarine.ResoniteImportHelper.UI.ExternalServiceStatus;
 using Button = UnityEngine.UIElements.Button;
 using Toggle = UnityEngine.UIElements.Toggle;
 
-namespace ResoniteImportHelper.UI.Component
+namespace KisaragiMarine.ResoniteImportHelper.UI.Component
 {
     internal sealed class Body : VisualElement
     {
@@ -77,6 +78,7 @@ namespace ResoniteImportHelper.UI.Component
                     doRunVRCSDK3APreprocessors.value,
                     doNDMFManualBake.value,
                     experimentalSettingsFoldout.BakeShadersConfigurationIntoTextures.value,
+                    experimentalSettingsFoldout.ApplyRootScale.value,
                     experimentalSettingsFoldout.GenerateIntermediateArtifact.value
                 );
                 destination.value = result.SerializedObject;
@@ -126,6 +128,46 @@ StackTrace:");
                 });
 
                 button.Add(new Label(lang.OpenInFileSystemLabel()));
+                button.SetEnabled(false);
+                rootVisualElement.Add(button);
+            }
+            {
+                var button = new Button(() =>
+                {
+                    var projectBrowserType = Assembly.GetAssembly(typeof(Editor)).GetType("UnityEditor.ProjectBrowser");
+
+                    var newWindow = (ScriptableObject.CreateInstance(projectBrowserType) as EditorWindow)!;
+
+                    var previouslySelectedObject = Selection.activeObject;
+                    Selection.activeObject = destination.value;
+                    projectBrowserType.GetMethod("RefreshSelectedPath", BindingFlags.Instance | BindingFlags.NonPublic)
+                        .Invoke(newWindow, new object[] { });
+                    projectBrowserType.GetMethod("Init", BindingFlags.Instance | BindingFlags.Public)
+                        .Invoke(newWindow, new object[] { });
+
+                    Selection.activeObject = previouslySelectedObject;
+
+                    newWindow.Show();
+                });
+                destination.RegisterValueChangedCallback(ev =>
+                {
+                    button.SetEnabled(ev.newValue != null);
+                });
+                button.Add(new Label(lang.OpenInAssetWindowLabel()));
+                button.SetEnabled(false);
+                rootVisualElement.Add(button);
+            }
+            {
+                var button = new Button(() =>
+                {
+                    var appendedObject = PrefabUtility.InstantiatePrefab(destination.value);
+                    (appendedObject as GameObject)!.transform.Rotate(Vector3.up, 180.0F);
+                });
+                destination.RegisterValueChangedCallback(ev =>
+                {
+                    button.SetEnabled(ev.newValue != null);
+                });
+                button.Add(new Label(lang.AppendToCurrentSceneLabel()));
                 button.SetEnabled(false);
                 rootVisualElement.Add(button);
             }

@@ -2,8 +2,10 @@
 Bake and Import.
 
 ## Requirement and recommended tools
-* UniGLTF 0.125.0 is required to run. Download it from their [GitHub repository](https://github.com/vrm-c/UniVRM/releases).
-* Git is required to install. Download it from [gitforwindows.org](https://gitforwindows.org/).
+* UniGLTF 0.128.0 is required to run. Download it from their [GitHub repository][unigltf-release].
+* Git or VPM-compatible client is required to install.
+    * Git: Download it from [git-scm.com](https://git-scm.com/downloads)
+    * VPM-compatible client: You may use [ALCOM](https://vcc.docs.vrchat.com/guides/getting-started) or [VRChat Creator Companion](https://vcc.docs.vrchat.com/guides/getting-started).
 * Unity® is required to be 2022.3 series. Older or newer series may work, but it will **NOT** be supported.
 
 Following tools are optional. This tool can invoke their hooks.
@@ -12,6 +14,7 @@ Following tools are optional. This tool can invoke their hooks.
   * AAO: Avatar Optimizer ([Download](https://vpm.anatawa12.com/avatar-optimizer/en/))
   * Modular Avatar ([Download](https://modular-avatar.nadena.dev/))
 
+[unigltf-release]: https://github.com/vrm-c/UniVRM/releases/tag/v0.128.0
 ## What this does and does not
 ### Does
 * Flag non-Rig bone as [`<NoIK>`][NOIK]
@@ -35,12 +38,16 @@ RIH can download and configure it automatically, so you may skip this step:
 
 ![Bootstrapper UI](./Doc~/AutomatedInstallationUI.png)
 
-This method is equivalent to install from their [GitHub release](https://github.com/vrm-c/UniVRM/releases/tag/v0.125.0) page.
+This method is equivalent to install from their [GitHub release][unigltf-release] page.
 
 #### RIH itself
-Install this package via Package Manager.
+Install can be done either:
+* [From VPM-compatible index](#rih-itself-by-vpm-compatible-index) - recommended for non-tech user
+* [From git](#rih-itself-by-git) - recommended for tech user and cutting-edge user
 
-As of writing, installing RIH requires Git to be installed. Other install method may be supported in the future.
+#### RIH itself by Git
+Summary: Install this package via [Unity's Package Manager](https://docs.unity3d.com/2022.3/Documentation/Manual/upm-ui-giturl.html).
+
 Obtain Git installer from [gitforwindows.org](https://gitforwindows.org/) (or alternative proper and favorite method) if you do not have one.
 
 After installed git, open your Project.
@@ -52,13 +59,32 @@ On your project, do following:
 1. Go to `Window > Package Manager`
 2. Click `[+▼]`
 3. Select "Add package from Git URL"
-4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.16`
+4. Type `https://github.com/KisaragiEffective/ResoniteImportHelper.git#0.1.19`
 
 Snippet after `#` specifies revision to be installed. By this configuration, you specify latest tagged version. This is recommended style. Refer [Unity's manual](https://docs.unity3d.com/2022.3/Documentation/Manual/upm-git.html) to customize or install other version.
 
 > [!WARNING]
 > You may not want to refer un-tagged version. This is because doing so implies always fetch latest version, and it may have buggy code snippet.
 > Tagged versions are slightly more stable.
+
+#### RIH itself by VPM-compatible index
+Summary: Add ksrgtech repository, then choose "Resonite Import Helper" (or `io.github.kisaragieffective.resonite-import-helper`).
+
+Before installing, you have to add ksrgtech repository. Refer [VCC manual](https://vcc.docs.vrchat.com/guides/community-repositories/).
+
+The client will request you to feed an URL which points to the repository. Type `https://raw.githubusercontent.com/ksrgtech/vpm-repository/refs/heads/live/index.json` to continue.
+
+> [!TIP]
+> For tech users: GitHub repository is published on <https://github.com/ksrgtech/vpm-repository>.
+
+You might have to wait a moment. After that, find an item with name of "Resonite Import Helper".
+I recommend to use latest non-pre-release version. As of writing, it is `0.1.17`, so please specify `0.1.17` from a pull-down.
+
+> [!WARNING]
+> For advanced users: pre-release is not suitable for your production environment!
+
+> [!WARNING]
+> Please take **back up Your Projects**, as always.
 
 ### Convert
 
@@ -106,6 +132,7 @@ Snippet after `#` specifies revision to be installed. By this configuration, you
 10. Drag it to the Hierarchy. You can check if it does not look unexpectedly.
 11. Press "Open in file system". File explorer will be pop up on top of screen.
 12. Find a file ending with `.gltf` in the directory.
+13. The glTF will be loaded into the world. Its forward direction is negative Z if you are feeding a VRC-ready avatar and you do not modify root rotation.
 
 ## Import
 You drop the outcome onto Resonite window.
@@ -207,7 +234,7 @@ Containing folder can be found in `Assets/ZZZ_TemporalAsset/Run_{date}-{time}`.
       Created if the Prefab instance has yet-saved [overrides](https://docs.unity3d.com/2022.3/Documentation/Manual/PrefabInstanceOverrides.html).
   * `tied.asset` - Contains backlink. Refers either `serialized_local_modification.prefab` or original Prefab.
 
-![Describe](./Doc~/reference-graph.drawio.png)
+![Describe](./Doc~/reference-graph.png)
 
 ## Versioning Policy
 This project adopts ["Semantic Versioning 2.0.0"](https://semver.org/).

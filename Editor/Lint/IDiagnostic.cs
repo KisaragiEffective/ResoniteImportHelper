@@ -1,5 +1,5 @@
 #nullable enable
-namespace ResoniteImportHelper.Lint
+namespace KisaragiMarine.ResoniteImportHelper.Lint
 {
     public interface IDiagnostic
     {
