@@ -1,0 +1,6 @@
+{
+  "name": "ResoniteImportHelper.Package.Import.Metadata",
+    "rootNamespace": "global::ResoniteImportHelper.Package.Import.Metadata",
+    "includePlatforms": ["Editor"],
+    "references": ["ResoniteImportHelper.Package.Import.Stub"]
+}

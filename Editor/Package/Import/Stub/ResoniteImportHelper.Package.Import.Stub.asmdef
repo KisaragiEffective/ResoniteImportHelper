@@ -1,5 +1,5 @@
 {
   "name": "ResoniteImportHelper.Package.Import.Stub",
     "rootNamespace": "global::ResoniteImportHelper.Package.Import.Stub",
-    "references":[ "GUID:da758e96819041b2b57ad6379d1c0c58" ]
+    "references":[ "GUID:da758e96819041b2b57ad6379d1c0c58", "ResoniteImportHelper.Package.Deserialize" ]
 }
