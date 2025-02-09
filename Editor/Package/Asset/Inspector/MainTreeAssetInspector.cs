@@ -15,12 +15,14 @@ namespace ResoniteImportHelper.Package.Asset.Inspector
             var root = new VisualElement();
 
             root.Add(new Label("Content"));
-            root.Add(new Button(() =>
+            var b = new Button(() =>
             {
                 var x = Path.GetTempFileName();
                 File.WriteAllText(x, (this.target as MainTreeAsset)!.text);
-                Debug.Log($"Write full text on {x}.");
-            }));
+                Debug.Log($"Wrote full text temporary file located in {x}.");
+            });
+            b.Add(new Label("Write whole text to temporary file"));
+            root.Add(b);
 
             root.Add(new TextField() { multiline = true, value = (this.target as MainTreeAsset)!.text.Substring(0, 5000) });
 
