@@ -11,24 +11,32 @@ namespace ResoniteImportHelper.Package.Import.Metadata
     {
         // ReSharper disable once InconsistentNaming
         public string VersionNumber;
-        public Dictionary<string, object> FeatureFlags;
+        public Dictionary<string, int> FeatureFlags;
         [JsonProperty("Types")]
         private string[] _types;
 
+        [JsonIgnore]
         private TypeRef[] _typesCache;
-        public TypeRef[] OurTypes => (_typesCache ??= _types.Select(type => new TypeRef(type)).ToArray());
+
+        [JsonIgnore]
+        public TypeRef[] Types => (_typesCache ??= _types.Select(type => new TypeRef(type)).ToArray());
 
         [JsonProperty("TypeVersions")]
         private Dictionary<string, int> _typeVersions;
+
+        [JsonIgnore]
         private Dictionary<TypeRef, int> _typeVersionsCache;
 
-        public Dictionary<TypeRef, int> OurTypeVersions =>
+        [JsonIgnore]
+        public Dictionary<TypeRef, int> TypeVersions =>
             _typeVersionsCache ??=
                 _typeVersions
                     .Select(entry => KeyValuePair.Create(new TypeRef(entry.Key), entry.Value))
                     .ToDictionary(entry => entry.Key, entry => entry.Value);
 
-        public Slot Object;
-        public Dictionary<string, object>[] Assets;
+        [JsonProperty("Object")]
+        public Slot RootSlot;
+        [JsonProperty("Assets")]
+        public Dictionary<string, object>[] ContainedAssets;
     }
 }

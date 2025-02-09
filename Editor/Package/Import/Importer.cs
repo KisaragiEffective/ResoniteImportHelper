@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
@@ -170,12 +172,12 @@ namespace ResoniteImportHelper.Package.Import
         {
             Debug.Log($"Software build: {root.VersionNumber}");
             Debug.Log($"Feature Flags: {Prettify(root.FeatureFlags)}");
-            Debug.Log($"Types: {Prettify(root.OurTypes)}");
-            Debug.Log($"TypeVersions: {Prettify(root.OurTypeVersions)}");
-            Debug.Log($"Object: {root.Object}");
-            Debug.Log($"Assets: {Prettify(root.Assets)}");
+            Debug.Log($"Types: {Prettify(root.Types)}");
+            Debug.Log($"TypeVersions: {Prettify(root.TypeVersions)}");
+            Debug.Log($"Object: {root.RootSlot}");
+            Debug.Log($"Assets: {Prettify(root.ContainedAssets)}");
 
-            AttachSlotRecursively(new Dictionary<string, int>(), root.Object, rootGo, onInitializeGameObject, true);
+            AttachSlotRecursively(new Dictionary<string, int>(), root.RootSlot, rootGo, onInitializeGameObject, true);
         }
 
         private static void AttachSlotRecursively(Dictionary<string, int> versions, Slot slot, GameObject go, OnInitializeGameObject onInitializeGameObject, bool isRoot)
@@ -211,10 +213,10 @@ namespace ResoniteImportHelper.Package.Import
 
         private static void ImportTexture(AssetImportContext ctx, GraphRoot root, GameObject rootGo, List<ZipArchiveEntry> assets)
         {
-            var staticTexture2DProviderCandidate = root.OurTypes
-                .Select((e, i) => (e, i))
-                .Cast<(TypeRef e, int i)?>()
-                .FirstOrDefault(a => a!.Value.e.Parse().FullName == "FrooxEngine.StaticTexture2D");
+            var staticTexture2DProviderCandidate = root.Types
+                .Select((e, i) => (e.Parse(), i))
+                .Cast<((AssemblyName Assembly, TypeName typeName) parsed, int i)?>()
+                .FirstOrDefault(t => t!.Value.parsed.Assembly.FullName == "FrooxEngine" && t!.Value.parsed.typeName.FullName == "FrooxEngine.StaticTexture2D");
 
             if (!staticTexture2DProviderCandidate.HasValue)
             {
