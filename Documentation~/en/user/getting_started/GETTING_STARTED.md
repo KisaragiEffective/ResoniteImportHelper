@@ -1,4 +1,7 @@
 # How to getting started
+<!-- TODO -->
+NOTE: this article is getting old. Major rewrite is coming soon.
+
 > [!TIP]
 > You may want to refer [article](https://dinosaur-fossil.hatenablog.com/entry/2024/09/11/215603) written in Japanese by Yoshi, community member.
 
@@ -10,6 +13,7 @@ RIH can download and configure it automatically, so you may skip this step:
 ![Bootstrapper UI](./image/AutomatedInstallationUI.png)
 
 This method is equivalent to install from their [GitHub release][unigltf-release] page.
+[unigltf-release]: https://github.com/vrm-c/UniVRM/releases/tag/v0.128.0
 
 ### RIH itself
 RIH can be installed in either way:
