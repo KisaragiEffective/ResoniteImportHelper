@@ -6,6 +6,7 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -16,15 +17,18 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
     /// <summary>
     /// <see cref="UnityEditor.PackageManager.Client" /> を模倣するプロキシ。<br />
     /// </summary>
-    public static class PackageManagerProxy
+    [UsedImplicitly]
+    public static partial class PackageManagerProxy
     {
-        // ReSharper disable once InconsistentNaming
-        public const string SupportedUniGLTFVersion = "0.128.0";
-
+        // TODO: https://github.com/KisaragiEffective/ResoniteImportHelper/issues/265
         private const string UnmanagedArchiveInstallSource =
-            "https://github.com/vrm-c/UniVRM/releases/download/v0.128.0/VRM-0.128.0_264a.unitypackage";
+            "https://github.com/vrm-c/UniVRM/releases/download/v" + SupportedUniGLTFVersion +
+            "/VRM-" + SupportedUniGLTFVersion + "_" +
+            BuildHash + ".unitypackage";
 
         private static HttpClient? _httpClient;
+
+        [UsedImplicitly]
         // ReSharper disable once InconsistentNaming
         public static void InstallUniGLTF()
         {
@@ -36,7 +40,6 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
                 Debug.Log("Bootstrap: using Git.");
                 var lowLevelPath = Application.dataPath + "/../Packages/manifest.json";
                 var json = File.ReadAllText(lowLevelPath);
-                var depUrl = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/UniGLTF#v{SupportedUniGLTFVersion}";
                 // this implements dynamic field selector.
                 dynamic? jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
                 if (jsonObj is null)
@@ -44,7 +47,20 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
                     throw new Exception("Unity's package manifest is corrupted");
                 }
 
-                jsonObj["dependencies"]["com.vrmc.gltf"] = depUrl;
+                var uniGltf = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/UniGLTF#v{SupportedUniGLTFVersion}";
+                jsonObj["dependencies"]["com.vrmc.gltf"] = uniGltf;
+                if (jsonObj["dependencies"]["com.vrmc.univrm"] != null)
+                {
+                    var vrm0 = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/VRM#v{SupportedUniGLTFVersion}";
+                    jsonObj["dependencies"]["com.vrmc.univrm"] = vrm0;
+                }
+
+                if (jsonObj["dependencies"]["com.vrmc.vrm"] != null)
+                {
+                    var vrm1 = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/VRM10#v{SupportedUniGLTFVersion}";
+                    jsonObj["dependencies"]["com.vrmc.vrm"] = vrm1;
+                }
+
                 string outcome =
                     Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText(lowLevelPath, outcome);
@@ -65,6 +81,8 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
 
                 Debug.Log($"Downloaded UnityPackage is allocated on {path}");
 
+                var hasVRM10Installation = AssetDatabase.IsValidFolder("Assets/VRM10");
+
                 try
                 {
                     Debug.Log("Import");
@@ -84,8 +102,14 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
                     Directory.Move("Assets/UniGLTF", "Packages/com.vrmc.gltf");
                     File.Delete("Assets/UniGLTF.meta");
 
-                    Debug.Log("Deleting UniVRM");
-                    Directory.Delete("Assets/VRM10", true);
+                    if (hasVRM10Installation)
+                    {
+                        Directory.Move("Assets/VRM10", "Packages/com.vrmc.vrm");
+                    }
+                    else
+                    {
+                        Directory.Delete("Assets/VRM10", true);
+                    }
                     File.Delete("Assets/VRM10.meta");
                 }
                 finally
