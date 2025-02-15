@@ -14,7 +14,7 @@ namespace ResoniteImportHelper.Editor.Package.Import.Stub
         public IdentifiableDataCell<bool> CrunchCompressed;
         public IdentifiableDataCell<string> MipMapFilter;
 
-        public string GetPointeeID()
+        public string GetAssetIdentifier()
         {
             const string PACKDB_PREFIX = "@packdb:///";
             var url = URL.Data;
