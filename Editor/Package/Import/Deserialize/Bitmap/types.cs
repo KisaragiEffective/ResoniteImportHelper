@@ -7,31 +7,31 @@ namespace ResoniteImportHelper.Package.Import.Deserialize.Bitmap
     internal sealed class BitmapTag: IAssetTag {}
 
     [Serializable]
-    internal sealed class BitmapMetadata : IMetadata<BitmapTag>
+    public sealed class BitmapMetadata : IMetadata<BitmapTag>
     {
         [JsonProperty("width")]
-        internal uint Width;
+        public uint Width;
 
         [JsonProperty("height")]
-        internal uint Height;
+        public uint Height;
 
         [JsonProperty("mipMapCount")]
-        internal uint MipMapCount;
+        public uint MipMapCount;
 
         /// <summary>
         /// Example. `png`
         /// </summary>
         [JsonProperty("baseFormat")]
-        internal string Format;
+        public string Format;
 
         [JsonProperty("bitsPerPixel")]
-        internal uint BitsPerPixel;
+        public uint BitsPerPixel;
 
         [JsonProperty("channelCount")]
-        internal uint ChannelCount;
+        public uint ChannelCount;
 
         [JsonIgnore]
-        internal uint BitsPerChannel => BitsPerPixel / ChannelCount;
+        public uint BitsPerChannel => BitsPerPixel / ChannelCount;
 
         /// <summary>
         /// Example. `FullyOpaque`
@@ -39,6 +39,6 @@ namespace ResoniteImportHelper.Package.Import.Deserialize.Bitmap
         /// Example. `Alpha`
         /// </summary>
         [JsonProperty("alphaData")]
-        internal string AlphaTreat;
+        public string AlphaTreat;
     }
 }
