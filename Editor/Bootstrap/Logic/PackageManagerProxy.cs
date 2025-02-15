@@ -6,6 +6,7 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
     /// <summary>
     /// <see cref="UnityEditor.PackageManager.Client" /> を模倣するプロキシ。<br />
     /// </summary>
+    [UsedImplicitly]
     public static class PackageManagerProxy
     {
         // ReSharper disable once InconsistentNaming
@@ -25,6 +27,8 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
             "https://github.com/vrm-c/UniVRM/releases/download/v0.128.0/VRM-0.128.0_264a.unitypackage";
 
         private static HttpClient? _httpClient;
+
+        [UsedImplicitly]
         // ReSharper disable once InconsistentNaming
         public static void InstallUniGLTF()
         {
