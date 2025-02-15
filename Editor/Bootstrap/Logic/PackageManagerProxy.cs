@@ -40,7 +40,6 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
                 Debug.Log("Bootstrap: using Git.");
                 var lowLevelPath = Application.dataPath + "/../Packages/manifest.json";
                 var json = File.ReadAllText(lowLevelPath);
-                var depUrl = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/UniGLTF#v{SupportedUniGLTFVersion}";
                 // this implements dynamic field selector.
                 dynamic? jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
                 if (jsonObj is null)
@@ -48,7 +47,20 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
                     throw new Exception("Unity's package manifest is corrupted");
                 }
 
-                jsonObj["dependencies"]["com.vrmc.gltf"] = depUrl;
+                var uniGltf = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/UniGLTF#v{SupportedUniGLTFVersion}";
+                jsonObj["dependencies"]["com.vrmc.gltf"] = uniGltf;
+                if (jsonObj["dependencies"]["com.vrmc.univrm"] != null)
+                {
+                    var vrm0 = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/VRM#v{SupportedUniGLTFVersion}";
+                    jsonObj["dependencies"]["com.vrmc.univrm"] = vrm0;
+                }
+
+                if (jsonObj["dependencies"]["com.vrmc.vrm"] != null)
+                {
+                    var vrm1 = $"https://github.com/vrm-c/UniVRM.git?path=/Assets/VRM10#v{SupportedUniGLTFVersion}";
+                    jsonObj["dependencies"]["com.vrmc.vrm"] = vrm1;
+                }
+
                 string outcome =
                     Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText(lowLevelPath, outcome);
