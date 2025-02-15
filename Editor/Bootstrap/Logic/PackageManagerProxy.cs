@@ -18,13 +18,13 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
     /// <see cref="UnityEditor.PackageManager.Client" /> を模倣するプロキシ。<br />
     /// </summary>
     [UsedImplicitly]
-    public static class PackageManagerProxy
+    public static partial class PackageManagerProxy
     {
-        // ReSharper disable once InconsistentNaming
-        public const string SupportedUniGLTFVersion = "0.128.0";
-
+        // TODO: https://github.com/KisaragiEffective/ResoniteImportHelper/issues/265
         private const string UnmanagedArchiveInstallSource =
-            "https://github.com/vrm-c/UniVRM/releases/download/v0.128.0/VRM-0.128.0_264a.unitypackage";
+            "https://github.com/vrm-c/UniVRM/releases/download/v" + SupportedUniGLTFVersion +
+            "/VRM-" + SupportedUniGLTFVersion + "_" +
+            BuildHash + ".unitypackage";
 
         private static HttpClient? _httpClient;
 
@@ -81,6 +81,8 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
 
                 Debug.Log($"Downloaded UnityPackage is allocated on {path}");
 
+                var hasVRM10Installation = AssetDatabase.IsValidFolder("Assets/VRM10");
+
                 try
                 {
                     Debug.Log("Import");
@@ -100,8 +102,14 @@ namespace KisaragiMarine.ResoniteImportHelper.Bootstrap.Logic
                     Directory.Move("Assets/UniGLTF", "Packages/com.vrmc.gltf");
                     File.Delete("Assets/UniGLTF.meta");
 
-                    Debug.Log("Deleting UniVRM");
-                    Directory.Delete("Assets/VRM10", true);
+                    if (hasVRM10Installation)
+                    {
+                        Directory.Move("Assets/VRM10", "Packages/com.vrmc.vrm");
+                    }
+                    else
+                    {
+                        Directory.Delete("Assets/VRM10", true);
+                    }
                     File.Delete("Assets/VRM10.meta");
                 }
                 finally
