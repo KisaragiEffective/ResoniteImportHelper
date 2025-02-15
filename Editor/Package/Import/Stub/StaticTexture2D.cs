@@ -1,5 +1,6 @@
 using System;
 using ResoniteImportHelper.Package.Import.Deserialize.Support;
+using UnityEngine;
 
 namespace ResoniteImportHelper.Editor.Package.Import.Stub
 {
@@ -22,6 +23,19 @@ namespace ResoniteImportHelper.Editor.Package.Import.Stub
             if (!url.StartsWith(PACKDB_PREFIX)) throw new Exception("URL does not start with packdb prefix.");
 
             return url[PACKDB_PREFIX.Length..];
+        }
+
+        public TextureWrapMode GetWrapModeU() => DeserializeToWrapMode(WrapModeU.Data);
+
+        public TextureWrapMode GetWrapModeV() => DeserializeToWrapMode(WrapModeV.Data);
+
+        private TextureWrapMode DeserializeToWrapMode(string raw)
+        {
+            return raw switch
+            {
+                "Repeat" => TextureWrapMode.Repeat,
+                _ => throw new IndexOutOfRangeException($"{WrapModeU} is not supported.")
+            };
         }
 
         public string GetIdentifier() => ID;
