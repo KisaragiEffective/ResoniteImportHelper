@@ -36,7 +36,8 @@ namespace ResoniteImportHelper.Package.Import.Metadata
 
         [JsonProperty("Object")]
         public Slot RootSlot;
+
         [JsonProperty("Assets")]
-        public Dictionary<string, object>[] ContainedAssets;
+        public UntypedComponentReference[] ContainedAssets;
     }
 }
