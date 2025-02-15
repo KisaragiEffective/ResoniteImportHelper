@@ -21,6 +21,8 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using ResoniteImportHelper.Editor.Package.Asset.Types;
+using ResoniteImportHelper.Editor.Package.Import.Stub;
+using ResoniteImportHelper.Package.Import.Deserialize.Bitmap;
 using ResoniteImportHelper.Package.Import.Metadata;
 using ResoniteImportHelper.Package.Import.Stub;
 using UnityEditor.AssetImporters;
@@ -211,7 +213,7 @@ namespace ResoniteImportHelper.Package.Import
             }
         }
 
-        private static void ImportTexture(AssetImportContext ctx, GraphRoot root, GameObject rootGo, List<ZipArchiveEntry> assets)
+        private static void ImportTexture(AssetImportContext ctx, GraphRoot root, GameObject rootGo, IMetadataAccessor metadataAccessor, IAssetVariantAccessor assetVariantAccessor)
         {
             var staticTexture2DProviderCandidate = root.Types
                 .Select((e, i) => (e.Parse(), i))
@@ -226,6 +228,23 @@ namespace ResoniteImportHelper.Package.Import
 
             var staticTexture2DProviderIndex = staticTexture2DProviderCandidate.Value.i;
 
+            root.ContainedAssets
+                .Where(a => a.ComponentTableIndex == staticTexture2DProviderIndex)
+                .Select(a => a.AsTyped<StaticTexture2D>())
+                .Select(st => new
+                {
+                    st.GetComponentData().IsNormalMap,
+                    AssetIdentifier = st.GetComponentData().GetAssetIdentifier(),
+                    WrapModeU = st.GetComponentData().GetWrapModeU(),
+                    WrapModeV = st.GetComponentData().GetWrapModeV(),
+                    Metadata = metadataAccessor.GetAndDeserialize<BitmapMetadata>(
+                        $"{st.GetComponentData().GetAssetIdentifier()}.bitmap"),
+                    TextureFormat = assetVariantAccessor.GetByKey(st.GetComponentData().GetAssetIdentifier()).First((_) => true).FileName.Split('&').Select(w => w.Split('=', 2)).First(a => a[0] == "compression")[1]
+                })
+                .Select(data =>
+                {
+                    new Texture2D((int)data.Metadata.Width, (int)data.Metadata.Height, TextureFormat, 0, true, true);
+                });
             // TODO: 今後Slotにあるコンポーネントを死ぬほど反復するが、それはO(nm)になって遅くないか？
             //       何らかのデータ構造の導入を検討するべき。
 
