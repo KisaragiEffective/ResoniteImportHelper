@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Unity compatible -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DebugType>portable</DebugType>
+    <RootNamespace>ResoniteImportHelper.Internal.DependencyDeclaration</RootNamespace>
+    <CopyLocalLockFoileAssemblies>true</CopyLocalLockFoileAssemblies>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Metadata" Version="9.0.1" />
+  </ItemGroup>
+</Project>
