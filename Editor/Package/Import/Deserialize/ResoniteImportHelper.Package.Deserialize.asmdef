@@ -1,0 +1,6 @@
+{
+  "name": "ResoniteImportHelper.Package.Deserialize",
+    "rootNamespace": "global::ResoniteImportHelper.Package.Deserialize",
+    "includePlatforms": ["Editor"]
+
+}
