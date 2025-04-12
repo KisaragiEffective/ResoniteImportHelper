@@ -10,20 +10,18 @@ using KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common;
 
 namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.VRChat
 {
-    internal class VRChatBuildPipelineExpander : IPlatformExpander
+    internal class VRChatBuildPipelinePreprocessor : IPlatformDependantPreprocessor
     {
-        public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot)
+        public GameObject Preprocess(GameObject modifiableRoot)
         {
 #if RIH_HAS_VRCSDK3A
-            if (!unmodifiableRoot.TryGetComponent<VRCAvatarDescriptor>(out _))
+            if (!modifiableRoot.TryGetComponent<VRCAvatarDescriptor>(out _))
             {
                 throw new Exception("specified object does not have VRChat Avatar Descriptor.");
             }
 
-            var cloned = Object.Instantiate(unmodifiableRoot);
-
-            VRCBuildPipelineCallbacks.OnPreprocessAvatar(cloned);
-            return cloned;
+            VRCBuildPipelineCallbacks.OnPreprocessAvatar(modifiableRoot);
+            return modifiableRoot;
 #else
             throw new ResoniteImportHelper.Transform.Environment.Common.NonEnabledPlatformException();
 #endif

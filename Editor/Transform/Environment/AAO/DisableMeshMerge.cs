@@ -8,13 +8,11 @@ namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.AAO
     /// <summary>
     /// UniGLTF に AAO MergeMesh したアバターを食わせるとメッシュが大幅に壊れる現象を回避するためのパス
     /// </summary>
-    public sealed class DisableMeshMerge : IPlatformExpander
+    public sealed class DisableMeshMerge : IPlatformDependantPreprocessor
     {
-        public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot)
+        public GameObject Preprocess(GameObject modifiableRoot)
         {
-            var root = Object.Instantiate(unmodifiableRoot);
-
-            var traceAndOptimizeComponents = root.GetComponents<Anatawa12.AvatarOptimizer.TraceAndOptimize>();
+            var traceAndOptimizeComponents = modifiableRoot.GetComponents<Anatawa12.AvatarOptimizer.TraceAndOptimize>();
 
             foreach (var tao in traceAndOptimizeComponents)
             {
@@ -23,12 +21,12 @@ namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.AAO
                 handle.ApplyModifiedPropertiesWithoutUndo();
             }
 
-            foreach (var mergeComponent in root.GetComponents<Anatawa12.AvatarOptimizer.MergeSkinnedMesh>())
+            foreach (var mergeComponent in modifiableRoot.GetComponents<Anatawa12.AvatarOptimizer.MergeSkinnedMesh>())
             {
                 Object.DestroyImmediate(mergeComponent);
             }
 
-            return root;
+            return modifiableRoot;
             // var mergeComponents = root.GetComponents<>();
         }
     }

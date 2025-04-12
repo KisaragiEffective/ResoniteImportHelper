@@ -4,10 +4,12 @@ using UnityEngine;
 namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.Common
 {
     /// <summary>
-    /// プラットフォーム依存の方法で直接変更を加えてはならない<see cref="UnityEngine.GameObject"/>のシャローコピーを作ったあとに変更を加える。
+    /// プラットフォーム依存の方法で<see cref="GameObject"/>に対して変更を加える。
     /// </summary>
-    public interface IPlatformExpander
+    public interface IPlatformDependantPreprocessor
     {
-        public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot);
+        /// <see cref="GameObject.Instantiate(Object)"/> を呼び出すときは必ず適切な後始末をしなければならない。
+        /// <returns>変更が適用された<see cref="GameObject"/></returns>
+        public GameObject Preprocess(GameObject modifiableRoot);
     }
 }
