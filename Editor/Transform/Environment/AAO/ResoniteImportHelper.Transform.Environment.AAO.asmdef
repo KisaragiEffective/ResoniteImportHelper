@@ -1,0 +1,13 @@
+{
+  "name": "ResoniteImportHelper.Transform.Environment.AAO",
+    "rootNamespace": "global::ResoniteImportHelper.Transform.Environment.AAO",
+    "includePlatforms": ["Editor"],
+    "versionDefines": [
+        {
+            "name": "com.anatawa12.avatar-optimizer",
+            "expression": "[1.0.0,2.0.0-a)",
+            "define": "RIH_HAS_AAO"
+        }
+    ],
+  "references": ["GUID:0694516e4ae346d2b14de667ae2b82ba", "GUID:f69eeb3e25674f4a9bd20e6d7e69e0e6"]
+}
