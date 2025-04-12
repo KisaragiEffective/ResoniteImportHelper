@@ -389,6 +389,17 @@ namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.LilToon
             // set NormalMap
             standardMaterial.SetTexture(BumpMap, m.GetTexture(BumpMap));
 
+            var useEmission = m.GetInt("_UseEmission") > 0;
+            if (useEmission)
+            {
+                // enable emission property.
+                // see: https://discussions.unity.com/t/720658/7
+                standardMaterial.EnableKeyword("_EMISSION");
+                standardMaterial.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                standardMaterial.SetColor("_EmissionColor", m.GetColor("_EmissionColor"));
+                standardMaterial.SetTexture("_EmissionMap", m.GetTexture("_EmissionMap"));
+            }
+
             return new LoweredMaterialReference(new InMemory<Material>(standardMaterial), mode);
         }
     }
