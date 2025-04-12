@@ -8,13 +8,13 @@ using UnityEngine;
 namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.NDMF
 {
     // ReSharper disable once InconsistentNaming
-    internal class StandaloneNDMFExpander: IPlatformExpander
+    internal class StandaloneNDMFPreprocessor: IPlatformDependantPreprocessor
     {
 
-        public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot)
+        public GameObject Preprocess(GameObject modifiableRoot)
         {
 #if RIH_HAS_NDMF
-            return AvatarProcessor.ProcessAvatarUI(unmodifiableRoot);
+            return AvatarProcessor.ProcessAvatarUI(modifiableRoot);
 #else
             throw new ResoniteImportHelper.Transform.Environment.Common.NonEnabledPlatformException();
 #endif

@@ -50,27 +50,22 @@ namespace KisaragiMarine.ResoniteImportHelper.Transform
             bool runNDMF
         )
         {
-            // TODO: IPlatformExpanderではない
-            // TODO: 最初にInstantiateするならはじめっからinstantiateしておいて、modifiableRootを取るようにしたほうがI/F的にはきれいなのでは？
-            GameObject modifiableRoot = PerformEnvironmentDependantShallowCopy(new Environment.AAO.DisableMeshMerge(), unmodifiableRoot);
+            var modifiableRoot = Object.Instantiate(unmodifiableRoot);
+            modifiableRoot = PerformPreprocessor(new Environment.AAO.DisableMeshMerge(), modifiableRoot);
 
             if (runVRCSDKPipeline)
             {
-                modifiableRoot = PerformEnvironmentDependantShallowCopy(new Environment.VRChat.VRChatBuildPipelineExpander(), modifiableRoot);
+                modifiableRoot = PerformPreprocessor(new Environment.VRChat.VRChatBuildPipelinePreprocessor(), modifiableRoot);
             }
             else if (runNDMF)
             {
-                modifiableRoot = PerformEnvironmentDependantShallowCopy(new Environment.NDMF.StandaloneNDMFExpander(), modifiableRoot);
-            }
-            else
-            {
-                modifiableRoot = Object.Instantiate(modifiableRoot);
+                modifiableRoot = PerformPreprocessor(new Environment.NDMF.StandaloneNDMFPreprocessor(), modifiableRoot);
             }
 
             return modifiableRoot;
 
-            GameObject PerformEnvironmentDependantShallowCopy(IPlatformExpander handler, GameObject localUnmodifiableRoot) =>
-                handler.PerformEnvironmentDependantShallowCopy(localUnmodifiableRoot);
+            GameObject PerformPreprocessor(IPlatformDependantPreprocessor handler, GameObject localUnmodifiableRoot) =>
+                handler.Preprocess(localUnmodifiableRoot);
         }
 
         private static MultipleUnorderedDictionary<LoweredRenderMode, Material>
