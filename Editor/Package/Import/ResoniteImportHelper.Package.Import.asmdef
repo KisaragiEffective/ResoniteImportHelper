@@ -1,0 +1,6 @@
+{
+  "name": "ResoniteImportHelper.Package.Import",
+    "rootNamespace": "global::ResoniteImportHelper.Package.Import",
+    "includePlatforms": ["Editor"],
+    "references":[ "ResoniteImportHelper.0ReflectionMetadata", "ResoniteImportHelper.Package.Import.Stub", "ResoniteImportHelper.Package.Asset.Types", "ResoniteImportHelper.Package.Import.Metadata", "ResoniteImportHelper.Package.Deserialize" ]
+}

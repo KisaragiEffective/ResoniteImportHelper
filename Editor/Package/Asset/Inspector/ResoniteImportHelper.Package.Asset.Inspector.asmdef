@@ -1,0 +1,7 @@
+{
+  "name": "ResoniteImportHelper.Package.Asset.Inspector",
+    "rootNamespace": "global::ResoniteImportHelper.Package.Asset.Inspector",
+    "autoReferenced": false,
+    "includePlatforms": ["Editor"],
+    "references":[ "ResoniteImportHelper.Package.Asset.Types" ]
+}
