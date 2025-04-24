@@ -164,7 +164,8 @@ Resoniteをウィンドウモードで開いて変換した glTF を Resonite �
 * FinalIK
 * Dynamic Bone and VRC PhysBone.
     * 代案: Resonite のDynamic Boneを設定します。
-* VRC Contact.
+* VRC Contact
+    * 代案: SphereCollider や CapsuelCollider を使用します。
 * VRC HeadChop
     * 訳注: VRChat とは異なり、Resonite においてはデフォルトでHeadボーンの下にあるメッシュも見えるようになっています。
 * VRC SpatialAudioSource
