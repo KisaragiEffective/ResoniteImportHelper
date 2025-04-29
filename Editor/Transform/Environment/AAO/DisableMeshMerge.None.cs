@@ -9,7 +9,7 @@ namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.AAO
     /// </summary>
     public sealed class DisableMeshMerge : IPlatformDependantPreprocessor
     {
-        public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot)
+        public GameObject Preprocess(GameObject unmodifiableRoot)
         {
             return unmodifiableRoot;
         }
