@@ -7,7 +7,7 @@ namespace KisaragiMarine.ResoniteImportHelper.Transform.Environment.AAO
     /// <summary>
     /// UniGLTF に AAO MergeMesh したアバターを食わせるとメッシュが大幅に壊れる現象を回避するためのパス
     /// </summary>
-    public sealed class DisableMeshMerge : IPlatformExpander
+    public sealed class DisableMeshMerge : IPlatformDependantPreprocessor
     {
         public GameObject PerformEnvironmentDependantShallowCopy(GameObject unmodifiableRoot)
         {
