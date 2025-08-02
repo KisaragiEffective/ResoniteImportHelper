@@ -1,0 +1,46 @@
+digraph deps {
+    ndmf [label="NDMF",shape=box]
+    sdk3a [label="VRChat SDK",shape=box]
+    unigltf [label="UniGLTF",shape=box]
+    unityeditor [label="UnityEditor", shape=box]
+    unityengine [label="UnityEngine", shape=box]
+    ui
+    transfront
+    transform
+    serialization
+    backlink_component
+
+    ui -> ndmf [label="vd-only"]
+    ui -> sdk3a
+    ui -> unigltf [label="vd-only"]
+    ui -> transfront
+    ui -> transform
+    ui -> serialization
+    ui -> backlink_component
+    ui -> unityeditor
+    ui -> unityengine
+
+    transfront -> transform
+    transfront -> serialization
+
+    transform -> serialization
+    transform -> unity_editor_utility
+    transform -> env_vrchat
+    transform -> env_ndmf
+    transform -> env_common
+
+    env_vrchat -> env_common
+    env_vrchat -> sdk3a
+    env_ndmf -> env_common
+    env_ndmf -> ndmf
+    env_common -> marker
+
+    serialization -> unigltf
+    serialization -> backlink_component
+    serialization -> unity_editor_utility
+
+    unity_editor_utility -> unityeditor
+    env_common -> unityengine
+    backlink_component -> unityeditor
+    unityeditor -> unityengine
+}
