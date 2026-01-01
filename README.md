@@ -1,5 +1,5 @@
 # Resonite Import Helper
-**This project is in maintenance mode!** No new feature will be added. This project will be freezed at Dec 31, 2025.
+**This project is freezed at Dec 31, 2025!** No new commits are going to be landed.
 Please consider try bd_'s [Modular Avatar - Resonite Support](https://github.com/bdunderscore/modular-avatar-resonite) package instead.
 ---
 
